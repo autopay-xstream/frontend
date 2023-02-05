@@ -52,7 +52,7 @@ function Dashboard() {
     const tokensQuery_outgoing = `
     query {
     flowUpdatedEvents(
-      where: {sender: "0xf96b82579B8f4E0357908AE50a10f2287A19Baa9"}
+      where: {sender: ${address}}
       orderBy: timestamp
     ) {
       timestamp
@@ -69,7 +69,7 @@ function Dashboard() {
     const tokensQuery_incoming = `
     query {
     flowUpdatedEvents(
-      where: {receiver: "0xf96b82579B8f4E0357908AE50a10f2287A19Baa9"}
+      where: {receiver: ${address}}
       orderBy: timestamp
     ) {
       timestamp
@@ -432,83 +432,77 @@ function Dashboard() {
                                 {/**************all flow data************/}
                                 {dropDownAll && allData.length > 0
                                   ? allData.map((item, key) => {
-                                      return (
-                                        <tr>
-                                          <td>
-                                            {item[4] ? (
-                                              <h6>
-                                                -&gt;&nbsp;{item[0].slice(0, 5)}
-                                                ...
-                                                {item[0].slice(38, 42)}
-                                              </h6>
-                                            ) : (
-                                              <h6>
-                                                &lt;-&nbsp;{item[0].slice(0, 5)}
-                                                ...
-                                                {item[0].slice(38, 42)}
-                                              </h6>
-                                            )}
-                                          </td>
-                                          <td>{item[2]}</td>
-                                          <td>-</td>
-                                          <td>
-                                            {item[1].slice(0, 5)}...
-                                            {item[1].slice(38, 42)}
-                                          </td>
-                                          <td>{item[3]}</td>
-                                        </tr>
-                                      );
-                                    })
+                                    return (
+                                      <tr key={key}>
+                                        <td>
+                                          {item[4] ? (
+                                            <h6>
+                                              -&gt;&nbsp;{item[0].slice(0, 5)}
+                                              ...
+                                              {item[0].slice(38, 42)}
+                                            </h6>
+                                          ) : (
+                                            <h6>
+                                              &lt;-&nbsp;{item[0].slice(0, 5)}
+                                              ...
+                                              {item[0].slice(38, 42)}
+                                            </h6>
+                                          )}
+                                        </td>
+                                        <td>{item[2]}</td>
+                                        <td>-</td>
+                                        <td>
+                                          {item[1].slice(0, 5)}...
+                                          {item[1].slice(38, 42)}
+                                        </td>
+                                        <td>{item[3]}</td>
+                                      </tr>
+                                    );
+                                  })
                                   : null}
                                 {/**************outgoing flow data************/}
                                 {dropDownOutgoing && outgoingData.length > 0
                                   ? outgoingData.map((item, key) => {
-                                      return (
-                                        <tr>
-                                          <td>
-                                            -&gt;&nbsp;
-                                            {item[1].slice(0, 5)}...
-                                            {item[1].slice(38, 42)}
-                                          </td>
-                                          <td>{item[3]}</td>
-                                          <td>-</td>
-                                          <td>
-                                            {item[2].slice(0, 5)}...
-                                            {item[2].slice(38, 42)}
-                                          </td>
-                                          <td>{item[4]}</td>
-                                        </tr>
-                                      );
-                                    })
+                                    return (
+                                      <tr key={key}>
+                                        <td>
+                                          -&gt;&nbsp;
+                                          {item[1].slice(0, 5)}...
+                                          {item[1].slice(38, 42)}
+                                        </td>
+                                        <td>{item[3]}</td>
+                                        <td>-</td>
+                                        <td>
+                                          {item[2].slice(0, 5)}...
+                                          {item[2].slice(38, 42)}
+                                        </td>
+                                        <td>{item[4]}</td>
+                                      </tr>
+                                    );
+                                  })
                                   : null}
                                 {/**************incoming flow data************/}
                                 {dropDownIncoming && incomingData.length > 0
                                   ? incomingData.map((item, key) => {
-                                      return (
-                                        <tr>
-                                          <td>
-                                            &lt;-&nbsp;
-                                            {item[0].slice(0, 5)}...
-                                            {item[0].slice(38, 42)}
-                                          </td>
-                                          <td>{item[3]}</td>
-                                          <td>-</td>
-                                          <td>
-                                            {item[2].slice(0, 5)}...
-                                            {item[2].slice(38, 42)}
-                                          </td>
-                                          <td>{item[4]}</td>
-                                        </tr>
-                                      );
-                                    })
+                                    return (
+                                      <tr key={key}>
+                                        <td>
+                                          &lt;-&nbsp;
+                                          {item[0].slice(0, 5)}...
+                                          {item[0].slice(38, 42)}
+                                        </td>
+                                        <td>{item[3]}</td>
+                                        <td>-</td>
+                                        <td>
+                                          {item[2].slice(0, 5)}...
+                                          {item[2].slice(38, 42)}
+                                        </td>
+                                        <td>{item[4]}</td>
+                                      </tr>
+                                    );
+                                  })
                                   : null}
-                                {/* <tr>
-                                  <td>something</td>
-                                  <td>something</td>
-                                  <td>something</td>
-                                  <td>something</td>
-                                  <td>something</td>
-                                </tr> */}
+                         
                               </tbody>
                             </table>
                           </div>
