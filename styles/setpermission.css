@@ -1,0 +1,129 @@
+span.permission-title {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  outline: 0px;
+  border: 0px;
+  margin: 0px 0px 32px;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  appearance: none;
+  text-decoration: none;
+  /* font-family: Walsheim, Arial; */
+  font-weight: 600;
+  line-height: 1.75;
+  padding: 6px 16px;
+  border-radius: 10px;
+  transition: background-color 250ms cubic-bezier(0.55, 0, 0.1, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.55, 0, 0.1, 1) 0ms,
+    border-color 250ms cubic-bezier(0.55, 0, 0.1, 1) 0ms,
+    color 250ms cubic-bezier(0.55, 0, 0.1, 1) 0ms;
+  box-shadow: none;
+  text-transform: inherit;
+  flex-shrink: 0;
+  min-width: 0px;
+  font-size: 16px;
+  color: rgb(16, 187, 53);
+  background-color: rgba(16, 187, 53, 0.08);
+  align-self: flex-start;
+  pointer-events: none;
+}
+
+input.input {
+  border: 1px solid rgb(224, 224, 224);
+  border-radius: 10px;
+  /* font-family: Walsheim, Arial; */
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.75;
+  padding: 6px 16px;
+  border-radius: 10px;
+  min-height: 54px;
+}
+input.input:focus {
+  outline: 1px solid rgb(16, 187, 53);
+}
+.input-parent {
+  margin: 5px 0px;
+}
+.input-parent h4 {
+  font-weight: 600;
+  margin: 10px;
+}
+
+.react-dropdown-select.css-8fadjs-ReactDropdownSelect.e1gzf2xs0 {
+  min-height: 54px;
+  border-radius: 10px;
+  padding: 6px 16px;
+}
+input.react-dropdown-select-input::placeholder {
+  color: #374151;
+  font-weight: 600;
+}
+
+input.react-dropdown-select-input {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+.set-permission-button {
+  margin-top: 30px;
+}
+.set-permission-button button {
+  width: 100%;
+  /* max-width: 300px; */
+  cursor: pointer;
+  padding: 15px 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all linear 0.1s;
+  border-radius: 10px;
+  background-color: #10bb35;
+  border: 1px solid #10bb35;
+  color: white;
+}
+.set-permission-button button:hover {
+  background-color: rgb(12, 149, 42);
+}
+
+.Dropdown-control {
+  border-radius: 10px !important;
+  min-height: 54px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px !important;
+}
+
+.Dropdown-control .Dropdown-arrow-wrapper {
+  position: relative;
+}
+.Dropdown-control .Dropdown-arrow-wrapper .Dropdown-arrow {
+  position: relative;
+  right: auto;
+  top: auto;
+}
+
+.Dropdown-root .Dropdown-menu {
+  border-radius: 10px;
+  padding: 6px 16px !important;
+}
+
+select#permissions:focus-visible {
+  border: 1px solid #10bb35;
+  outline: #10bb35;
+}
+
+.css-kov7rt-ReactDropdownSelect {
+  border-radius: 10px !important;
+  min-height: 54px !important;
+  color: black !important;
+}

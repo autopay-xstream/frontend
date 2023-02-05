@@ -1,0 +1,235 @@
+.db-main {
+  width: 100%;
+  margin-left: auto;
+  box-sizing: border-box;
+  margin-right: auto;
+  display: block;
+  padding-left: 16px;
+  padding-right: 16px;
+  // margin-top: 10vh;
+
+  .db-sub {
+    display: flex;
+    flex-direction: column;
+    padding-top: 100px;
+    position: relative;
+    margin-bottom: 50px;
+
+    h1 {
+      margin: 0px 0px 8px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.25px;
+      //   font-family: Walsheim, Arial;
+      line-height: 1.235;
+      text-align: center;
+    }
+
+    p {
+      margin: 0px 0px 32px;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 150%;
+      letter-spacing: 0.15px;
+      //   font-family: Walsheim, Arial;
+      color: rgba(18, 20, 30, 0.6);
+      text-align: center;
+    }
+    div.db-grid-sub {
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      justify-content: center;
+      gap: 28px;
+      display: grid;
+      grid-template-columns: repeat(2, 290px);
+
+      div.grid-sub {
+        background-color: rgb(255, 255, 255);
+        color: rgba(18, 20, 30, 0.87);
+        transition: box-shadow 300ms cubic-bezier(0.55, 0, 0.1, 1) 0ms;
+        box-shadow: rgba(204, 204, 204, 0.25) 0px 0px 6px 3px;
+        border: none rgb(224, 224, 224);
+        border-radius: 20px;
+        background-image: none;
+        overflow: hidden;
+        padding: 28px;
+        text-decoration: none;
+        span {
+          display: block;
+          text-align: center;
+        }
+        span.grid-sub-title {
+          margin: 0px;
+          font-size: 1.125rem;
+          font-weight: 500;
+          font-family: Walsheim, Arial;
+          line-height: 1.334;
+        }
+        span.grid-sub-info {
+          margin: 0px;
+          font-size: 0.875rem;
+          font-weight: 400;
+          letter-spacing: 0.17px;
+          font-family: Walsheim, Arial;
+          line-height: 1.43;
+          color: rgba(18, 20, 30, 0.6);
+          display: block;
+        }
+      }
+    }
+    div.connect-wallet {
+      max-width: max-content;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 32px;
+    }
+    .db-box-parent {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+
+      h1.super-token {
+        text-align: left;
+        margin: 20px 10px;
+      }
+      .db-box {
+        box-shadow: rgba(204, 204, 204, 0.25) 0px 0px 6px 3px;
+        border: none rgb(224, 224, 224);
+        border-radius: 20px;
+        overflow: hidden;
+
+        .db-header {
+          margin: 10px 0px;
+
+          .connect-wallet {
+            max-width: none;
+            width: auto;
+            padding: 20px;
+            button:last-of-type {
+              align-self: left;
+              display: none;
+            }
+          }
+        }
+
+        .token-details {
+          margin-bottom: 20px;
+
+          .token-icon {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            .svg-parent {
+              position: relative;
+              padding: 2px;
+              width: max-content;
+
+              svg.fdaix-token-svg {
+                animation-name: rotating;
+                animation-duration: 8s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+                width: max-content;
+                height: 100%;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+              }
+              .token-avatar-parent {
+                position: relative;
+                display: flex;
+                -webkit-box-align: center;
+                align-items: center;
+                -webkit-box-pack: center;
+                justify-content: center;
+                flex-shrink: 0;
+                font-family: Walsheim, Arial;
+                font-size: 1.25rem;
+                line-height: 1;
+                border-radius: 50%;
+                overflow: hidden;
+                user-select: none;
+                background: transparent;
+                width: 32px;
+                height: 32px;
+
+                img {
+                  width: 100%;
+                  height: 100%;
+                  text-align: center;
+                  color: transparent;
+                  text-indent: 10000px;
+                  object-fit: contain;
+                  border-radius: 50%;
+                }
+              }
+            }
+            h4 {
+              color: black;
+              font-size: 1.1rem;
+              font-weight: 600;
+              letter-spacing: 0.17px;
+              // font-family: Walsheim, Arial;
+              line-height: 1.43;
+              // color: rgba(18, 20, 30, 0.6);
+              padding: 10px 20px;
+              min-height: 0px;
+            }
+          }
+          h4.token-balance {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 150%;
+            font-variant-numeric: tabular-nums;
+            color: #12141ede;
+          }
+          table {
+            width: 100%;
+            border-spacing: 0;
+
+            th {
+              color: #12141e99;
+              display: table-cell;
+              vertical-align: inherit;
+              border-bottom: 1px solid rgb(224, 224, 224);
+              text-align: left;
+              font-size: 0.875rem;
+              font-weight: 500;
+              letter-spacing: 0.17px;
+              // font-family: Walsheim, Arial;
+              line-height: 1.43;
+              color: rgba(18, 20, 30, 0.6);
+              padding: 10px 32px;
+              min-height: 0px;
+
+              svg {
+                fill: rgba(18, 20, 30, 0.6);
+              }
+            }
+            tr {
+              display: table-row;
+              vertical-align: middle;
+              outline: 0px;
+              background: none rgb(255, 255, 255);
+            }
+            td {
+              padding: 10px 32px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
