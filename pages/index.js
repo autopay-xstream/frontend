@@ -74,7 +74,7 @@ export default function Home() {
             <title>XStream</title>
             <meta
               name="description"
-              content="Giving other accounts control over stream operations"
+              content="Cross chain streaming using AutoPay XStream"
             />
             <meta
               name="viewport"

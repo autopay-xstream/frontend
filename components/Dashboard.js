@@ -46,13 +46,18 @@ function Dashboard() {
     "Dec",
   ];
   const loadData = async () => {
-    const APIURL =
-      "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli";
+    if (!address) {
+      console.log("false");
+      return;
+    }
+    console.log(address.toLowerCase());
+
+    const APIURL = "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli";
 
     const tokensQuery_outgoing = `
     query {
     flowUpdatedEvents(
-      where: {sender: ${address}}
+      where: {sender: ${address.toLowerCase()}}
       orderBy: timestamp
     ) {
       timestamp
@@ -69,7 +74,7 @@ function Dashboard() {
     const tokensQuery_incoming = `
     query {
     flowUpdatedEvents(
-      where: {receiver: ${address}}
+      where: {receiver: ${address.toLowerCase()}}
       orderBy: timestamp
     ) {
       timestamp
@@ -502,7 +507,7 @@ function Dashboard() {
                                     );
                                   })
                                   : null}
-                         
+
                               </tbody>
                             </table>
                           </div>
@@ -525,8 +530,8 @@ function Dashboard() {
         <p>Connect your wallet or take a look around!</p>
         <div className="db-grid-sub w-[70%] mx-auto my-0">
           <div className="grid-sub min-h-[170px]">
-            <span className="grid-sub-title">Set Permissions</span>
-            <span className="grid-sub-info">Update Operator Permissions</span>
+            <span className="grid-sub-title">Controll Your Stream</span>
+            <span className="grid-sub-info">Controll stream on a crosschain level</span>
             <div className="flex items-center justify-center mt-4">
               <div className="shadow-[#cccccc40] shadow-[0px_0px_6px_3px_rgb(204,204,204,0.25)] flex items-center justify-between w-30 px-1 py-1 rounded-xl">
                 <Image
@@ -576,9 +581,9 @@ function Dashboard() {
             </div>
           </div>
           <div className="grid-sub min-h-[120px]">
-            <span className="grid-sub-title">Authorize Full Control</span>
+            <span className="grid-sub-title">One Click Stream</span>
             <span className="grid-sub-info">
-              Grant Full Operator Permissions to an Account
+              Hassle less stream with one click
             </span>
             <div className="flex items-center justify-center mt-4">
               <span className="mr-2 p-[6px] bg-[#10bb3514] rounded-xl">
@@ -613,20 +618,27 @@ function Dashboard() {
             </div>
           </div>
           <div className="grid-sub min-h-[120px]">
-            <span className="grid-sub-title">Revoke Full Control</span>
+            <span className="grid-sub-title">Get Notified</span>
             <span className="grid-sub-info">
-              Revoke Full Operator Permissions to an Account
+              Get notified when your stream is live
             </span>
             <div className="flex items-center justify-center mt-4">
               <span className="mr-2 p-[6px] bg-[#d2252514] rounded-xl">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
+                  enableBackground="new 0 0 24 24"
                   height="24px"
                   viewBox="0 0 24 24"
                   width="24px"
-                  className="fill-[#d22525]"
+                  className="fill-[#10bb35]"
                 >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z" />
+                  <g>
+                    <rect fill="none" height="24" width="24" />
+                    <rect fill="none" height="24" width="24" />
+                  </g>
+                  <g>
+                    <path d="M23,12l-2.44-2.79l0.34-3.69l-3.61-0.82L15.4,1.5L12,2.96L8.6,1.5L6.71,4.69L3.1,5.5L3.44,9.2L1,12l2.44,2.79l-0.34,3.7 l3.61,0.82L8.6,22.5l3.4-1.47l3.4,1.46l1.89-3.19l3.61-0.82l-0.34-3.69L23,12z M9.38,16.01L7,13.61c-0.39-0.39-0.39-1.02,0-1.41 l0.07-0.07c0.39-0.39,1.03-0.39,1.42,0l1.61,1.62l5.15-5.16c0.39-0.39,1.03-0.39,1.42,0l0.07,0.07c0.39,0.39,0.39,1.02,0,1.41 l-5.92,5.94C10.41,16.4,9.78,16.4,9.38,16.01z" />
+                  </g>
                 </svg>
               </span>
               <div className=" shadow-[#cccccc40] shadow-xl flex justify-between w-30 px-1 py-1 rounded-xl">
@@ -643,9 +655,9 @@ function Dashboard() {
             </div>
           </div>
           <div className="grid-sub min-h-[120px]">
-            <span className="grid-sub-title">Send a Stream</span>
+            <span className="grid-sub-title">Send a XStream</span>
             <span className="grid-sub-info">
-              Pick a Sender, Recipient, Token and Network
+              Pick a Sender, Recipient, Token and Network on a differnt chain
             </span>
             <div className="flex items-center justify-center mt-4">
               <div className="shadow-[#cccccc40] shadow-xl flex justify-between w-30 px-1 py-1 rounded-xl">
@@ -706,9 +718,9 @@ function Dashboard() {
             </div>
           </div>
           <div className="grid-sub min-h-[120px]">
-            <span className="grid-sub-title">View Permissions</span>
+            <span className="grid-sub-title">View Streams</span>
             <span className="grid-sub-info">
-              View All Addresses to whom permissions are given
+              View All Streams and their details
             </span>
             <div className="flex items-center justify-center mt-4 px-2">
               <div className=" shadow-[#cccccc40] shadow-xl flex items-center justify-between w-25 px-1 py-1 rounded-xl">
