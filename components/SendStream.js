@@ -69,8 +69,8 @@ function SendStream() {
   `;
 
   return (
-    <div className="main-container">
-      <div className="box-container">
+    <div className="main-container w-full h-screen ">
+      <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full p-10 ">
         <div className="set-permission-title">
           <span className="permission-title">Send Stream</span>
         </div>

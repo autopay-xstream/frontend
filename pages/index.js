@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
 
 import logo from "../image/Logo.png";
 import logowhite from "../image/LogoWhite.png";
@@ -21,6 +21,8 @@ import Dashboard from "../components/Dashboard";
 import SendStream from "../components/SendStream";
 import Image from "next/image";
 import SideBar from "@/components/SideBar";
+import SendXStream from "@/components/SendXStream";
+import Stream from "@/components/Stream";
 
 //******************************************* */
 
@@ -51,6 +53,8 @@ export default function Home() {
   const [showDashboard, setDashboard] = useState(false);
   const [showSendStream, setSendStream] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [showXStream, setShowXStream] = useState(false);
+  const [showStream, setShowStream] = useState(false);
 
   useEffect(() => {
     setDashboard(true);
@@ -112,20 +116,30 @@ export default function Home() {
                 setDashboard={setDashboard}
                 setSendStream={setSendStream}
                 setShowNotification={setShowNotification}
+                setShowXStream={setShowXStream}
+                showXStream={showXStream}
                 showDashboard={showDashboard}
                 showSendStream={showSendStream}
                 showNotification={showNotification}
+                setShowStream={setShowStream}
+                showStream={showStream}
               />
 
 
               {/* ****************main right panel************** */}
-              <div className="w-full">
+              <div className="w-full bg-[#F4F4F4]">
                 <div className="inside-main-right">
                   {showDashboard ? (
                     <Dashboard />
                   ) : showSendStream ? (
                     <SendStream />
-                  ) : null}
+                  ) : showXStream ? (
+                    <SendXStream />
+                  ) : showStream ?
+                    <Stream />
+                    : null
+                  }
+
                 </div>
               </div>
             </div>

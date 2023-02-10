@@ -50,14 +50,16 @@ function Dashboard() {
       console.log("false");
       return;
     }
-    console.log(address.toLowerCase());
+    setOutgoingData([]);
+    setIncomingData([]);
+    setAllData([]);
 
     const APIURL = "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli";
 
     const tokensQuery_outgoing = `
     query {
     flowUpdatedEvents(
-      where: {sender: ${address.toLowerCase()}}
+      where: {sender: "${address}"}
       orderBy: timestamp
     ) {
       timestamp
@@ -74,7 +76,7 @@ function Dashboard() {
     const tokensQuery_incoming = `
     query {
     flowUpdatedEvents(
-      where: {receiver: ${address.toLowerCase()}}
+      where: {receiver: "${address}"}
       orderBy: timestamp
     ) {
       timestamp
@@ -101,7 +103,7 @@ function Dashboard() {
 
     const data = loadedData_outgoing.data.flowUpdatedEvents;
     const data1 = loadedData_incoming.data.flowUpdatedEvents;
-    const data2 = loadedData_outgoing.data.flowUpdatedEvents;
+
     total.push([data.length + data1.length, data.length, data1.length]);
     setTotal(total);
 
@@ -168,9 +170,11 @@ function Dashboard() {
       }
     }
     allData.sort((a, b) => parseInt(b[5]) - parseInt(a[5]));
+
     setOutgoingData(outgoingData);
     setIncomingData(incomingData);
     setAllData(allData);
+
     console.log(outgoingData);
     console.log(incomingData);
     console.log(allData);
@@ -209,26 +213,26 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    setDropDown(false);
-    setDropDownAll(false);
+
+    setDropDownAll(true);
     setDropDownIncoming(false);
     setDropDownOutgoing(false);
   }, []);
-
   useEffect(() => {
     getBalance();
-  });
+    loadData();
+  }, [])
 
   if (isConnected) {
     return (
-      <div className="db-main">
-        <div className="db-sub">
+      <div className="main-container w-full h-screen ">
+        <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full ">
           {/* <button onClick={() => loadData()}>click</button> */}
           {/* <p>Connect your wallet, view any wallet, or take a look around!</p> */}
           <div className="db-box-parent">
             {/* <h1 className="super-token">"Super Token"</h1> */}
 
-            <div className="db-box">
+            <div className="db-box bg-white rounded-lg">
               <div className="db-header flex justify-between w-full items-center">
                 <div className="dashboard-title">
                   <span className="super-token-title">Super Token</span>
@@ -346,9 +350,9 @@ function Dashboard() {
                         <div
                           className="parent-drop-down"
                           onClick={() => {
-                            loadData();
-                            setDropDown(!dropDown);
-                            setDropDownAll(!dropDownAll);
+                            // loadData();
+                            // setDropDown(!dropDown);
+                            // setDropDownAll(!dropDownAll);
                           }}
                         >
                           <svg
@@ -368,152 +372,145 @@ function Dashboard() {
                       </td>
                     </tr>
 
-                    {dropDown ? (
-                      <tr>
-                        <td colSpan={5} className="dropdown-table-td">
-                          <div>
-                            <table className="dropdown-table">
-                              <thead>
-                                <tr>
-                                  <td colSpan={6} className="dropdown-table-td">
-                                    <div className="dropdown-row">
-                                      <div className="dropdown-btn-parent">
-                                        <button
-                                          className={
-                                            dropDownAll ? "active" : ""
-                                          }
-                                          onClick={() => {
-                                            setDropDownAll(true);
-                                            setDropDownIncoming(false);
-                                            setDropDownOutgoing(false);
-                                          }}
-                                        >
-                                          {total.length > 0
-                                            ? "All (" + total[0][0] + ")"
-                                            : "All"}
-                                        </button>
-                                        <button
-                                          className={
-                                            dropDownIncoming ? "active" : ""
-                                          }
-                                          onClick={() => {
-                                            setDropDownAll(false);
-                                            setDropDownIncoming(true);
-                                            setDropDownOutgoing(false);
-                                          }}
-                                        >
-                                          {total.length > 0
-                                            ? "Incoming (" + total[0][2] + ")"
-                                            : "Incoming"}
-                                        </button>
-                                        <button
-                                          className={
-                                            dropDownOutgoing ? "active" : ""
-                                          }
-                                          onClick={() => {
-                                            setDropDownAll(false);
-                                            setDropDownIncoming(false);
-                                            setDropDownOutgoing(true);
-                                          }}
-                                        >
-                                          {total.length > 0
-                                            ? "Outgoing (" + total[0][1] + ")"
-                                            : "Outgoing"}
-                                        </button>
-                                      </div>
+                    <tr>
+                      <td colSpan={5} className="dropdown-table-td">
+                        <div>
+                          <table className="dropdown-table">
+                            <thead>
+                              <tr>
+                                <td colSpan={6} className="dropdown-table-td">
+                                  <div className="dropdown-row">
+                                    <div className="dropdown-btn-parent">
+                                      <button
+                                        className={
+                                          dropDownAll ? "active" : ""
+                                        }
+                                        onClick={() => {
+                                          setDropDownAll(true);
+                                          setDropDownIncoming(false);
+                                          setDropDownOutgoing(false);
+                                        }}
+                                      >
+                                        {total.length > 0
+                                          ? "All (" + total[0][0] + ")"
+                                          : "All"}
+                                      </button>
+                                      <button
+                                        className={
+                                          dropDownIncoming ? "active" : ""
+                                        }
+                                        onClick={() => {
+                                          setDropDownAll(false);
+                                          setDropDownIncoming(true);
+                                          setDropDownOutgoing(false);
+                                        }}
+                                      >
+                                        {total.length > 0
+                                          ? "Incoming (" + total[0][2] + ")"
+                                          : "Incoming"}
+                                      </button>
+                                      <button
+                                        className={
+                                          dropDownOutgoing ? "active" : ""
+                                        }
+                                        onClick={() => {
+                                          setDropDownAll(false);
+                                          setDropDownIncoming(false);
+                                          setDropDownOutgoing(true);
+                                        }}
+                                      >
+                                        {total.length > 0
+                                          ? "Outgoing (" + total[0][1] + ")"
+                                          : "Outgoing"}
+                                      </button>
                                     </div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <th>To / From</th>
-                                  <th>All Time Flow</th>
-                                  <th>Flow Rate</th>
-                                  <th>Flow Operator</th>
-                                  <th>Start / End Date</th>
-                                  <th></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {/**************all flow data************/}
-                                {dropDownAll && allData.length > 0
-                                  ? allData.map((item, key) => {
-                                    return (
-                                      <tr key={key}>
-                                        <td>
-                                          {item[4] ? (
-                                            <h6>
-                                              -&gt;&nbsp;{item[0].slice(0, 5)}
-                                              ...
-                                              {item[0].slice(38, 42)}
-                                            </h6>
-                                          ) : (
-                                            <h6>
-                                              &lt;-&nbsp;{item[0].slice(0, 5)}
-                                              ...
-                                              {item[0].slice(38, 42)}
-                                            </h6>
-                                          )}
-                                        </td>
-                                        <td>{item[2]}</td>
-                                        <td>-</td>
-                                        <td>
-                                          {item[1].slice(0, 5)}...
-                                          {item[1].slice(38, 42)}
-                                        </td>
-                                        <td>{item[3]}</td>
-                                      </tr>
-                                    );
-                                  })
-                                  : null}
-                                {/**************outgoing flow data************/}
-                                {dropDownOutgoing && outgoingData.length > 0
-                                  ? outgoingData.map((item, key) => {
-                                    return (
-                                      <tr key={key}>
-                                        <td>
-                                          -&gt;&nbsp;
-                                          {item[1].slice(0, 5)}...
-                                          {item[1].slice(38, 42)}
-                                        </td>
-                                        <td>{item[3]}</td>
-                                        <td>-</td>
-                                        <td>
-                                          {item[2].slice(0, 5)}...
-                                          {item[2].slice(38, 42)}
-                                        </td>
-                                        <td>{item[4]}</td>
-                                      </tr>
-                                    );
-                                  })
-                                  : null}
-                                {/**************incoming flow data************/}
-                                {dropDownIncoming && incomingData.length > 0
-                                  ? incomingData.map((item, key) => {
-                                    return (
-                                      <tr key={key}>
-                                        <td>
-                                          &lt;-&nbsp;
-                                          {item[0].slice(0, 5)}...
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>To / From</th>
+                                <th>All Time Flow</th>
+                                <th>Flow Rate</th>
+                                <th>Flow Operator</th>
+                                <th>Start / End Date</th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/**************all flow data************/}
+                              {dropDownAll && allData?.map((item, key) => {
+                                return (
+                                  <tr key={key}>
+                                    <td>
+                                      {item[4] ? (
+                                        <h6>
+                                          -&gt;&nbsp;{item[0].slice(0, 5)}
+                                          ...
                                           {item[0].slice(38, 42)}
-                                        </td>
-                                        <td>{item[3]}</td>
-                                        <td>-</td>
-                                        <td>
-                                          {item[2].slice(0, 5)}...
-                                          {item[2].slice(38, 42)}
-                                        </td>
-                                        <td>{item[4]}</td>
-                                      </tr>
-                                    );
-                                  })
-                                  : null}
+                                        </h6>
+                                      ) : (
+                                        <h6>
+                                          &lt;-&nbsp;{item[0].slice(0, 5)}
+                                          ...
+                                          {item[0].slice(38, 42)}
+                                        </h6>
+                                      )}
+                                    </td>
+                                    <td>{item[2]}</td>
+                                    <td>-</td>
+                                    <td>
+                                      {item[1].slice(0, 5)}...
+                                      {item[1].slice(38, 42)}
+                                    </td>
+                                    <td>{item[3]}</td>
+                                  </tr>
+                                );
+                              })}
+                              {/**************outgoing flow data************/}
+                              {dropDownOutgoing && outgoingData?.map((item, key) => {
+                                return (
+                                  <tr key={key}>
+                                    <td>
+                                      -&gt;&nbsp;
+                                      {item[1].slice(0, 5)}...
+                                      {item[1].slice(38, 42)}
+                                    </td>
+                                    <td>{item[3]}</td>
+                                    <td>-</td>
+                                    <td>
+                                      {item[2].slice(0, 5)}...
+                                      {item[2].slice(38, 42)}
+                                    </td>
+                                    <td>{item[4]}</td>
+                                  </tr>
+                                );
+                              })}
+                              {/**************incoming flow data************/}
+                              {dropDownIncoming && incomingData?.map((item, key) => {
+                                return (
+                                  <tr key={key}>
+                                    <td>
+                                      &lt;-&nbsp;
+                                      {item[0].slice(0, 5)}...
+                                      {item[0].slice(38, 42)}
+                                    </td>
+                                    <td>{item[3]}</td>
+                                    <td>-</td>
+                                    <td>
+                                      {item[2].slice(0, 5)}...
+                                      {item[2].slice(38, 42)}
+                                    </td>
+                                    <td>{item[4]}</td>
+                                  </tr>
+                                );
+                              })}
 
-                              </tbody>
-                            </table>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : null}
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+
                   </tbody>
                 </table>
               </div>
