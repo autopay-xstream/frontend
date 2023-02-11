@@ -198,7 +198,7 @@ function Dashboard() {
           provider: provider,
         });
 
-        const DAIxContract = await sf.loadSuperToken("fDAIx");
+        const DAIxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
         const DAIx = DAIxContract.address;
 
         try {
@@ -329,7 +329,7 @@ function Dashboard() {
                               ></img>
                             </div>
                           </div>
-                          <h4 className="fdaix">fDAIx</h4>
+                          <h4 className="fdaix">TESTx</h4>
                         </div>
                       </td>
                       <td>
