@@ -1,10 +1,17 @@
 import React from 'react'
 
-const StreamInfo = () => {
+const StreamInfo = ({
+    toChain,
+    fromChain,
+    receipient,
+    amount,
+    token,
+    endDate,
+}) => {
     return (
         <div className='px-6'>
             <div
-                className={`[box-shadow:0px_0px_0px_1px_rgba(150,_208,_104,_1)_inset] [box-shadow-width:1px] px-10 gap-2.5 inline-flex flex-col items-start text-left py-[30px] w-full bg-[rgba(150,208,104,0.1)] rounded-[10px] mt-10 fade-in`}
+                className={`[box-shadow:0px_0px_0px_1px_rgba(150,_208,_104,_1)_inset] [box-shadow-width:1px] px-10 gap-2.5 inline-flex flex-col items-start text-left py-[30px] w-full bg-[rgba(150,208,104,0.1)] rounded-[10px] mt-5 fade-in`}
             >
                 <div className="flex justify-between items-center w-full">
                     <p
@@ -15,7 +22,7 @@ const StreamInfo = () => {
                     <p
                         className="text-sm font-semibold m-0 w-[174px] leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        0x1ndsj2341fk123jfDMdss
+                        {receipient}
                     </p>
                 </div>
                 <div className="flex justify-between items-center w-full">
@@ -25,9 +32,9 @@ const StreamInfo = () => {
                         Destination Chain
                     </p>
                     <p
-                        className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
+                        className="text-sm capitalize font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        Polygon
+                        {toChain.name}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">
@@ -39,7 +46,7 @@ const StreamInfo = () => {
                     <p
                         className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        December 10, 1984  10:10
+                        {(endDate.$d).toLocaleDateString()}  {(endDate.$d).toLocaleTimeString()}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">
@@ -49,9 +56,9 @@ const StreamInfo = () => {
                         Token value assigned for stream
                     </p>
                     <p
-                        className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
+                        className="text-sm capitalize font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        1200  USDCx
+                        {amount} {token.name}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">

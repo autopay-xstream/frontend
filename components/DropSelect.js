@@ -4,8 +4,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 
 
-export default function DropSelect({ options, placeholder }) {
-    const [selected, setSelected] = useState(null)
+export default function DropSelect({ options, placeholder, selected, setSelected }) {
 
     return (
         <div className="w-full">

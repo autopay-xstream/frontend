@@ -23,6 +23,7 @@ function Dashboard() {
   const [dropDown, setDropDown] = useState(true);
   const [chain, setChain] = useState("all");
 
+
   const [dropDownAll, setDropDownAll] = useState(true);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
@@ -240,7 +241,7 @@ function Dashboard() {
             {/* <h1 className="super-token">"Super Token"</h1> */}
 
             <div className="db-box bg-white rounded-lg">
-        
+
               <div className="token-details pt-4">
                 <table>
                   <thead>
@@ -323,7 +324,7 @@ function Dashboard() {
                               data-cy="token-icon"
                             >
                               <img
-                                alt="fDAIx token icon"
+                                alt="TESTx token icon"
                                 src="https://raw.githubusercontent.com/superfluid-finance/assets/master/public//tokens/dai/icon.svg"
                                 class="MuiAvatar-img avatar-token"
                               ></img>
