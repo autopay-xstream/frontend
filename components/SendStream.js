@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Select from "react-dropdown-select";
+// import Select from "react-dropdown-select";
 import options from "../data/options";
-import styled from "@emotion/styled";
+// import styled from "@emotion/styled";
 import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { recoverAddress } from "ethers/lib/utils.js";
@@ -58,15 +58,15 @@ function SendStream() {
     }
   };
 
-  const StyledSelect = styled(Select)`
-    ${({ dropdownRenderer }) =>
-      dropdownRenderer &&
-      `
-		.react-dropdown-select-dropdown {
-			overflow: initial;
-		}
-	`}
-  `;
+  // const StyledSelect = styled(Select)`
+  //   ${({ dropdownRenderer }) =>
+  //     dropdownRenderer &&
+  //     `
+	// 	.react-dropdown-select-dropdown {
+	// 		overflow: initial;
+	// 	}
+	// `}
+  // `;
 
   return (
     <div className="main-container w-full h-screen ">
@@ -101,7 +101,7 @@ function SendStream() {
           placeholder="Public Address"
           className="w-full input placeholder-gray-700"
         /> */}
-            <StyledSelect
+            {/* <StyledSelect
               options={options}
               disabled
               placeholder="fDAIx"
@@ -112,7 +112,7 @@ function SendStream() {
               onChange={(value) => console.log(value)}
               color={"#10bb34"}
               minHeight={"54px"}
-            />
+            /> */}
           </div>
           <div className="flow-rate-input grow ml-4">
             <h4>Flow Rate ( / second )</h4>

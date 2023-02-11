@@ -111,8 +111,8 @@ const SideBar = ({
                     onClick={() => {
                         setDashboard(false);
                         setSendStream(false);
-                        // setShowNotification(true);
-                        setShowStream(true);
+                        setShowNotification(true);
+                        // setShowStream(true);
                         setShowXStream(false);
                     }}
                 >

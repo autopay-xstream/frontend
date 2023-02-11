@@ -23,6 +23,7 @@ import Image from "next/image";
 import SideBar from "@/components/SideBar";
 import SendXStream from "@/components/SendXStream";
 import Stream from "@/components/Stream";
+import Notifications from "@/components/Notifications";
 
 //******************************************* */
 
@@ -135,8 +136,8 @@ export default function Home() {
                     <SendStream />
                   ) : showXStream ? (
                     <SendXStream />
-                  ) : showStream ?
-                    <Stream />
+                  ) : showNotification ?
+                    <Notifications />
                     : null
                   }
 

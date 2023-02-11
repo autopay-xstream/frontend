@@ -2,24 +2,17 @@ import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
-const people = [
-    { name: 'Wade Cooper' },
-    { name: 'Arlene Mccoy' },
-    { name: 'Devon Webb' },
-    { name: 'Tom Cook' },
-    { name: 'Tanya Fox' },
-    { name: 'Hellen Schmidt' },
-]
 
-export default function DropSelect() {
-    const [selected, setSelected] = useState(people[0])
+
+export default function DropSelect({ options, placeholder }) {
+    const [selected, setSelected] = useState(null)
 
     return (
-        <div className="w-72 ">
+        <div className="w-full">
             <Listbox value={selected} onChange={setSelected}>
                 <div className="relative mt-1">
                     <Listbox.Button className="relative w-full cursor-pointer rounded-lg mt-8 px-8 py-6 border-[1px] mr-0 border-gray-300  bg-white focus:outline-none text-left">
-                        <span className="block truncate text-gray-400">{selected.name}</span>
+                        <span className="block truncate text-gray-400 capitalize">{selected?.name ? selected.name : placeholder}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                             <ChevronUpDownIcon
                                 className="h-5 w-5 text-gray-400"
@@ -33,12 +26,12 @@ export default function DropSelect() {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {people.map((person, personIdx) => (
+                        <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-50">
+                            {options.map((person, personIdx) => (
                                 <Listbox.Option
                                     key={personIdx}
                                     className={({ active }) =>
-                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                                        `relative cursor-pointer select-none py-4 pl-10 pr-4 ${active ? 'bg-[#96D068] text-white' : 'text-gray-900'
                                         }`
                                     }
                                     value={person}
@@ -46,7 +39,7 @@ export default function DropSelect() {
                                     {({ selected }) => (
                                         <>
                                             <span
-                                                className={`block truncate ${selected ? 'font-medium' : 'font-normal'
+                                                className={`block truncate ${selected ? 'font-medium' : 'font-normal capitalize'
                                                     }`}
                                             >
                                                 {person.name}

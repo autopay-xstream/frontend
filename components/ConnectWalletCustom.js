@@ -4,7 +4,7 @@ import Blockies from "react-blockies";
 
 function ConnectWalletCustom() {
   return (
-    <div className="font-poppins">
+    <div className="font-poppins"> 
       <ConnectButton.Custom>
         {({
           account,

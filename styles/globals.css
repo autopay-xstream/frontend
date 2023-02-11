@@ -63,5 +63,37 @@ a {
     100% {opacity: 0;}
 }
 
+.IconUpRight {
+  /* Iconex/Broken/Up right circle */
+
+
+box-sizing: border-box;
+
+/* Auto layout */
+
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 1.95676px 9.78378px;
+gap: 9.78px;
+
+position: absolute;
+width: 31.31px;
+height: 35.22px;
+left: 1026.85px;
+top: 40.61px;
+
+background: #F4F4F4;
+border: 0.978378px solid rgba(0, 0, 0, 0.1);
+box-shadow: -4.89189px 4.89189px 9.78378px rgba(220, 220, 220, 0.2), 4.89189px -4.89189px 9.78378px rgba(220, 220, 220, 0.2), -4.89189px -4.89189px 9.78378px rgba(255, 255, 255, 0.9), 4.89189px 4.89189px 12.7189px rgba(220, 220, 220, 0.9), inset 0.978378px 0.978378px 1.95676px rgba(255, 255, 255, 0.3), inset -0.978378px -0.978378px 1.95676px rgba(220, 220, 220, 0.5);
+border-radius: 3.91351px;
+transform: matrix(0, -1, -1, 0, 0, 0);
+}
+
+
+	.MuiTextField-root {
+    width: 100%; 
+  }
 
 

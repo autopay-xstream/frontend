@@ -15,11 +15,13 @@ import Image from "next/image";
 import { sign } from "crypto";
 import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
+import ChainSelect from "./ChainSelect";
 
 function Dashboard() {
   const { address, isConnected } = useAccount();
   // const [loading, setLoading] = useState(false);
   const [dropDown, setDropDown] = useState(true);
+  const [chain, setChain] = useState("all");
 
   const [dropDownAll, setDropDownAll] = useState(true);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
@@ -45,6 +47,8 @@ function Dashboard() {
     "Nov",
     "Dec",
   ];
+
+
   const loadData = async () => {
     if (!address) {
       console.log("false");
@@ -54,7 +58,8 @@ function Dashboard() {
     setIncomingData([]);
     setAllData([]);
 
-    const APIURL = "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli";
+    const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli`;
+    // const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-${chain}`;
 
     const tokensQuery_outgoing = `
     query {
@@ -107,8 +112,8 @@ function Dashboard() {
     total.push([data.length + data1.length, data.length, data1.length]);
     setTotal(total);
 
-    console.log(loadedData_outgoing);
-    console.log(loadedData_incoming);
+    console.log("** DEBUG", loadedData_outgoing);
+    console.log("** DEBUG", loadedData_incoming);
 
     data.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
     data1.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
@@ -175,9 +180,9 @@ function Dashboard() {
     setIncomingData(incomingData);
     setAllData(allData);
 
-    console.log(outgoingData);
-    console.log(incomingData);
-    console.log(allData);
+    // console.log(outgoingData);
+    // console.log(incomingData);
+    // console.log(allData);
   };
 
   const getBalance = async () => {
@@ -213,44 +218,30 @@ function Dashboard() {
   };
 
   useEffect(() => {
-
     setDropDownAll(true);
     setDropDownIncoming(false);
     setDropDownOutgoing(false);
   }, []);
+
+
   useEffect(() => {
     getBalance();
     loadData();
-  }, [])
+  }, [address, chain])
 
   if (isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full ">
+        <ChainSelect chain={chain} setChain={setChain} />
+        <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
           {/* <button onClick={() => loadData()}>click</button> */}
           {/* <p>Connect your wallet, view any wallet, or take a look around!</p> */}
           <div className="db-box-parent">
             {/* <h1 className="super-token">"Super Token"</h1> */}
 
             <div className="db-box bg-white rounded-lg">
-              <div className="db-header flex justify-between w-full items-center">
-                <div className="dashboard-title">
-                  <span className="super-token-title">Super Token</span>
-                </div>
-                <div className="connect-wallet ">
-                  <ConnectButton
-                    accountStatus={{
-                      smallScreen: "avatar",
-                      largeScreen: "full",
-                    }}
-                    showBalance={{
-                      smallScreen: false,
-                      largeScreen: false,
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="token-details">
+        
+              <div className="token-details pt-4">
                 <table>
                   <thead>
                     <tr>
