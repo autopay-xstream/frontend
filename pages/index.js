@@ -209,7 +209,7 @@ export default function Home() {
                   ) : showXStream ? (
                     <SendXStream />
                   ) : showNotification ?
-                    <Notifications notifications = {streamNotifications} />
+                    <Notifications notifications={streamNotifications} />
                     : null
                   }
 
