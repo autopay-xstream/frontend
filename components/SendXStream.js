@@ -10,6 +10,7 @@ import StreamInfo from './StreamInfo'
 import { parseEther } from 'ethers/lib/utils.js';
 import { useAccount } from 'wagmi';
 import { Framework } from "@superfluid-finance/sdk-core";
+import { toast } from 'react-toastify';
 
 const options = [
     { name: 'Wade Cooper' },
@@ -50,8 +51,6 @@ const SendXStream = () => {
 
     const sendStreamSameChain = async () => {
 
-
-
         const senderAddress = address;
         const receiverAddress = receipient
         const flowRate = amount
@@ -80,6 +79,7 @@ const SendXStream = () => {
                     });
 
                     console.log("Creating your stream...");
+                    toast.info("Creating your stream...");
 
                     const result = await createFlowOperation.exec(signer);
                     console.log(result);
@@ -87,6 +87,9 @@ const SendXStream = () => {
                     console.log(`Congrats - you've just created a money stream!`);
                 } catch (error) {
                     console.log(
+                        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+                    );
+                    toast.error(
                         "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
                     );
                     console.error(error);
@@ -121,6 +124,7 @@ const SendXStream = () => {
             const signer = provider.getSigner()
 
             const contract = new ethers.Contract(contractAdd, abi, signer)
+            toast.info("Creating your stream...");
             const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
                 "1",                    //streamActionType
                 address,                //sender
@@ -131,7 +135,9 @@ const SendXStream = () => {
                 amount,                  //amount of tokens to send
                 { value: parseEther("0.07") }
             )
+            toast.info("Transaction Submitted...");
             await transaction.wait()
+            toast.error("Your stream is xcalling !..");
         }
 
         try {
@@ -147,7 +153,7 @@ const SendXStream = () => {
         e.preventDefault();
 
         try {
-            alert(toChain.name, fromChain.name);
+            // alert(toChain.name, fromChain.name);
 
             if (toChain.name === fromChain.name) {
                 await sendStreamSameChain()

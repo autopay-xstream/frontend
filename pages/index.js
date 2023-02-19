@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import logo from "../image/Logo.png";
 import logowhite from "../image/LogoWhite.png";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 //********************** connect wallet imports
 import "@rainbow-me/rainbowkit/styles.css";
 import {
@@ -146,6 +150,17 @@ export default function Home() {
 
 
           </main>
+          <ToastContainer
+            position="top-right"
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
         </RainbowKitProvider>
       </WagmiConfig>
     </>
