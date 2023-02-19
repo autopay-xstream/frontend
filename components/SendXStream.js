@@ -1,8 +1,13 @@
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
+
+import { ethers } from 'ethers'
+import abi from "../data/abi.json";
+
 import DatePicker from './DatePicker'
 import DropSelect from './DropSelect'
 import StreamInfo from './StreamInfo'
+import { parseEther } from 'ethers/lib/utils.js';
 
 const options = [
     { name: 'Wade Cooper' },
@@ -34,16 +39,17 @@ const SendXStream = () => {
     const [receipient, setReceipient] = useState(null);
     const [amount, setAmount] = useState(null);
     const [token, setToken] = useState(null);
-    const [endDate, setEndDate] = useState(dayjs('2023-02-11T12:11:54'));
+    const [endDate, setEndDate] = useState(dayjs(new Date));
 
 
 
-    const sendStreamWithOperator = async () => {
+    const sendStreamSameChain = async () => {
+
+
+
         const senderAddress = address;
-        const receiverAddress = document.getElementById(
-            "receiverWalletAddress"
-        ).value;
-        const flowRate = document.getElementById("flowRate").value;
+        const receiverAddress = receipient
+        const flowRate = amount
 
         try {
             const { ethereum } = window;
@@ -57,15 +63,15 @@ const SendXStream = () => {
                     provider: provider,
                 });
 
-                const DAIxContract = await sf.loadSuperToken("fDAIx");
-                const DAIx = DAIxContract.address;
+                const TOKENxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
+                const TOKENx = TOKENxContract.address;
 
                 try {
                     const createFlowOperation = sf.cfaV1.createFlowByOperator({
                         sender: senderAddress,
                         receiver: receiverAddress,
                         flowRate: flowRate,
-                        superToken: DAIx,
+                        superToken: TOKENx,
                     });
 
                     console.log("Creating your stream...");
@@ -85,6 +91,68 @@ const SendXStream = () => {
             console.log(error);
         }
     };
+
+    const calculateFlowRate = (amountInEther) => {
+        const now = new Date();
+
+        const endDate = new Date(endDate);
+        const timeDiff = Math.abs(endDate.getTime() - now.getTime());
+        console.log(timeDiff);
+
+
+        const amount = ethers.utils.parseEther(amountInEther.toString());
+        const calculatedFlowRate = Math.floor(amount / timeDiff);
+
+        return calculatedFlowRate;
+
+    }
+
+    const sendStreamDifferentChain = async () => {
+
+        if (typeof window.ethereum !== 'undefined') {
+            const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
+
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner()
+
+            const contract = new ethers.Contract(contractAdd, abi, signer)
+            const transaction = await contract._sendFlowMessage(
+                "0.07",
+                "1",                   //streamActionType
+                address,               //sender
+                receipient,            //receiver
+                amount,                //flowRate
+                "70000000000000000",    //relayer fees
+                "300",                  //slippage
+                amount                //amount of tokens to send
+            )
+            await transaction.wait()
+        }
+
+        try {
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        try {
+
+            if (toChain == fromChain) {
+                sendStreamSameChain
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
 
     return (
         <div className="main-container w-full h-screen ">
@@ -125,7 +193,7 @@ const SendXStream = () => {
                                 endDate={endDate}
                             />
 
-                            <button className='w-[403px] h-[67px] flex items-center justify-center bg-[#96D068] rounded-[10px] px-[80px] py-[20px] mx-auto mt-10 text-white'>
+                            <button onClick={handleSubmit} className='w-[403px] h-[67px] flex items-center justify-center bg-[#96D068] rounded-[10px] px-[80px] py-[20px] mx-auto mt-10 text-white'>
                                 Confirm
                             </button>
                         </>
