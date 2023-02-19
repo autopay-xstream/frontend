@@ -117,33 +117,33 @@ const SendXStream = () => {
 
     const sendStreamDifferentChain = async () => {
 
-        if (typeof window.ethereum !== 'undefined') {
-            const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
-
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner()
-
-            const contract = new ethers.Contract(contractAdd, abi, signer)
-            toast.info("Creating your stream...");
-            const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
-                "1",                    //streamActionType
-                address,                //sender
-                receipient,             //receiver
-                "1000000",              //flowRate
-                "70000000000000000",    //relayer fees
-                "300",                  //slippage
-                amount,                  //amount of tokens to send
-                { value: parseEther("0.07") }
-            )
-            toast.info("Transaction Submitted...");
-            await transaction.wait()
-            toast.error("Your stream is xcalling !..");
-        }
-
         try {
+            if (typeof window.ethereum !== 'undefined') {
+                const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
+
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner()
+
+                const contract = new ethers.Contract(contractAdd, abi, signer)
+                toast.info("Creating your XStream...");
+                const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
+                    "1",                    //streamActionType
+                    address,                //sender
+                    receipient,             //receiver
+                    "1000000",              //flowRate
+                    "70000000000000000",    //relayer fees
+                    "300",                  //slippage
+                    amount,                  //amount of tokens to send
+                    { value: parseEther("0.07") }
+                )
+                toast.info("Transaction Submitted...");
+                await transaction.wait()
+                toast.error("Your stream is xcalling !..");
+            }
 
         } catch (error) {
             console.error(error);
+            toast.error(error.message);
         }
     }
 
@@ -193,6 +193,7 @@ const SendXStream = () => {
                     setBalance(bal);
                 } catch (error) {
                     console.error(error);
+                    toast.error(error.message);
                 }
             }
         } catch (error) {
