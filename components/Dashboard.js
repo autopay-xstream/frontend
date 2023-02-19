@@ -514,7 +514,7 @@ function Dashboard() {
   return (
     <div className="db-main">
       <div className="db-sub">
-        <h1>Connect to Superfluid</h1>
+        <h1>Connect to XStream</h1>
         <p>Connect your wallet or take a look around!</p>
         <div className="db-grid-sub w-[70%] mx-auto my-0">
           <div className="grid-sub min-h-[170px]">
