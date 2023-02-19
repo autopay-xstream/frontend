@@ -110,7 +110,7 @@ export default function Notifications(props) {
                                     <p
                                         className="m-0 text-[15.65px] leading-[17.610811233520508px]"
                                     >
-                                        {data.flowRate ? ethers.utils.formatEther(data?.flowRate) : "XXX"}
+                                        {data.flowRate ? ethers.utils.formatEther(`${data?.flowRate}`) : "XXX"}
                                     </p>
                                 </div>
                             </div>
