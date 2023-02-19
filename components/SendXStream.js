@@ -147,10 +147,11 @@ const SendXStream = () => {
         e.preventDefault();
 
         try {
+            alert(toChain.name, fromChain.name);
 
-            if (toChain == fromChain) {
+            if (toChain.name === fromChain.name) {
                 await sendStreamSameChain()
-            } else {
+            } else if (toChain.name !== fromChain.name) {
                 await sendStreamDifferentChain()
             }
 
