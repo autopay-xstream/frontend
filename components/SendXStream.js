@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ethers } from 'ethers'
 import abi from "../data/abi.json";
@@ -8,6 +8,8 @@ import DatePicker from './DatePicker'
 import DropSelect from './DropSelect'
 import StreamInfo from './StreamInfo'
 import { parseEther } from 'ethers/lib/utils.js';
+import { useAccount } from 'wagmi';
+import { Framework } from "@superfluid-finance/sdk-core";
 
 const options = [
     { name: 'Wade Cooper' },
@@ -32,6 +34,7 @@ const coins = [
 ]
 
 const SendXStream = () => {
+    const { address, isConnected } = useAccount();
 
 
     const [toChain, setToChain] = useState(null);
@@ -40,6 +43,8 @@ const SendXStream = () => {
     const [amount, setAmount] = useState(null);
     const [token, setToken] = useState(null);
     const [endDate, setEndDate] = useState(dayjs(new Date));
+    const [balance, setBalance] = useState(0);
+
 
 
 
@@ -116,15 +121,15 @@ const SendXStream = () => {
             const signer = provider.getSigner()
 
             const contract = new ethers.Contract(contractAdd, abi, signer)
-            const transaction = await contract._sendFlowMessage(
-                "0.07",
-                "1",                   //streamActionType
-                address,               //sender
-                receipient,            //receiver
-                amount,                //flowRate
+            const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
+                "1",                    //streamActionType
+                address,                //sender
+                receipient,             //receiver
+                "1000000",              //flowRate
                 "70000000000000000",    //relayer fees
                 "300",                  //slippage
-                amount                //amount of tokens to send
+                amount,                  //amount of tokens to send
+                { value: parseEther("0.07") }
             )
             await transaction.wait()
         }
@@ -144,7 +149,9 @@ const SendXStream = () => {
         try {
 
             if (toChain == fromChain) {
-                sendStreamSameChain
+                await sendStreamSameChain()
+            } else {
+                await sendStreamDifferentChain()
             }
 
         } catch (error) {
@@ -152,6 +159,43 @@ const SendXStream = () => {
         }
 
     }
+
+    const getBalance = async () => {
+        try {
+            const { ethereum } = window;
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const account = await signer.getAddress();
+
+                const sf = await Framework.create({
+                    chainId: 5,
+                    provider: provider,
+                });
+
+                const DAIxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
+                const DAIx = DAIxContract.address;
+
+                try {
+                    const b = await DAIxContract.balanceOf({
+                        account: account,
+                        providerOrSigner: signer,
+                    });
+                    const bal = ethers.utils.formatEther(b);
+                    // alert(bal);
+                    setBalance(bal);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getBalance();
+    }, [address])
 
 
     return (
@@ -182,7 +226,7 @@ const SendXStream = () => {
                         endDate &&
                         <>
                             <div className='flex items-center gap-4 mt-8 text-2xl px-3'>
-                                <p>Balance:</p> <p className='text-[#96D068]'>1234.659831</p>
+                                <p>Balance:</p> <p className='text-[#96D068]'>{balance}</p>
                             </div>
                             <StreamInfo
                                 toChain={toChain}
