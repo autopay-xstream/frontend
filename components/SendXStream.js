@@ -137,7 +137,7 @@ const SendXStream = () => {
                     flowRate,              //flowRate
                     "70000000000000000",    //relayer fees
                     "300",                  //slippage
-                    amount,                  //amount of tokens to send
+                    amount * 10 ** 18,     //amount of tokens to send
                     { value: parseEther("0.07") }
                 )
                 toast.info("Transaction Submitted...");
