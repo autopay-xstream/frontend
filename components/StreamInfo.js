@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import React from 'react'
 
 const StreamInfo = ({
@@ -20,9 +21,8 @@ const StreamInfo = ({
         const amount = ethers.utils.parseEther(amountInEther.toString());
         const calculatedFlowRate = Math.floor(amount / timeDiff);
 
-        alert(calculatedFlowRate);
 
-        return calculatedFlowRate;
+        return calculatedFlowRate / 10 ** 18;
 
     }
 
@@ -77,7 +77,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm capitalize font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        {calculateFlowRate(amount)} {token.name}
+                        {calculateFlowRate(amount)} {token.name} / second
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">

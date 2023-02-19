@@ -111,7 +111,7 @@ const SendXStream = () => {
         const amount = ethers.utils.parseEther(amountInEther.toString());
         const calculatedFlowRate = Math.floor(amount / timeDiff);
 
-        alert(calculatedFlowRate);
+        // alert(calculatedFlowRate);
 
         return calculatedFlowRate;
 
