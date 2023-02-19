@@ -1,8 +1,16 @@
 import dayjs from 'dayjs'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { ethers } from 'ethers'
+import abi from "../data/abi.json";
+
 import DatePicker from './DatePicker'
 import DropSelect from './DropSelect'
 import StreamInfo from './StreamInfo'
+import { parseEther } from 'ethers/lib/utils.js';
+import { useAccount } from 'wagmi';
+import { Framework } from "@superfluid-finance/sdk-core";
+import { toast } from 'react-toastify';
 
 const options = [
     { name: 'Wade Cooper' },
@@ -27,6 +35,7 @@ const coins = [
 ]
 
 const SendXStream = () => {
+    const { address, isConnected } = useAccount();
 
 
     const [toChain, setToChain] = useState(null);
@@ -34,16 +43,17 @@ const SendXStream = () => {
     const [receipient, setReceipient] = useState(null);
     const [amount, setAmount] = useState(null);
     const [token, setToken] = useState(null);
-    const [endDate, setEndDate] = useState(dayjs('2023-02-11T12:11:54'));
+    const [endDate, setEndDate] = useState(dayjs(new Date));
+    const [balance, setBalance] = useState(0);
 
 
 
-    const sendStreamWithOperator = async () => {
+
+    const sendStreamSameChain = async () => {
+
         const senderAddress = address;
-        const receiverAddress = document.getElementById(
-            "receiverWalletAddress"
-        ).value;
-        const flowRate = document.getElementById("flowRate").value;
+        const receiverAddress = receipient
+        const flowRate = amount
 
         try {
             const { ethereum } = window;
@@ -57,18 +67,19 @@ const SendXStream = () => {
                     provider: provider,
                 });
 
-                const DAIxContract = await sf.loadSuperToken("fDAIx");
-                const DAIx = DAIxContract.address;
+                const TOKENxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
+                const TOKENx = TOKENxContract.address;
 
                 try {
                     const createFlowOperation = sf.cfaV1.createFlowByOperator({
                         sender: senderAddress,
                         receiver: receiverAddress,
                         flowRate: flowRate,
-                        superToken: DAIx,
+                        superToken: TOKENx,
                     });
 
                     console.log("Creating your stream...");
+                    toast.info("Creating your stream...");
 
                     const result = await createFlowOperation.exec(signer);
                     console.log(result);
@@ -78,6 +89,9 @@ const SendXStream = () => {
                     console.log(
                         "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
                     );
+                    toast.error(
+                        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+                    );
                     console.error(error);
                 }
             }
@@ -85,6 +99,112 @@ const SendXStream = () => {
             console.log(error);
         }
     };
+
+    const calculateFlowRate = (amountInEther) => {
+        const now = new Date();
+
+        const endDate = new Date(endDate);
+        const timeDiff = Math.abs(endDate.getTime() - now.getTime());
+        console.log(timeDiff);
+
+
+        const amount = ethers.utils.parseEther(amountInEther.toString());
+        const calculatedFlowRate = Math.floor(amount / timeDiff);
+
+        return calculatedFlowRate;
+
+    }
+
+    const sendStreamDifferentChain = async () => {
+
+        try {
+            if (typeof window.ethereum !== 'undefined') {
+                const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
+
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner()
+
+                const contract = new ethers.Contract(contractAdd, abi, signer)
+                toast.info("Creating your XStream...");
+                const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
+                    "1",                    //streamActionType
+                    address,                //sender
+                    receipient,             //receiver
+                    "1000000",              //flowRate
+                    "70000000000000000",    //relayer fees
+                    "300",                  //slippage
+                    amount,                  //amount of tokens to send
+                    { value: parseEther("0.07") }
+                )
+                toast.info("Transaction Submitted...");
+                await transaction.wait()
+                toast.error("Your stream is xcalling !..");
+            }
+
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        }
+    }
+
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        try {
+            // alert(toChain.name, fromChain.name);
+
+            if (toChain.name === fromChain.name) {
+                await sendStreamSameChain()
+            } else if (toChain.name !== fromChain.name) {
+                await sendStreamDifferentChain()
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+    const getBalance = async () => {
+        try {
+            const { ethereum } = window;
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const account = await signer.getAddress();
+
+                const sf = await Framework.create({
+                    chainId: 5,
+                    provider: provider,
+                });
+
+                const DAIxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
+                const DAIx = DAIxContract.address;
+
+                try {
+                    const b = await DAIxContract.balanceOf({
+                        account: account,
+                        providerOrSigner: signer,
+                    });
+                    const bal = ethers.utils.formatEther(b);
+                    // alert(bal);
+                    setBalance(bal);
+                } catch (error) {
+                    console.error(error);
+                    toast.error(error.message);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getBalance();
+    }, [address])
+
 
     return (
         <div className="main-container w-full h-screen ">
@@ -114,7 +234,7 @@ const SendXStream = () => {
                         endDate &&
                         <>
                             <div className='flex items-center gap-4 mt-8 text-2xl px-3'>
-                                <p>Balance:</p> <p className='text-[#96D068]'>1234.659831</p>
+                                <p>Balance:</p> <p className='text-[#96D068]'>{balance}</p>
                             </div>
                             <StreamInfo
                                 toChain={toChain}
@@ -125,7 +245,7 @@ const SendXStream = () => {
                                 endDate={endDate}
                             />
 
-                            <button className='w-[403px] h-[67px] flex items-center justify-center bg-[#96D068] rounded-[10px] px-[80px] py-[20px] mx-auto mt-10 text-white'>
+                            <button onClick={handleSubmit} className='w-[403px] h-[67px] flex items-center justify-center bg-[#96D068] rounded-[10px] px-[80px] py-[20px] mx-auto mt-10 text-white'>
                                 Confirm
                             </button>
                         </>

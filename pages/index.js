@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import logo from "../image/Logo.png";
 import logowhite from "../image/LogoWhite.png";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 //********************** connect wallet imports
 import "@rainbow-me/rainbowkit/styles.css";
 import {
@@ -12,7 +16,8 @@ import {
   lightTheme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, goerli, polygonMumbai } from "wagmi/chains";
+ 
+import { mainnet, polygon, polygonMumbai, optimism, arbitrum, goerli } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -214,6 +219,17 @@ export default function Home() {
 
 
           </main>
+          <ToastContainer
+            position="top-right"
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
         </RainbowKitProvider>
       </WagmiConfig>
     </>

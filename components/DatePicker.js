@@ -6,7 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 export default function MaterialUIPickers({ selected, setSelected }) {
-    const [value, setValue] = useState(dayjs('2014-08-18T21:11:54'));
+    // const [value, setValue] = useState(dayjs('2014-08-18T21:11:54'));
 
     const handleChange = (newValue) => {
         setSelected(newValue);
