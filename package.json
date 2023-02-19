@@ -18,8 +18,10 @@
     "@mui/system": "^5.4.1",
     "@mui/x-date-pickers": "^5.0.18",
     "@next/font": "13.1.1",
+    "@pushprotocol/restapi": "^0.6.1",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@superfluid-finance/sdk-core": "^0.6.1",
+    "abi-decoder": "^2.4.0",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
     "eslint": "8.30.0",
@@ -35,7 +37,8 @@
     "react-toastify": "^9.1.1",
     "sass": "^1.57.1",
     "urql": "^3.0.3",
-    "wagmi": "^0.9.5"
+    "wagmi": "^0.9.5",
+    "web3": "^1.8.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
