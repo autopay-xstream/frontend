@@ -33,7 +33,6 @@ export default function Home() {
   const { chains, provider } = configureChains(
     [polygon, goerli],
     [
-      alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID }),
       publicProvider(),
     ]
   );

@@ -36,6 +36,56 @@ const SendXStream = () => {
     const [token, setToken] = useState(null);
     const [endDate, setEndDate] = useState(dayjs('2023-02-11T12:11:54'));
 
+
+
+    const sendStreamWithOperator = async () => {
+        const senderAddress = address;
+        const receiverAddress = document.getElementById(
+            "receiverWalletAddress"
+        ).value;
+        const flowRate = document.getElementById("flowRate").value;
+
+        try {
+            const { ethereum } = window;
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const account = await signer.getAddress();
+
+                const sf = await Framework.create({
+                    chainId: 5,
+                    provider: provider,
+                });
+
+                const DAIxContract = await sf.loadSuperToken("fDAIx");
+                const DAIx = DAIxContract.address;
+
+                try {
+                    const createFlowOperation = sf.cfaV1.createFlowByOperator({
+                        sender: senderAddress,
+                        receiver: receiverAddress,
+                        flowRate: flowRate,
+                        superToken: DAIx,
+                    });
+
+                    console.log("Creating your stream...");
+
+                    const result = await createFlowOperation.exec(signer);
+                    console.log(result);
+
+                    console.log(`Congrats - you've just created a money stream!`);
+                } catch (error) {
+                    console.log(
+                        "Hmmm, your transaction threw an error. Make sure that this stream does not already exist, and that you've entered a valid Ethereum address!"
+                    );
+                    console.error(error);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="main-container w-full h-screen ">
             <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full ">

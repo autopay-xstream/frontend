@@ -47,7 +47,7 @@ const SideBar = ({
                     <div className={styles.link_text}>Dashboard</div>
                 </div>
 
-                <div
+                {/* <div
                     className={
                         showSendStream
                             ? `${styles.left_ul_link} ${styles.active}`
@@ -73,7 +73,7 @@ const SideBar = ({
                         </svg>
                     </div>
                     <div className={styles.link_text}>Send Stream</div>
-                </div>
+                </div> */}
                 <div
                     className={
                         showXStream

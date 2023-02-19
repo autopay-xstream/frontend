@@ -21,7 +21,7 @@ function Dashboard() {
   const { address, isConnected } = useAccount();
   // const [loading, setLoading] = useState(false);
   const [dropDown, setDropDown] = useState(true);
-  const [chain, setChain] = useState("all");
+  const [chain, setChain] = useState("goerli");
 
 
   const [dropDownAll, setDropDownAll] = useState(true);
@@ -49,18 +49,17 @@ function Dashboard() {
     "Dec",
   ];
 
+  console.log(chain)
+
 
   const loadData = async () => {
     if (!address) {
       console.log("false");
       return;
     }
-    setOutgoingData([]);
-    setIncomingData([]);
-    setAllData([]);
-
-    const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli`;
-    // const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-${chain}`;
+    
+    // const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai`;
+    const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-${chain}`;
 
     const tokensQuery_outgoing = `
     query {
