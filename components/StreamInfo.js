@@ -8,6 +8,25 @@ const StreamInfo = ({
     token,
     endDate,
 }) => {
+
+    const calculateFlowRate = (amountInEther) => {
+        const now = new Date();
+
+        const endD = new Date(endDate);
+        const timeDiff = Math.abs(endD.getTime() - now.getTime());
+        console.log(timeDiff);
+
+
+        const amount = ethers.utils.parseEther(amountInEther.toString());
+        const calculatedFlowRate = Math.floor(amount / timeDiff);
+
+        alert(calculatedFlowRate);
+
+        return calculatedFlowRate;
+
+    }
+
+
     return (
         <div className='px-6'>
             <div
@@ -58,7 +77,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm capitalize font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        {amount} {token.name}
+                        {calculateFlowRate(amount)} {token.name}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">

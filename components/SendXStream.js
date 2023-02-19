@@ -103,13 +103,15 @@ const SendXStream = () => {
     const calculateFlowRate = (amountInEther) => {
         const now = new Date();
 
-        const endDate = new Date(endDate);
-        const timeDiff = Math.abs(endDate.getTime() - now.getTime());
+        const endD = new Date(endDate);
+        const timeDiff = Math.abs(endD.getTime() - now.getTime());
         console.log(timeDiff);
 
 
         const amount = ethers.utils.parseEther(amountInEther.toString());
         const calculatedFlowRate = Math.floor(amount / timeDiff);
+
+        alert(calculatedFlowRate);
 
         return calculatedFlowRate;
 
@@ -121,6 +123,8 @@ const SendXStream = () => {
             if (typeof window.ethereum !== 'undefined') {
                 const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
 
+                const flowRate = calculateFlowRate(amount);
+
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
                 const signer = provider.getSigner()
 
@@ -130,7 +134,7 @@ const SendXStream = () => {
                     "1",                    //streamActionType
                     address,                //sender
                     receipient,             //receiver
-                    "1000000",              //flowRate
+                    flowRate,              //flowRate
                     "70000000000000000",    //relayer fees
                     "300",                  //slippage
                     amount,                  //amount of tokens to send
