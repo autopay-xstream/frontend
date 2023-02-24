@@ -676,7 +676,7 @@ function Dashboard() {
             </div>
           </div>
           <div className="grid-sub min-h-[120px]">
-            <span className="grid-sub-title">Modify and Cancle Streams</span>
+            <span className="grid-sub-title">Modify and Cancel Streams</span>
             <span className="grid-sub-info">
               Update Flow Rate and Delete a Stream using Operator Control
             </span>
