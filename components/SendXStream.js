@@ -154,6 +154,21 @@ const SendXStream = () => {
     e.preventDefault();
 
     try {
+      //0xd67D11499679CBcd33c0c2a7B792FC3d6aE628e9
+      const ss = new Date(endDate.$d);
+      const dd = new Date();
+      console.log(ss < dd);
+      if (new Date(endDate.$d).getTime() < new Date().getTime()) {
+        alert("Invalid date time");
+        return;
+      }
+      if (
+        new Date(endDate.$d).getDate() === new Date().getDate() &&
+        new Date(endDate.$d).getHours() - new Date().getHours() < 6
+      ) {
+        alert("Select atleast 6 hours");
+        return;
+      }
       // alert(toChain.name, fromChain.name);
 
       if (toChain.name === fromChain.name) {
