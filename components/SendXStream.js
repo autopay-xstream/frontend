@@ -154,7 +154,6 @@ const SendXStream = () => {
     e.preventDefault();
 
     try {
-      //0xd67D11499679CBcd33c0c2a7B792FC3d6aE628e9
       const ss = new Date(endDate.$d);
       const dd = new Date();
       console.log(ss < dd);
