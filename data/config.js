@@ -25,7 +25,7 @@ export const bridgeDataConfig = {
     //mumbai testnet
     erc20TokenAddress: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
     superTokenAddress: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
-    xstreamContractAddress: "0xb0711cDc6Bf7647D2712E095b877172bB269a90B",
+    xstreamContractAddress: "0xC73322204c0F80Ae699BeFFbDffe6ba8096de651",
     acceptedTokens: [
         // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
         // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },

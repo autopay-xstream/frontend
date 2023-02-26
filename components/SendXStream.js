@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import originAbi from "../data/originAbi.json";
+import destinationAbi from "../data/destinationAbi.json";
 import DatePicker from "./DatePicker";
 import DropSelect from "./DropSelect";
 import StreamInfo from "./StreamInfo";
@@ -143,9 +144,10 @@ const SendXStream = () => {
         }
 
         const flowRate = calculateFlowRate(amount);
+        const contractAbi = chain?.id == 5 ? originAbi : destinationAbi;
         const originContract = new ethers.Contract(
           bridgeDataConfig[chain.id].xstreamContractAddress,
-          originAbi,
+          contractAbi,
           signer
         );
 

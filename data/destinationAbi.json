@@ -289,11 +289,6 @@
         },
         {
           "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
           "name": "receiver",
           "type": "address"
         },
@@ -316,6 +311,11 @@
           "internalType": "uint256",
           "name": "cost",
           "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "bridgingToken",
+          "type": "address"
         }
       ],
       "name": "_sendFlowMessage",
