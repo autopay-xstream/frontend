@@ -25,10 +25,10 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Dashboard from "../components/Dashboard";
 import SendStream from "../components/SendStream";
 import Image from "next/image";
-import SideBar from "@/components/SideBar";
-import SendXStream from "@/components/SendXStream";
-import Stream from "@/components/Stream";
-import Notifications from "@/components/Notifications";
+import SideBar from "../components/SideBar";
+import SendXStream from "../components/SendXStream";
+import Stream from "../components/Stream";
+import Notifications from "../components/Notifications";
 
 //******************************************* */
 

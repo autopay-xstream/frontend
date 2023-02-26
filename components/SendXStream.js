@@ -11,19 +11,13 @@ import { parseEther } from 'ethers/lib/utils.js';
 import { useAccount } from 'wagmi';
 import { Framework } from "@superfluid-finance/sdk-core";
 import { toast } from 'react-toastify';
-
-const options = [
-    { name: 'Wade Cooper' },
-    { name: 'Arlene Mccoy' },
-    { name: 'Devon Webb' },
-    { name: 'Tom Cook' },
-    { name: 'Tanya Fox' },
-    { name: 'Hellen Schmidt' },
-]
+import TestTokenAbi from '../data/TestTokenAbi.json';
+// import { create } from "@connext/sdk";
+// import { signer, sdkConfig } from "../services/connextConfig.js";
 
 const chains = [
     { name: "goerli", id: "5" },
-    { name: "polygon", id: "80001" }
+    { name: "mumbai", id: "80001" }
 ]
 
 const coins = [
@@ -37,7 +31,6 @@ const coins = [
 const SendXStream = () => {
     const { address, isConnected } = useAccount();
 
-
     const [toChain, setToChain] = useState(null);
     const [fromChain, setFromChain] = useState(null);
     const [receipient, setReceipient] = useState(null);
@@ -45,8 +38,6 @@ const SendXStream = () => {
     const [token, setToken] = useState(null);
     const [endDate, setEndDate] = useState(dayjs(new Date));
     const [balance, setBalance] = useState(0);
-
-
 
 
     const sendStreamSameChain = async () => {
@@ -66,6 +57,8 @@ const SendXStream = () => {
                     chainId: 5,
                     provider: provider,
                 });
+
+                
 
                 const TOKENxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
                 const TOKENx = TOKENxContract.address;
@@ -118,31 +111,78 @@ const SendXStream = () => {
     }
 
     const sendStreamDifferentChain = async () => {
+        
 
         try {
             if (typeof window.ethereum !== 'undefined') {
-                const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
-
-                const flowRate = calculateFlowRate(amount);
-
+                const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB"; // origin contract address
+                const TESTToken = "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1"; // TEST token on Goerli
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
                 const signer = provider.getSigner()
 
-                const contract = new ethers.Contract(contractAdd, abi, signer)
-                toast.info("Creating your XStream...");
-                const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
-                    "1",                    //streamActionType
-                    address,                //sender
-                    receipient,             //receiver
-                    flowRate,              //flowRate
-                    "70000000000000000",    //relayer fees
-                    "300",                  //slippage
-                    parseEther(amount),     //amount of tokens to send
-                    { value: parseEther("0.07") }
+                const TESTContract = new ethers.Contract(
+                    TESTToken,
+                    TestTokenAbi,
+                    signer
                 )
-                toast.info("Transaction Submitted...");
-                await transaction.wait()
-                toast.error("Your stream is xcalling !..");
+
+                // const sdkConfig = {
+                //     signerAddress: signer.getAddress(),
+                //     // Use `mainnet` when you're ready...
+                //     network: "testnet",
+                //     // Add more chains here! Use mainnet domains if `network: mainnet`.
+                //     // This information can be found at https://docs.connext.network/resources/supported-chains
+                //     chains: {
+                //       1735353714: { // Goerli domain ID
+                //         providers: ["https://rpc.ankr.com/eth_goerli"],
+                //       },
+                //       1735356532: { // Optimism-Goerli domain ID
+                //         providers: ["https://goerli.optimism.io"],
+                //       },
+                //     },
+                //   };
+                
+                // const {sdkBase} = await create(sdkConfig);
+
+                // const relayerFee = (
+                //     await sdkBase.estimateRelayerFee({
+                //         1735353714: {}, // origin domain
+                //         9991: {} // destination domain
+                //     })
+                // ).toString();
+
+                console.log("The estimated relayer fee ", relayerFee);
+
+                try {
+                    console.log("Approving TEST");
+                    let txn = await TESTContract.approve(
+                        contractAdd,
+                        parseEther(amount)
+                    )
+                    await txn.wait();
+                    console.log("TEST tokens are approved");
+                } catch (error) {
+                    console.log("Error in approving TEST tokens ", error);
+                    return ;
+                }
+
+                const flowRate = calculateFlowRate(amount);
+                const contract = new ethers.Contract(contractAdd, abi, signer);
+
+                toast.info("Creating your XStream...");
+                // const transaction = await contract._sendFlowMessage(                //_sendFlowMessage
+                //     "1",                    //streamActionType
+                //     address,                //sender
+                //     receipient,             //receiver
+                //     flowRate,              //flowRate
+                //     "70000000000000000",    //relayer fees
+                //     "300",                  //slippage
+                //     parseEther(amount),     //amount of tokens to send
+                //     { value: parseEther("0.07") }
+                // )
+                // toast.info("Transaction Submitted...");
+                // await transaction.wait()
+                // toast.error("Your stream is xcalling !..");
             }
 
         } catch (error) {

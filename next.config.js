@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+module.exports = {
+  webpack5: true,
+  webpack: config => {
+    config.experiments.topLevelAwait = true;
+    config.resolve.fallback = {
+      fs: false,
+      path: false,
+      os: false
+    };
 
-module.exports = nextConfig
+    return config;
+  }
+};
