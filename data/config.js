@@ -3,7 +3,7 @@ export const bridgeDataConfig = {
     // goerli testnet
     erc20TokenAddress: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", // TEST
     superTokenAddress: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TESTx
-    xstreamContractAddress: "0xB0Ee7045410AD4AA0854FCED0638b9Dcf63053dE",
+    xstreamContractAddress: "0x4092f3B5480aD0988F159557508A207966958cd9",
     acceptedTokens: [
       // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
       // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },
@@ -25,7 +25,7 @@ export const bridgeDataConfig = {
     //mumbai testnet
     erc20TokenAddress: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
     superTokenAddress: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
-    xstreamContractAddress: "0x1D78ba0422131F9AB07A79E86713430923Ba2691",
+    xstreamContractAddress: "0xb0711cDc6Bf7647D2712E095b877172bB269a90B",
     acceptedTokens: [
         // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
         // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },

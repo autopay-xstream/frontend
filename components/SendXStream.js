@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import abi from "../data/abi.json";
+import originAbi from "../data/originAbi.json";
 import DatePicker from "./DatePicker";
 import DropSelect from "./DropSelect";
 import StreamInfo from "./StreamInfo";
@@ -119,7 +119,6 @@ const SendXStream = () => {
   const sendStreamDifferentChain = async () => {
     try {
       if (typeof window.ethereum !== "undefined") {
-        console.log("Current chain data", chain);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
 
@@ -133,39 +132,36 @@ const SendXStream = () => {
         );
 
         try {
-          console.log("Approving TEST");
           let txn = await tokenContract.approve(
             bridgeDataConfig[chain.id].xstreamContractAddress,
             parseEther(amount)
           );
           await txn.wait();
-          console.log("TEST tokens are approved");
         } catch (error) {
-          console.log("Error in approving TEST tokens ", error);
+          console.log("Error in approving tokens ", error);
           return;
         }
 
         const flowRate = calculateFlowRate(amount);
         const originContract = new ethers.Contract(
           bridgeDataConfig[chain.id].xstreamContractAddress,
-          abi,
+          originAbi,
           signer
         );
 
-        // toast.info("Creating your XStream...");
-        // const transaction = await originContract._sendFlowMessage(                //_sendFlowMessage
-        //     "1",                    //streamActionType
-        //     address,                //sender
-        //     receipient,             //receiver
-        //     flowRate,              //flowRate
-        //     "70000000000000000",    //relayer fees
-        //     "300",                  //slippage
-        //     parseEther(amount),     //amount of tokens to send
-        //     { value: parseEther("0.07") }
-        // )
-        // toast.info("Transaction Submitted...");
-        // await transaction.wait()
-        // toast.error("Your stream is xcalling !..");
+        toast.info("Creating your XStream...");
+        const transaction = await originContract._sendFlowMessage(                //_sendFlowMessage
+            "1",                    //streamActionType
+            receipient,             //receiver
+            flowRate,              //flowRate
+            "70000000000000000",    //relayer fees
+            "300",                  //slippage
+            parseEther(amount),     //amount of tokens to send
+            token?.address,
+            { value: parseEther("0.07") }
+        )
+        await transaction.wait();
+        toast.info("Transaction Submitted...");
       }
     } catch (error) {
       console.error(error);
