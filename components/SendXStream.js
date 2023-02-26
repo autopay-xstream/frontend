@@ -44,8 +44,10 @@ const SendXStream = () => {
     if (chain?.id != fromChain?.id && fromChain?.id) {
         console.log("switching networks");
         switchOriginNetwork(fromChain?.id);
+        setToken(null);
+        setBalance(null);
     }
-  }, [fromChain?.id])
+  }, [fromChain?.id]);
 
   const sendStreamSameChain = async () => {
     const senderAddress = address;
@@ -207,7 +209,7 @@ const SendXStream = () => {
     if (token?.address) {
         getBalance();
     }
-  }, [token?.address]);
+  }, [token?.address, chain?.id]);
 
   return (
     <div className="main-container w-full h-screen ">
