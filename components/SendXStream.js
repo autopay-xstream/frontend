@@ -10,7 +10,7 @@ import { useAccount } from "wagmi";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { toast } from "react-toastify";
 import TestTokenAbi from "../data/TestTokenAbi.json";
-import { getNetwork, switchNetwork } from "@wagmi/core";
+import { getNetwork, switchNetwork, fetchBalance } from "@wagmi/core";
 import { bridgeDataConfig } from "@/data/config";
 
 // import { create } from "@connext/sdk";
@@ -19,14 +19,6 @@ import { bridgeDataConfig } from "@/data/config";
 const chainList = [
   { name: "goerli", id: 5 },
   { name: "mumbai", id: 80001 },    
-];
-
-const coins = [
-  // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
-  // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },
-  // { id: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844", name: 'DAI' },
-  // { id: "0xe802376580c10fe23f027e1e19ed9d54d4c9311e", name: 'USDT' }
-  { id: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", name: "TESTx" },
 ];
 
 const SendXStream = () => {
@@ -195,36 +187,16 @@ const SendXStream = () => {
     }
   };
 
-  const getBalance = async () => {
+  const getBalance = async () => { // show the selected token balance
     try {
       const { ethereum } = window;
       if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const account = await signer.getAddress();
-
-        const sf = await Framework.create({
-          chainId: 5,
-          provider: provider,
+        const tokenBalance = await fetchBalance({
+            address: address,
+            token: token?.address
         });
-
-        const DAIxContract = await sf.loadSuperToken(
-          "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0"
-        );
-        const DAIx = DAIxContract.address;
-
-        try {
-          const b = await DAIxContract.balanceOf({
-            account: account,
-            providerOrSigner: signer,
-          });
-          const bal = ethers.utils.formatEther(b);
-          // alert(bal);
-          setBalance(bal);
-        } catch (error) {
-          console.error(error);
-          toast.error(error.message);
-        }
+        console.log("the current selected tokenbalance is ", tokenBalance);
+        setBalance(tokenBalance.formatted);
       }
     } catch (error) {
       console.log(error);
@@ -232,8 +204,10 @@ const SendXStream = () => {
   };
 
   useEffect(() => {
-    getBalance();
-  }, [address]);
+    if (token?.address) {
+        getBalance();
+    }
+  }, [token?.address]);
 
   return (
     <div className="main-container w-full h-screen ">
@@ -264,7 +238,7 @@ const SendXStream = () => {
             <DropSelect
               selected={token}
               setSelected={setToken}
-              options={coins}
+              options={bridgeDataConfig[chain?.id].acceptedTokens}
               placeholder={"Select a token"}
             />
             <DatePicker selected={endDate} setSelected={setEndDate} />
@@ -281,7 +255,7 @@ const SendXStream = () => {
           {toChain && fromChain && receipient && amount && token && endDate && (
             <>
               <div className="flex items-center gap-4 mt-8 text-2xl px-3">
-                <p>Balance:</p> <p className="text-[#96D068]">{balance}</p>
+                <p>{`${token.name} Balance`}:</p> <p className="text-[#96D068]">{balance}</p>
               </div>
               <StreamInfo
                 toChain={toChain}
