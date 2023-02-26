@@ -127,7 +127,7 @@ const SendXStream = () => {
 
         // currently on Goerli Testnet
         tokenContract = new ethers.Contract(
-          bridgeDataConfig[chain?.id].erc20TokenAddress,
+          token?.address,
           TestTokenAbi,
           signer
         );
