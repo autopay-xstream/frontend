@@ -7,9 +7,10 @@ export default function DropSelect({
   placeholder,
   selected,
   setSelected,
+  className,
 }) {
   return (
-    <div className="w-full">
+    <div className={"w-full"}>
       <Listbox
         value={selected}
         onChange={(value) => {

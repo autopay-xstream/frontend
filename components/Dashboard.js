@@ -323,7 +323,7 @@ function Dashboard() {
                               <img
                                 alt="TESTx token icon"
                                 src="https://media.licdn.com/dms/image/C4D0BAQFoACmGKRS9nQ/company-logo_200_200/0/1617268768651?e=2147483647&v=beta&t=_-R-9_LFchamNxvo6Z9KS8ha9W2f1MRmb6OTlUUR3yE"
-                                class="MuiAvatar-img avatar-token"
+                                className="MuiAvatar-img avatar-token"
                               ></img>
                             </div>
                           </div>

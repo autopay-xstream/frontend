@@ -12,6 +12,7 @@ import { useAccount } from "wagmi";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { toast } from "react-toastify";
 import { ConnextIcon, GoerliIcon, PolygonIcon } from "./icons";
+import FlowRateModal from "./FLowrateModal";
 
 const options = [
   { name: "Wade Cooper" },
@@ -33,6 +34,11 @@ const coins = [
   // { id: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844", name: 'DAI' },
   // { id: "0xe802376580c10fe23f027e1e19ed9d54d4c9311e", name: 'USDT' }
   {
+    id: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1",
+    name: "TEST",
+    icon: <ConnextIcon />,
+  },
+  {
     id: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0",
     name: "TESTx",
     icon: <ConnextIcon />,
@@ -41,7 +47,8 @@ const coins = [
 
 const SendXStream = () => {
   const { address, isConnected } = useAccount();
-
+  const [selectedType, setSelectedType] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const [toChain, setToChain] = useState(null);
   const [fromChain, setFromChain] = useState(null);
   const [receipient, setReceipient] = useState(null);
@@ -222,6 +229,14 @@ const SendXStream = () => {
 
   return (
     <div className="main-container w-full h-screen ">
+      <FlowRateModal
+        isOpen={isOpen}
+        selectedType={selectedType}
+        setAmount={setAmount}
+        setIsOpen={() => {
+          setIsOpen(!isOpen);
+        }}
+      />
       <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full ">
         <form className="p-10">
           <div className="flex items-center justify-between w-full gap-10 ">
@@ -253,11 +268,23 @@ const SendXStream = () => {
               placeholder={"Select a token"}
             />
             <DatePicker selected={endDate} setSelected={setEndDate} />
-            <input
-              className="rounded-lg w-full mt-9 px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
-              placeholder="Select token value or flow rate"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+            <DropSelect
+              selected={selectedType}
+              setSelected={(value) => {
+                setSelectedType(value);
+                setIsOpen(!isOpen);
+              }}
+              options={[
+                {
+                  id: 1,
+                  name: "Select token value",
+                },
+                {
+                  id: 2,
+                  name: "Select token flow rate",
+                },
+              ]}
+              placeholder={"Select token value or flow rate"}
             />
           </div>
 
