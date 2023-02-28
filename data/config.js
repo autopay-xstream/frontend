@@ -3,12 +3,9 @@ export const bridgeDataConfig = {
     // goerli testnet
     erc20TokenAddress: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", // TEST
     superTokenAddress: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TESTx
-    xstreamContractAddress: "0x4092f3B5480aD0988F159557508A207966958cd9",
+    xstreamContractAddress: "0x53B61f49b189dD81AeB22F4Dfe1c09E6EC7Cb305", // contract deployed on Goerli
+    connextDomainId: 1735353714,
     acceptedTokens: [
-      // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
-      // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },
-      // { id: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844", name: 'DAI' },
-      // { id: "0xe802376580c10fe23f027e1e19ed9d54d4c9311e", name: 'USDT' }
       {
         address: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0",
         name: "TESTx",
@@ -25,12 +22,9 @@ export const bridgeDataConfig = {
     //mumbai testnet
     erc20TokenAddress: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
     superTokenAddress: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
-    xstreamContractAddress: "0xb0711cDc6Bf7647D2712E095b877172bB269a90B",
+    xstreamContractAddress: "0xfE079E7cF55e49Fa13011E4Eff9C22DBad27934A", // contract deployed on Mumbai testnet
+    connextDomainId: 9991,
     acceptedTokens: [
-        // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
-        // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },
-        // { id: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844", name: 'DAI' },
-        // { id: "0xe802376580c10fe23f027e1e19ed9d54d4c9311e", name: 'USDT' }
         {
           address: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
           name: "TESTx",
@@ -43,4 +37,30 @@ export const bridgeDataConfig = {
         },
       ],
   },
+  100: { // Gnosis Mainnet Chain
+    erc20TokenAddress: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83", // USDC on gnosis
+    superTokenAddress: "0x1234756ccf0660E866305289267211823Ae86eEc", // USDCx on gnosis
+    xstreamContractAddress: "", // Contract deployed on gnosis
+    connextDomainId: 6778479,
+    acceptedTokens: [
+      {
+        address: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
+        name: "USDC",
+        type: "erc20"
+      }
+    ]
+  },
+  137: { // Polygon Mainnet
+    erc20TokenAddress: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", // USDC on Polygon
+    superTokenAddress: "0xCAa7349CEA390F89641fe306D93591f87595dc1F", // USDCx on Polygon
+    xstreamContractAddress: "", // Contract deployed on Polygon
+    connextDomainId: 1886350457,
+    acceptedTokens: [
+      {
+        address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+        name: "USDC",
+        type: "erc20"
+      }
+    ]
+  }
 };
