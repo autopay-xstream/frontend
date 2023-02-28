@@ -1,9 +1,8 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-
 import { ethers } from "ethers";
-import abi from "../data/TestTokenAbi.json";
-
+import originAbi from "../data/originAbi.json";
+import destinationAbi from "../data/destinationAbi.json";
 import DatePicker from "./DatePicker";
 import DropSelect from "./DropSelect";
 import StreamInfo from "./StreamInfo";
@@ -11,21 +10,13 @@ import { parseEther } from "ethers/lib/utils.js";
 import { useAccount } from "wagmi";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { toast } from "react-toastify";
-import { ConnextIcon, GoerliIcon, PolygonIcon } from "./icons";
-import FlowRateModal from "./FLowrateModal";
 
-const options = [
-  { name: "Wade Cooper" },
-  { name: "Arlene Mccoy" },
-  { name: "Devon Webb" },
-  { name: "Tom Cook" },
-  { name: "Tanya Fox" },
-  { name: "Hellen Schmidt" },
-];
+// import { create } from "@connext/sdk";
+// import { signer, sdkConfig } from "../services/connextConfig.js";
 
 const chains = [
-  { name: "goerli", id: "5", icon: <GoerliIcon /> },
-  { name: "polygon", id: "80001", icon: <PolygonIcon /> },
+  { name: "goerli", id: "5" },
+  { name: "polygon", id: "80001" },
 ];
 
 const coins = [
@@ -33,22 +24,12 @@ const coins = [
   // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },
   // { id: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844", name: 'DAI' },
   // { id: "0xe802376580c10fe23f027e1e19ed9d54d4c9311e", name: 'USDT' }
-  {
-    id: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1",
-    name: "TEST",
-    icon: <ConnextIcon />,
-  },
-  {
-    id: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0",
-    name: "TESTx",
-    icon: <ConnextIcon />,
-  },
+  { id: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", name: "TESTx" },
 ];
 
 const SendXStream = () => {
   const { address, isConnected } = useAccount();
-  const [selectedType, setSelectedType] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+
   const [toChain, setToChain] = useState(null);
   const [fromChain, setFromChain] = useState(null);
   const [receipient, setReceipient] = useState(null);
@@ -127,29 +108,53 @@ const SendXStream = () => {
   const sendStreamDifferentChain = async () => {
     try {
       if (typeof window.ethereum !== "undefined") {
-        const contractAdd = "0x71E7F4E696d35F0e19eb0E561AA66881443DE1FB";
-
-        const flowRate = calculateFlowRate(amount);
-
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
 
-        const contract = new ethers.Contract(contractAdd, abi, signer);
+        let tokenContract;
+
+        // currently on Goerli Testnet
+        tokenContract = new ethers.Contract(
+          token?.address,
+          TestTokenAbi,
+          signer
+        );
+
+        try {
+          let txn = await tokenContract.approve(
+            bridgeDataConfig[chain.id].xstreamContractAddress,
+            parseEther(amount)
+          );
+          await txn.wait();
+        } catch (error) {
+          console.log("Error in approving tokens ", error);
+          return;
+        }
+
+        const flowRate = calculateFlowRate(amount);
+        const contractAbi = chain?.id == 5 ? originAbi : destinationAbi;
+        const originContract = new ethers.Contract(
+          bridgeDataConfig[chain.id].xstreamContractAddress,
+          contractAbi,
+          signer
+        );
+
         toast.info("Creating your XStream...");
-        const transaction = await contract._sendFlowMessage(
+        const transaction = await originContract._sendFlowMessage(
           //_sendFlowMessage
           "1", //streamActionType
-          address, //sender
           receipient, //receiver
           flowRate, //flowRate
           "70000000000000000", //relayer fees
           "300", //slippage
           parseEther(amount), //amount of tokens to send
+          token?.address,
+          bridgeDataConfig[toChain?.id].xstreamContractAddress,
+          bridgeDataConfig[toChain?.id].connextDomainId,
           { value: parseEther("0.07") }
         );
-        toast.info("Transaction Submitted...");
         await transaction.wait();
-        toast.error("Your stream is xcalling !..");
+        toast.info("Transaction Submitted...");
       }
     } catch (error) {
       console.error(error);
@@ -229,14 +234,6 @@ const SendXStream = () => {
 
   return (
     <div className="main-container w-full h-screen ">
-      <FlowRateModal
-        isOpen={isOpen}
-        selectedType={selectedType}
-        setAmount={setAmount}
-        setIsOpen={() => {
-          setIsOpen(!isOpen);
-        }}
-      />
       <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full ">
         <form className="p-10">
           <div className="flex items-center justify-between w-full gap-10 ">
@@ -259,7 +256,6 @@ const SendXStream = () => {
             className="rounded-lg mt-8 w-full px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
             placeholder="Enter  receipient address or ENS"
           />
-
           <div className="flex items-center justify-between gap-10">
             <DropSelect
               selected={token}
@@ -268,28 +264,14 @@ const SendXStream = () => {
               placeholder={"Select a token"}
             />
             <DatePicker selected={endDate} setSelected={setEndDate} />
-            <DropSelect
-              selected={selectedType}
-              setSelected={(value) => {
-                setSelectedType(value);
-                setIsOpen(!isOpen);
-              }}
-              options={[
-                {
-                  id: 1,
-                  name: "Select token value",
-                },
-                {
-                  id: 2,
-                  name: "Select token flow rate",
-                },
-              ]}
-              placeholder={"Select token value or flow rate"}
+            <input
+              className="rounded-lg w-full mt-9 px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
+              placeholder="Select token value or flow rate"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
             />
           </div>
-
           <div className="w-full h-[2px] bg-gray-300 mt-12" />
-
           {toChain && fromChain && receipient && amount && token && endDate && (
             <>
               <div className="flex items-center gap-4 mt-8 text-2xl px-3">
