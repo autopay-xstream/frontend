@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import logo from "../image/Logo.png";
 import logowhite from "../image/LogoWhite.png";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //********************** connect wallet imports
 import "@rainbow-me/rainbowkit/styles.css";
@@ -16,8 +15,16 @@ import {
   lightTheme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
- 
-import { mainnet, polygon, polygonMumbai, optimism, arbitrum, goerli } from "wagmi/chains";
+
+import {
+  mainnet,
+  polygon,
+  polygonMumbai,
+  optimism,
+  arbitrum,
+  goerli,
+  gnosis,
+} from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -35,7 +42,9 @@ import Notifications from "../components/Notifications";
 const Web3 = require("web3");
 const abiDecoder = require("abi-decoder");
 
-const web3 = new Web3("wss://polygon-mumbai.g.alchemy.com/v2/qac25z9Oep-F5rDu38yVfQHf5LjdJoGL");
+const web3 = new Web3(
+  "wss://polygon-mumbai.g.alchemy.com/v2/qac25z9Oep-F5rDu38yVfQHf5LjdJoGL"
+);
 
 const destinationAbi = require("../data/destinationAbi.json");
 const destinationAddress = ["0xA73Bf7955fAae6Da0561F25bEA45F3d2D2119997"];
@@ -45,13 +54,11 @@ export default function Home() {
 
   const { chains, provider } = configureChains(
     [polygonMumbai, goerli],
-    [
-      publicProvider(),
-    ]
+    [publicProvider()]
   );
 
   const { connectors } = getDefaultWallets({
-    appName: "My RainbowKit App",
+    appName: "Autopay",
     chains,
   });
 
@@ -66,60 +73,65 @@ export default function Home() {
   useEffect(() => {
     const run = async () => {
       abiDecoder.addABI(destinationAbi);
-      const options = { address: destinationAddress }
-      var destinationEvents = web3.eth.subscribe('logs', options, function (error, result) {
-        if (!error)
-          console.log("Got result");
-        else
-          console.log(error);
-      }).on("data", async function (log) {
-        const decodedLogs = abiDecoder.decodeLogs([log]);
-        let eventName = decodedLogs[0]?.name;
-        let destinationAddress = decodedLogs[0]?.address;
-        let destinationLogs = decodedLogs[0].events
-        const eventNotification = { eventName: eventName, contractAddress: destinationAddress, events: destinationLogs }
+      const options = { address: destinationAddress };
+      var destinationEvents = web3.eth
+        .subscribe("logs", options, function (error, result) {
+          if (!error) console.log("Got result");
+          else console.log(error);
+        })
+        .on("data", async function (log) {
+          const decodedLogs = abiDecoder.decodeLogs([log]);
+          let eventName = decodedLogs[0]?.name;
+          let destinationAddress = decodedLogs[0]?.address;
+          let destinationLogs = decodedLogs[0].events;
+          const eventNotification = {
+            eventName: eventName,
+            contractAddress: destinationAddress,
+            events: destinationLogs,
+          };
 
-        console.log("Decoded Logs ", eventNotification);
-        let notificationPayload = {};
-        if (eventName == "StreamStart") {
-          // show a start stream event
-          notificationPayload = {
-            status: "initialise",
-            txnHash: "",
-            receipient: eventNotification?.events[1]?.value,
-            flowRate: eventNotification?.events[2]?.value,
-            amount: eventNotification?.events[3]?.value
+          console.log("Decoded Logs ", eventNotification);
+          let notificationPayload = {};
+          if (eventName == "StreamStart") {
+            // show a start stream event
+            notificationPayload = {
+              status: "initialise",
+              txnHash: "",
+              receipient: eventNotification?.events[1]?.value,
+              flowRate: eventNotification?.events[2]?.value,
+              amount: eventNotification?.events[3]?.value,
+            };
+            console.log("Cookie data ", notificationPayload);
+          } else if (eventName == "StreamUpdate") {
+            notificationPayload = {
+              status: "Updated",
+              txnHash: "",
+              receipient: eventNotification?.events[1]?.value,
+              flowRate: eventNotification?.events[2]?.value,
+              amount: eventNotification?.events[3]?.value,
+            };
+            // show a update stream event
+          } else {
+            notificationPayload = {
+              status: "Closed",
+              txnHash: "",
+              receipient: eventNotification?.events[1]?.value,
+              flowRate: eventNotification?.events[2]?.value,
+              amount: eventNotification?.events[3]?.value,
+            };
+            // show a delete stream event
           }
-          console.log("Cookie data ", notificationPayload);
-        } else if (eventName == "StreamUpdate") {
-          notificationPayload = {
-            status: "Updated",
-            txnHash: "",
-            receipient: eventNotification?.events[1]?.value,
-            flowRate: eventNotification?.events[2]?.value,
-            amount: eventNotification?.events[3]?.value
-          }
-          // show a update stream event
-        } else {
-          notificationPayload = {
-            status: "Closed",
-            txnHash: "",
-            receipient: eventNotification?.events[1]?.value,
-            flowRate: eventNotification?.events[2]?.value,
-            amount: eventNotification?.events[3]?.value
-          }
-          // show a delete stream event
-        }
-        setStreamNotifications([notificationPayload, ...streamNotifications]);
+          setStreamNotifications([notificationPayload, ...streamNotifications]);
 
-        // before: was using contractAddress as the channel id
-        // after: channel id is hardcoded now
-      }).on("changed", function (log) {
-        console.log("Changed");
-      });
-    }
+          // before: was using contractAddress as the channel id
+          // after: channel id is hardcoded now
+        })
+        .on("changed", function (log) {
+          console.log("Changed");
+        });
+    };
     run();
-  }, [])
+  }, []);
 
   //********************** connect wallet imports
 
@@ -132,7 +144,6 @@ export default function Home() {
   useEffect(() => {
     setDashboard(true);
   }, []);
-
 
   return (
     <>
@@ -198,7 +209,6 @@ export default function Home() {
                 showStream={showStream}
               />
 
-
               {/* ****************main right panel************** */}
               <div className="w-full bg-[#F4F4F4]">
                 <div className="inside-main-right">
@@ -208,16 +218,12 @@ export default function Home() {
                     <SendStream />
                   ) : showXStream ? (
                     <SendXStream />
-                  ) : showNotification ?
+                  ) : showNotification ? (
                     <Notifications notifications={streamNotifications} />
-                    : null
-                  }
-
+                  ) : null}
                 </div>
               </div>
             </div>
-
-
           </main>
           <ToastContainer
             position="top-right"
