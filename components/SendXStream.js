@@ -160,6 +160,8 @@ const SendXStream = () => {
             "300",                  //slippage
             parseEther(amount),     //amount of tokens to send
             token?.address,
+            bridgeDataConfig[toChain?.id].xstreamContractAddress,
+            bridgeDataConfig[toChain?.id].connextDomainId,
             { value: parseEther("0.07") }
         )
         await transaction.wait();

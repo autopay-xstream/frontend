@@ -5,11 +5,6 @@
     "type": "constructor"
   },
   {
-    "inputs": [],
-    "name": "Done",
-    "type": "error"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -32,37 +27,6 @@
       }
     ],
     "name": "FlowEndMessage",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "int96",
-        "name": "flowRate",
-        "type": "int96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "FlowStartMessage",
     "type": "event"
   },
   {
@@ -113,6 +77,37 @@
       }
     ],
     "name": "RebalanceMessageSent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "int96",
+        "name": "flowRate",
+        "type": "int96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "SentFlowMessage",
     "type": "event"
   },
   {
@@ -262,6 +257,16 @@
         "internalType": "address",
         "name": "bridgingToken",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "destinationContract",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "destinationDomain",
+        "type": "uint32"
       }
     ],
     "name": "_sendFlowMessage",
@@ -693,7 +698,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "destinationDomain",
+        "type": "uint32"
+      },
+      {
+        "internalType": "address",
+        "name": "destinationContract",
+        "type": "address"
+      }
+    ],
     "name": "rebalance",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -741,19 +757,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_destination",
-        "type": "address"
-      }
-    ],
-    "name": "setDomain",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
