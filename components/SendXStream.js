@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 
 import { ethers } from "ethers";
-import abi from "../data/abi.json";
+import abi from "../data/TestTokenAbi.json";
 
 import DatePicker from "./DatePicker";
 import DropSelect from "./DropSelect";
