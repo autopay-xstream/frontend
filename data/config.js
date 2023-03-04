@@ -3,7 +3,7 @@ export const bridgeDataConfig = {
     // goerli testnet
     erc20TokenAddress: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", // TEST
     superTokenAddress: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TESTx
-    xstreamContractAddress: "0x53B61f49b189dD81AeB22F4Dfe1c09E6EC7Cb305", // contract deployed on Goerli
+    xstreamContractAddress: "0x1124F60fd2CE714B82b3DF8e8911FAeDF1017A82", // contract deployed on Goerli; updated at 12:09
     connextDomainId: 1735353714,
     acceptedTokens: [
       {
@@ -22,7 +22,7 @@ export const bridgeDataConfig = {
     //mumbai testnet
     erc20TokenAddress: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
     superTokenAddress: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
-    xstreamContractAddress: "0xfE079E7cF55e49Fa13011E4Eff9C22DBad27934A", // contract deployed on Mumbai testnet
+    xstreamContractAddress: "0x6f2914f7F6F5306E54F421656cB5d871BA57dE23", // contract deployed on Mumbai testnet
     connextDomainId: 9991,
     acceptedTokens: [
         {

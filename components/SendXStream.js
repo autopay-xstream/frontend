@@ -162,7 +162,7 @@ const SendXStream = () => {
             token?.address,
             bridgeDataConfig[toChain?.id].xstreamContractAddress,
             bridgeDataConfig[toChain?.id].connextDomainId,
-            { value: parseEther("0.07") }
+            { value: parseEther("0.09") }
         )
         await transaction.wait();
         toast.info("Transaction Submitted...");
