@@ -7,12 +7,20 @@ export default function DropSelect({
   placeholder,
   selected,
   setSelected,
+  className,
 }) {
   return (
-    <div className="w-full">
-      <Listbox value={selected} onChange={setSelected}>
+    <div className={"w-full"}>
+      <Listbox
+        value={selected}
+        onChange={(value) => {
+          setSelected(value);
+        }}
+      >
         <div className="relative mt-1">
-          <Listbox.Button className="relative w-full cursor-pointer rounded-lg mt-8 px-8 py-6 border-[1px] mr-0 border-gray-300  bg-white focus:outline-none text-left">
+          <Listbox.Button className="relative w-full flex items-center cursor-pointer rounded-lg mt-8 px-4 py-6 border-[1px] mr-0 border-gray-300  bg-white focus:outline-none text-left">
+            <span className="mr-3">{selected ? selected.icon : ""}</span>
+
             <span className="block truncate text-gray-400 capitalize">
               {selected?.name ? selected.name : placeholder}
             </span>
@@ -34,27 +42,28 @@ export default function DropSelect({
                 <Listbox.Option
                   key={personIdx}
                   className={({ active }) =>
-                    `relative cursor-pointer select-none py-4 pl-10 pr-4 ${
+                    `relative cursor-pointer select-none py-4  px-4 ${
                       active ? "bg-[#96D068] text-white" : "text-gray-900"
                     }`
                   }
                   value={person}
                 >
                   {({ selected }) => (
-                    <>
+                    <div className="flex items-center justify-start">
+                      <span className="mr-3">{person.icon}</span>
                       <span
                         className={`block truncate ${
-                          selected ? "font-medium" : "font-normal capitalize"
-                        }`}
+                          selected ? "font-medium" : "font-normal "
+                        } capitalize`}
                       >
                         {person.name}
                       </span>
-                      {selected ? (
+                      {/* {selected ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />
                         </span>
-                      ) : null}
-                    </>
+                      ) : null} */}
+                    </div>
                   )}
                 </Listbox.Option>
               ))}

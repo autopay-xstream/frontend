@@ -23,8 +23,7 @@ function Dashboard() {
   const [dropDown, setDropDown] = useState(true);
   const [chain, setChain] = useState("goerli");
 
-
-  const [dropDownAll, setDropDownAll] = useState(true);
+  const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
 
@@ -49,15 +48,14 @@ function Dashboard() {
     "Dec",
   ];
 
-  console.log(chain)
-
+  console.log(chain);
 
   const loadData = async () => {
     if (!address) {
       console.log("false");
       return;
     }
-    
+
     // const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai`;
     const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-${chain}`;
 
@@ -198,7 +196,9 @@ function Dashboard() {
           provider: provider,
         });
 
-        const DAIxContract = await sf.loadSuperToken("0x3427910EBBdABAD8e02823DFe05D34a65564b1a0");
+        const DAIxContract = await sf.loadSuperToken(
+          "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0"
+        );
         const DAIx = DAIxContract.address;
 
         try {
@@ -223,11 +223,10 @@ function Dashboard() {
     setDropDownOutgoing(false);
   }, []);
 
-
   useEffect(() => {
     getBalance();
     loadData();
-  }, [address, chain])
+  }, [address, chain]);
 
   if (isConnected) {
     return (
@@ -240,7 +239,6 @@ function Dashboard() {
             {/* <h1 className="super-token">"Super Token"</h1> */}
 
             <div className="db-box bg-white rounded-lg">
-
               <div className="token-details pt-4">
                 <table>
                   <thead>
@@ -324,12 +322,12 @@ function Dashboard() {
                             >
                               <img
                                 alt="TESTx token icon"
-                                src="https://raw.githubusercontent.com/superfluid-finance/assets/master/public//tokens/dai/icon.svg"
-                                class="MuiAvatar-img avatar-token"
+                                src="https://media.licdn.com/dms/image/C4D0BAQFoACmGKRS9nQ/company-logo_200_200/0/1617268768651?e=2147483647&v=beta&t=_-R-9_LFchamNxvo6Z9KS8ha9W2f1MRmb6OTlUUR3yE"
+                                className="MuiAvatar-img avatar-token"
                               ></img>
                             </div>
                           </div>
-                          <h4 className="fdaix">TESTx</h4>
+                          <h4 className="fdaix">TEST</h4>
                         </div>
                       </td>
                       <td>
@@ -374,20 +372,6 @@ function Dashboard() {
                                     <div className="dropdown-btn-parent">
                                       <button
                                         className={
-                                          dropDownAll ? "active" : ""
-                                        }
-                                        onClick={() => {
-                                          setDropDownAll(true);
-                                          setDropDownIncoming(false);
-                                          setDropDownOutgoing(false);
-                                        }}
-                                      >
-                                        {total.length > 0
-                                          ? "All (" + total[0][0] + ")"
-                                          : "All"}
-                                      </button>
-                                      <button
-                                        className={
                                           dropDownIncoming ? "active" : ""
                                         }
                                         onClick={() => {
@@ -419,7 +403,7 @@ function Dashboard() {
                                 </td>
                               </tr>
                               <tr>
-                                <th>To / From</th>
+                                <th>{dropDownIncoming ? "From" : "To"}</th>
                                 <th>All Time Flow</th>
                                 <th>Flow Rate</th>
                                 <th>Flow Operator</th>
@@ -429,79 +413,80 @@ function Dashboard() {
                             </thead>
                             <tbody>
                               {/**************all flow data************/}
-                              {dropDownAll && allData?.map((item, key) => {
-                                return (
-                                  <tr key={key}>
-                                    <td>
-                                      {item[4] ? (
-                                        <h6>
-                                          -&gt;&nbsp;{item[0].slice(0, 5)}
-                                          ...
-                                          {item[0].slice(38, 42)}
-                                        </h6>
-                                      ) : (
-                                        <h6>
-                                          &lt;-&nbsp;{item[0].slice(0, 5)}
-                                          ...
-                                          {item[0].slice(38, 42)}
-                                        </h6>
-                                      )}
-                                    </td>
-                                    <td>{item[2]}</td>
-                                    <td>-</td>
-                                    <td>
-                                      {item[1].slice(0, 5)}...
-                                      {item[1].slice(38, 42)}
-                                    </td>
-                                    <td>{item[3]}</td>
-                                  </tr>
-                                );
-                              })}
+                              {dropDownAll &&
+                                allData?.map((item, key) => {
+                                  return (
+                                    <tr key={key}>
+                                      <td>
+                                        {item[4] ? (
+                                          <h6>
+                                            -&gt;&nbsp;{item[0].slice(0, 5)}
+                                            ...
+                                            {item[0].slice(38, 42)}
+                                          </h6>
+                                        ) : (
+                                          <h6>
+                                            &lt;-&nbsp;{item[0].slice(0, 5)}
+                                            ...
+                                            {item[0].slice(38, 42)}
+                                          </h6>
+                                        )}
+                                      </td>
+                                      <td>{item[2]}</td>
+                                      <td>-</td>
+                                      <td>
+                                        {item[1].slice(0, 5)}...
+                                        {item[1].slice(38, 42)}
+                                      </td>
+                                      <td>{item[3]}</td>
+                                    </tr>
+                                  );
+                                })}
                               {/**************outgoing flow data************/}
-                              {dropDownOutgoing && outgoingData?.map((item, key) => {
-                                return (
-                                  <tr key={key}>
-                                    <td>
-                                      -&gt;&nbsp;
-                                      {item[1].slice(0, 5)}...
-                                      {item[1].slice(38, 42)}
-                                    </td>
-                                    <td>{item[3]}</td>
-                                    <td>-</td>
-                                    <td>
-                                      {item[2].slice(0, 5)}...
-                                      {item[2].slice(38, 42)}
-                                    </td>
-                                    <td>{item[4]}</td>
-                                  </tr>
-                                );
-                              })}
+                              {dropDownOutgoing &&
+                                outgoingData?.map((item, key) => {
+                                  return (
+                                    <tr key={key}>
+                                      <td>
+                                        -&gt;&nbsp;
+                                        {item[1].slice(0, 5)}...
+                                        {item[1].slice(38, 42)}
+                                      </td>
+                                      <td>{item[3]}</td>
+                                      <td>-</td>
+                                      <td>
+                                        {item[2].slice(0, 5)}...
+                                        {item[2].slice(38, 42)}
+                                      </td>
+                                      <td>{item[4]}</td>
+                                    </tr>
+                                  );
+                                })}
                               {/**************incoming flow data************/}
-                              {dropDownIncoming && incomingData?.map((item, key) => {
-                                return (
-                                  <tr key={key}>
-                                    <td>
-                                      &lt;-&nbsp;
-                                      {item[0].slice(0, 5)}...
-                                      {item[0].slice(38, 42)}
-                                    </td>
-                                    <td>{item[3]}</td>
-                                    <td>-</td>
-                                    <td>
-                                      {item[2].slice(0, 5)}...
-                                      {item[2].slice(38, 42)}
-                                    </td>
-                                    <td>{item[4]}</td>
-                                  </tr>
-                                );
-                              })}
-
+                              {dropDownIncoming &&
+                                incomingData?.map((item, key) => {
+                                  return (
+                                    <tr key={key}>
+                                      <td>
+                                        &lt;-&nbsp;
+                                        {item[0].slice(0, 5)}...
+                                        {item[0].slice(38, 42)}
+                                      </td>
+                                      <td>{item[3]}</td>
+                                      <td>-</td>
+                                      <td>
+                                        {item[2].slice(0, 5)}...
+                                        {item[2].slice(38, 42)}
+                                      </td>
+                                      <td>{item[4]}</td>
+                                    </tr>
+                                  );
+                                })}
                             </tbody>
                           </table>
                         </div>
                       </td>
                     </tr>
-
                   </tbody>
                 </table>
               </div>
@@ -519,7 +504,9 @@ function Dashboard() {
         <div className="db-grid-sub w-[70%] mx-auto my-0">
           <div className="grid-sub min-h-[170px]">
             <span className="grid-sub-title">Controll Your Stream</span>
-            <span className="grid-sub-info">Controll stream on a crosschain level</span>
+            <span className="grid-sub-info">
+              Controll stream on a crosschain level
+            </span>
             <div className="flex items-center justify-center mt-4">
               <div className="shadow-[#cccccc40] shadow-[0px_0px_6px_3px_rgb(204,204,204,0.25)] flex items-center justify-between w-30 px-1 py-1 rounded-xl">
                 <Image

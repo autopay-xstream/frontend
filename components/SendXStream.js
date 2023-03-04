@@ -11,15 +11,12 @@ import { useAccount } from "wagmi";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { toast } from "react-toastify";
 import TestTokenAbi from "../data/TestTokenAbi.json";
-import { getNetwork, switchNetwork, fetchBalance } from "@wagmi/core";
+import { getNetwork, fetchBalance } from "@wagmi/core";
 import { bridgeDataConfig } from "@/data/config";
-
-// import { create } from "@connext/sdk";
-// import { signer, sdkConfig } from "../services/connextConfig.js";
 
 const chainList = [
   { name: "goerli", id: 5 },
-  { name: "mumbai", id: 80001 },    
+  { name: "mumbai", id: 80001 },
 ];
 
 const SendXStream = () => {
@@ -34,21 +31,6 @@ const SendXStream = () => {
   const [balance, setBalance] = useState(0);
 
   const { chain, chains } = getNetwork();
-
-  const switchOriginNetwork = async(chainId) => {
-    await switchNetwork({
-        chainId: chainId
-    });
-  }
-
-  useEffect(() => {
-    if (chain?.id != fromChain?.id && fromChain?.id) {
-        console.log("switching networks");
-        switchOriginNetwork(fromChain?.id);
-        setToken(null);
-        setBalance(null);
-    }
-  }, [fromChain?.id]);
 
   const sendStreamSameChain = async () => {
     const senderAddress = address;
@@ -177,6 +159,20 @@ const SendXStream = () => {
     e.preventDefault();
 
     try {
+      const ss = new Date(endDate.$d);
+      const dd = new Date();
+      console.log(ss < dd);
+      if (new Date(endDate.$d).getTime() < new Date().getTime()) {
+        alert("Invalid date time");
+        return;
+      }
+      if (
+        new Date(endDate.$d).getDate() === new Date().getDate() &&
+        new Date(endDate.$d).getHours() - new Date().getHours() < 6
+      ) {
+        alert("Select atleast 6 hours");
+        return;
+      }
       // alert(toChain.name, fromChain.name);
 
       if (toChain.name === fromChain.name) {
@@ -189,7 +185,7 @@ const SendXStream = () => {
     }
   };
 
-  const getBalance = async () => { // show the selected token balance
+  const getBalance = async () => {
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -235,7 +231,6 @@ const SendXStream = () => {
             className="rounded-lg mt-8 w-full px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
             placeholder="Enter  receipient address or ENS"
           />
-
           <div className="flex items-center justify-between gap-10">
             <DropSelect
               selected={token}
@@ -251,13 +246,11 @@ const SendXStream = () => {
               onChange={(e) => setAmount(e.target.value)}
             />
           </div>
-
           <div className="w-full h-[2px] bg-gray-300 mt-12" />
-
           {toChain && fromChain && receipient && amount && token && endDate && (
             <>
               <div className="flex items-center gap-4 mt-8 text-2xl px-3">
-                <p>{`${token.name} Balance`}:</p> <p className="text-[#96D068]">{balance}</p>
+                <p>Balance:</p> <p className="text-[#96D068]">{balance}</p>
               </div>
               <StreamInfo
                 toChain={toChain}
