@@ -16,6 +16,7 @@ import { sign } from "crypto";
 import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
 import ChainSelect from "./ChainSelect";
+import DashboardRow from "./DashboardRow";
 
 function Dashboard() {
   const { address, isConnected } = useAccount();
@@ -243,10 +244,12 @@ function Dashboard() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Asset</th>
+                      <th>Receipient</th>
+                      <th>End Date</th>
+                      <th>Token</th>
+                      <th>Amount / month</th>
+                      <th>Amount Streamed</th>
                       <th>Balance</th>
-                      <th>Net Flow</th>
-                      <th>Inflow/Outflow</th>
                       <th>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -270,6 +273,8 @@ function Dashboard() {
                       </th>
                     </tr>
                   </thead>
+                  {/* <div className="bg-[#CFCFCF] w-[300px]  flex flex-grow h-[1px]" /> */}
+
                   <tbody>
                     <tr>
                       <td>
@@ -330,164 +335,17 @@ function Dashboard() {
                           <h4 className="fdaix">TEST</h4>
                         </div>
                       </td>
-                      <td>
-                        <h4 className="token-balance">{balance}</h4>
-                      </td>
                       <td>-</td>
                       <td>-</td>
-                      <td>
-                        <div
-                          className="parent-drop-down"
-                          onClick={() => {
-                            // loadData();
-                            // setDropDown(!dropDown);
-                            // setDropDownAll(!dropDownAll);
-                          }}
-                        >
-                          <svg
-                            class={
-                              dropDown
-                                ? "drop-down-svg active"
-                                : "drop-down-svg"
-                            }
-                            focusable="false"
-                            aria-hidden="true"
-                            viewBox="0 0 24 24"
-                            data-testid="ExpandCircleDownOutlinedIcon"
-                          >
-                            <path d="M15.08 9.59 12 12.67 8.92 9.59 7.5 11l4.5 4.5 4.5-4.5-1.42-1.41zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
-                          </svg>
-                        </div>
-                      </td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
                     </tr>
 
-                    <tr>
-                      <td colSpan={5} className="dropdown-table-td">
-                        <div>
-                          <table className="dropdown-table">
-                            <thead>
-                              <tr>
-                                <td colSpan={6} className="dropdown-table-td">
-                                  <div className="dropdown-row">
-                                    <div className="dropdown-btn-parent">
-                                      <button
-                                        className={
-                                          dropDownIncoming ? "active" : ""
-                                        }
-                                        onClick={() => {
-                                          setDropDownAll(false);
-                                          setDropDownIncoming(true);
-                                          setDropDownOutgoing(false);
-                                        }}
-                                      >
-                                        {total.length > 0
-                                          ? "Incoming (" + total[0][2] + ")"
-                                          : "Incoming"}
-                                      </button>
-                                      <button
-                                        className={
-                                          dropDownOutgoing ? "active" : ""
-                                        }
-                                        onClick={() => {
-                                          setDropDownAll(false);
-                                          setDropDownIncoming(false);
-                                          setDropDownOutgoing(true);
-                                        }}
-                                      >
-                                        {total.length > 0
-                                          ? "Outgoing (" + total[0][1] + ")"
-                                          : "Outgoing"}
-                                      </button>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th>{dropDownIncoming ? "From" : "To"}</th>
-                                <th>All Time Flow</th>
-                                <th>Flow Rate</th>
-                                <th>Flow Operator</th>
-                                <th>Start / End Date</th>
-                                <th></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {/**************all flow data************/}
-                              {dropDownAll &&
-                                allData?.map((item, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td>
-                                        {item[4] ? (
-                                          <h6>
-                                            -&gt;&nbsp;{item[0].slice(0, 5)}
-                                            ...
-                                            {item[0].slice(38, 42)}
-                                          </h6>
-                                        ) : (
-                                          <h6>
-                                            &lt;-&nbsp;{item[0].slice(0, 5)}
-                                            ...
-                                            {item[0].slice(38, 42)}
-                                          </h6>
-                                        )}
-                                      </td>
-                                      <td>{item[2]}</td>
-                                      <td>-</td>
-                                      <td>
-                                        {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)}
-                                      </td>
-                                      <td>{item[3]}</td>
-                                    </tr>
-                                  );
-                                })}
-                              {/**************outgoing flow data************/}
-                              {dropDownOutgoing &&
-                                outgoingData?.map((item, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td>
-                                        -&gt;&nbsp;
-                                        {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)}
-                                      </td>
-                                      <td>{item[3]}</td>
-                                      <td>-</td>
-                                      <td>
-                                        {item[2].slice(0, 5)}...
-                                        {item[2].slice(38, 42)}
-                                      </td>
-                                      <td>{item[4]}</td>
-                                    </tr>
-                                  );
-                                })}
-                              {/**************incoming flow data************/}
-                              {dropDownIncoming &&
-                                incomingData?.map((item, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td>
-                                        &lt;-&nbsp;
-                                        {item[0].slice(0, 5)}...
-                                        {item[0].slice(38, 42)}
-                                      </td>
-                                      <td>{item[3]}</td>
-                                      <td>-</td>
-                                      <td>
-                                        {item[2].slice(0, 5)}...
-                                        {item[2].slice(38, 42)}
-                                      </td>
-                                      <td>{item[4]}</td>
-                                    </tr>
-                                  );
-                                })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
+
+                    <DashboardRow />
                   </tbody>
+
                 </table>
               </div>
             </div>
