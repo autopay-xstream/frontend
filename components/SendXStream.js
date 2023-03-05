@@ -27,7 +27,11 @@ const SendXStream = () => {
   const [receipient, setReceipient] = useState(null);
   const [amount, setAmount] = useState(null);
   const [token, setToken] = useState(null);
-  const [endDate, setEndDate] = useState(dayjs(new Date()));
+
+  const currentDate = new Date();
+  const hoursToAdd = 6;
+  currentDate.setTime(currentDate.getTime() + (hoursToAdd * 60 * 60 * 1000));
+  const [endDate, setEndDate] = useState(dayjs(currentDate));
   const [balance, setBalance] = useState(0);
 
   const { chain, chains } = getNetwork();

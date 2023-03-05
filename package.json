@@ -2,7 +2,6 @@
   "name": "ethforall-frontend",
   "version": "0.1.0",
   "private": true,
-  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,7 +20,7 @@
     "@mui/x-date-pickers": "^5.0.18",
     "@next/font": "13.1.1",
     "@pushprotocol/restapi": "^0.6.1",
-    "@rainbow-me/rainbowkit": "^0.8.1",
+    "@rainbow-me/rainbowkit": "^0.11.0",
     "@superfluid-finance/sdk-core": "^0.6.1",
     "abi-decoder": "^2.4.0",
     "date-fns": "^2.29.3",
@@ -56,5 +55,4 @@
     "os": false,
     "path": false
   }
-  
 }
