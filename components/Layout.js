@@ -52,12 +52,14 @@ const Layout = ({ children }) => {
                 theme={lightTheme({
                     accentColor: "#10bb35",
                     accentColorForeground: "white",
-                    borderRadius: "medium",
+                    borderRadius: "small",
                     fontStack: "system",
                     overlayBlur: "small",
                 })}
             >
-                {children}
+                <div className='font-poppins'>
+                    {children}
+                </div>
                 <ToastContainer
                     position="top-right"
                     hideProgressBar={false}
