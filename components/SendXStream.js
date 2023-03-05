@@ -289,13 +289,13 @@ const SendXStream = () => {
               placeholder={"Select a token"}
             />
             <DatePicker selected={endDate} setSelected={setEndDate} />
-            {/* <input
+            <input
               className="rounded-lg w-full mt-9 px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
               placeholder="Select token value or flow rate"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-            /> */}
-            <DropSelect
+            />
+            {/* <DropSelect
               selected={selectedType}
               setSelected={(value) => {
                 setSelectedType(value);
@@ -312,7 +312,7 @@ const SendXStream = () => {
                 },
               ]}
               placeholder={"Select token value or flow rate"}
-            />
+            /> */}
           </div>
           <div className="w-full h-[2px] bg-gray-300 mt-12" />
           {toChain && fromChain && receipient && amount && token && endDate && (
