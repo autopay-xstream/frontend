@@ -138,13 +138,13 @@ const SendXStream = () => {
             "1",                    //streamActionType
             receipient,             //receiver
             flowRate,              //flowRate
-            "70000000000000000",    //relayer fees
+            "80000000000000000",    //relayer fees
             "300",                  //slippage
             parseEther(amount),     //amount of tokens to send
             token?.address,
             bridgeDataConfig[toChain?.id].xstreamContractAddress,
             bridgeDataConfig[toChain?.id].connextDomainId,
-            { value: parseEther("0.09") }
+            { value: parseEther("0.08") }
         )
         await transaction.wait();
         toast.info("Transaction Submitted...");
