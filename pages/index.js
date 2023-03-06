@@ -1,41 +1,29 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-
-import logo from "../image/Logo.png";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAccount } from "wagmi";
 import logowhite from "../image/LogoWhite.png";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 //********************** connect wallet imports
-import "@rainbow-me/rainbowkit/styles.css";
 import {
-  getDefaultWallets,
-  RainbowKitProvider,
-  lightTheme,
+  getDefaultWallets, lightTheme, RainbowKitProvider
 } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 
 import {
-  mainnet,
-  polygon,
-  polygonMumbai,
-  optimism,
-  arbitrum,
-  goerli,
-  gnosis,
+  goerli, polygonMumbai
 } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Dashboard from "../components/Dashboard";
-import SendStream from "../components/SendStream";
 import Image from "next/image";
-import SideBar from "../components/SideBar";
-import SendXStream from "../components/SendXStream";
-import Stream from "../components/Stream";
+import Dashboard from "../components/Dashboard";
 import Notifications from "../components/Notifications";
+import SendStream from "../components/SendStream";
+import SendXStream from "../components/SendXStream";
+import SideBar from "../components/SideBar";
 
 //******************************************* */
 
@@ -67,6 +55,9 @@ export default function Home() {
     connectors,
     provider,
   });
+
+  const connectedWallet = useAccount();
+
 
   const [streamNotifications, setStreamNotifications] = useState([]);
 
@@ -219,7 +210,7 @@ export default function Home() {
                   ) : showXStream ? (
                     <SendXStream />
                   ) : showNotification ? (
-                    <Notifications notifications={streamNotifications} />
+                    <Notifications notifications={streamNotifications} address = {connectedWallet.address} />
                   ) : null}
                 </div>
               </div>

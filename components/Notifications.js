@@ -1,13 +1,48 @@
 import { ethers } from "ethers";
 import Image from "next/image";
-import React, { Component, useEffect } from "react";
+import React, { Component, useEffect, useState } from "react";
+import { apolloClient } from "@/helpers/apollo";
+import { gql } from "@apollo/client";
+import { truncateAddress } from "@/helpers/formatHelper";
 
 export default function Notifications(props) {
+  const [userEvents, setUserEvents] = useState([]);
+
+  const querySubgraph = async() => {
+    const xStream_Flow_Trigger = `
+    query {
+      xStreamFlowTriggers(
+        where : {sender: "${props.address}"}
+      ) {
+        sender
+        receiver
+        selectedToken
+        flowRate
+        streamStatus
+        startTime
+        bufferFee
+        networkFee
+        destinationDomain
+        blockNumber
+        blockTimestamp
+        transactionHash
+      }
+    }
+  `
+
+  const res = await apolloClient.query({
+    query: gql(xStream_Flow_Trigger),
+  });
+  console.log("The graphql result ", res);
+  setUserEvents(res?.data?.xStreamFlowTriggers);
+  }
+
   useEffect(() => {
     if (props.address) {
-      fetchNotifications();
+      console.log("calling the subgraph");
+      querySubgraph();
     }
-  }, []);
+  }, [props.address]);
 
   return (
     <div className="main-container w-full h-screen">
@@ -23,11 +58,14 @@ export default function Notifications(props) {
             </tr>
           </thead>
           <tbody>
-            <TableRow>
-              <TableData>Initiated</TableData>
-              <TableData>Fragments.eth</TableData>
-              <TableData>USDC Polygon</TableData>
-              <TableData>20</TableData>
+            {userEvents.map((item, index) => {
+              return (
+                <>
+                <TableRow>
+              <TableData>{item.streamStatus == 1? "Initiated" : "Updated"}</TableData>
+              <TableData>{truncateAddress(item.receiver)}</TableData>
+              <TableData></TableData>
+              <TableData>{item.flowRate}</TableData>
               <TableData>
                 <Image
                   src={require("../image/link.png")}
@@ -39,22 +77,9 @@ export default function Notifications(props) {
                 />
               </TableData>
             </TableRow>
-            <TableRow>
-              <TableData>Initiated</TableData>
-              <TableData>Fragments.eth</TableData>
-              <TableData>USDC Polygon</TableData>
-              <TableData>20</TableData>
-              <TableData>
-                <Image
-                  src={require("../image/link.png")}
-                  style={{
-                    width: 50,
-                    height: 50,
-                  }}
-                  alt="link"
-                />
-              </TableData>
-            </TableRow>
+                </>
+              )
+            })}
           </tbody>
         </table>
       </div>
