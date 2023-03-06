@@ -1,26 +1,27 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import React, { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useEffect, useState } from "react";
 import { createClient } from "urql";
-import { getTransactionDescription } from "@superfluid-finance/sdk-core";
-import ConnectWalletCustom from "./ConnectWalletCustom";
-import gif from "../public/stream-loop.gif";
+import { useAccount } from "wagmi";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
 import avatar4 from "../public/avatar4.png";
+import gif from "../public/stream-loop.gif";
+import ConnectWalletCustom from "./ConnectWalletCustom";
 
 import Image from "next/image";
 
-import { sign } from "crypto";
-import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
+import { ethers } from "ethers";
 import ChainSelect from "./ChainSelect";
+import { apolloClient } from "@/helpers/apollo";
+import { gql } from "@apollo/client";
+import { truncateAddress } from "@/helpers/formatHelper";
 
 function Dashboard() {
   const { address, isConnected } = useAccount();
   // const [loading, setLoading] = useState(false);
   const [dropDown, setDropDown] = useState(true);
+  const [userEvents, setUserEvents] = useState([]);
   const [chain, setChain] = useState("goerli");
 
   const [dropDownAll, setDropDownAll] = useState(false);
@@ -115,9 +116,6 @@ function Dashboard() {
 
     data.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
     data1.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
-    // Array.prototype.push.apply(data2, data1);
-    // data2.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
-    // console.log(data2);
 
     for (let i = 0; i < data.length; i++) {
       if (!outgoingData.find((item) => loadedData_outgoing[0] === item[0])) {
@@ -177,10 +175,6 @@ function Dashboard() {
     setOutgoingData(outgoingData);
     setIncomingData(incomingData);
     setAllData(allData);
-
-    // console.log(outgoingData);
-    // console.log(incomingData);
-    // console.log(allData);
   };
 
   const getBalance = async () => {
@@ -222,6 +216,59 @@ function Dashboard() {
     setDropDownIncoming(false);
     setDropDownOutgoing(false);
   }, []);
+
+  const querySubgraph = async(flowType) => {
+    let xStream_Flow_Trigger;
+    if (flowType == "Incoming") {
+      xStream_Flow_Trigger = `
+      query {
+        xStreamFlowTriggers(
+          where : {selectedToken: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", receiver: "${address}"}
+        ) {
+          sender
+          receiver
+          selectedToken
+          flowRate
+          streamStatus
+          startTime
+          bufferFee
+          networkFee
+          destinationDomain
+          blockNumber
+          blockTimestamp
+          transactionHash
+        }
+      }
+    ` 
+    } else if (flowType == "Outgoing") {
+      xStream_Flow_Trigger = `
+    query {
+      xStreamFlowTriggers(
+        where : {selectedToken: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", sender: "${address}"}
+      ) {
+        sender
+        receiver
+        selectedToken
+        flowRate
+        streamStatus
+        startTime
+        bufferFee
+        networkFee
+        destinationDomain
+        blockNumber
+        blockTimestamp
+        transactionHash
+      }
+    }
+  `
+    }
+    
+  const res = await apolloClient.query({
+    query: gql(xStream_Flow_Trigger),
+  });
+  console.log("The graphql result ", res);
+  setUserEvents(res?.data?.xStreamFlowTriggers);
+  }
 
   useEffect(() => {
     getBalance();
@@ -375,6 +422,7 @@ function Dashboard() {
                                           dropDownIncoming ? "active" : ""
                                         }
                                         onClick={() => {
+                                          querySubgraph("Incoming");
                                           setDropDownAll(false);
                                           setDropDownIncoming(true);
                                           setDropDownOutgoing(false);
@@ -389,6 +437,7 @@ function Dashboard() {
                                           dropDownOutgoing ? "active" : ""
                                         }
                                         onClick={() => {
+                                          querySubgraph("Outgoing");
                                           setDropDownAll(false);
                                           setDropDownIncoming(false);
                                           setDropDownOutgoing(true);
@@ -414,71 +463,58 @@ function Dashboard() {
                             <tbody>
                               {/**************all flow data************/}
                               {dropDownAll &&
-                                allData?.map((item, key) => {
+                                userEvents?.map((item, key) => {
                                   return (
                                     <tr key={key}>
                                       <td>
-                                        {item[4] ? (
-                                          <h6>
-                                            -&gt;&nbsp;{item[0].slice(0, 5)}
-                                            ...
-                                            {item[0].slice(38, 42)}
-                                          </h6>
-                                        ) : (
-                                          <h6>
-                                            &lt;-&nbsp;{item[0].slice(0, 5)}
-                                            ...
-                                            {item[0].slice(38, 42)}
-                                          </h6>
-                                        )}
+                                        {truncateAddress(item.address)}
                                       </td>
-                                      <td>{item[2]}</td>
                                       <td>-</td>
+                                      <td>{item.flowRate}</td>
                                       <td>
-                                        {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)}
+                                        -
+                                        {/* {item[1].slice(0, 5)}...
+                                        {item[1].slice(38, 42)} */}
                                       </td>
-                                      <td>{item[3]}</td>
+                                      <td>{item.startTime}</td>
                                     </tr>
                                   );
                                 })}
                               {/**************outgoing flow data************/}
                               {dropDownOutgoing &&
-                                outgoingData?.map((item, key) => {
+                                userEvents?.map((item, key) => {
                                   return (
                                     <tr key={key}>
                                       <td>
-                                        -&gt;&nbsp;
-                                        {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)}
+                                        {truncateAddress(item.receiver)}
                                       </td>
-                                      <td>{item[3]}</td>
                                       <td>-</td>
+                                      <td>{item.flowRate}</td>
                                       <td>
-                                        {item[2].slice(0, 5)}...
-                                        {item[2].slice(38, 42)}
+                                        -
+                                        {/* {item[1].slice(0, 5)}...
+                                        {item[1].slice(38, 42)} */}
                                       </td>
-                                      <td>{item[4]}</td>
+                                      <td>{item.startTime}</td>
                                     </tr>
                                   );
                                 })}
                               {/**************incoming flow data************/}
                               {dropDownIncoming &&
-                                incomingData?.map((item, key) => {
+                                userEvents?.map((item, key) => {
                                   return (
                                     <tr key={key}>
                                       <td>
-                                        &lt;-&nbsp;
-                                        {item[0].slice(0, 5)}...
-                                        {item[0].slice(38, 42)}
+                                        {truncateAddress(item.sender)}
                                       </td>
-                                      <td>{item[3]}</td>
                                       <td>-</td>
+                                      <td>{item.flowRate}</td>
                                       <td>
-                                        {item[2].slice(0, 5)}...
-                                        {item[2].slice(38, 42)}
+                                        -
+                                        {/* {item[1].slice(0, 5)}...
+                                        {item[1].slice(38, 42)} */}
                                       </td>
-                                      <td>{item[4]}</td>
+                                      <td>{item.startTime}</td>
                                     </tr>
                                   );
                                 })}
