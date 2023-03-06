@@ -6,11 +6,11 @@ export const bridgeDataConfig = {
     xstreamContractAddress: "0x5644388772713c0B10604037ef1E26DcB0824ca2", // contract deployed on Goerli; updated at 12:09
     connextDomainId: 1735353714,
     acceptedTokens: [
-      {
-        address: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0",
-        name: "TESTx",
-        type: "superToken",
-      },
+      // {
+      //   address: "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0",
+      //   name: "TESTx",
+      //   type: "superToken",
+      // },
       {
         address: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1",
         name: "TEST",
@@ -25,11 +25,11 @@ export const bridgeDataConfig = {
     xstreamContractAddress: "0x489a8D2A9c5a1f18eBd07E0D27d007550faE9B19", // contract deployed on Mumbai testnet
     connextDomainId: 9991,
     acceptedTokens: [
-        {
-          address: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
-          name: "TESTx",
-          type: "superToken",
-        },
+        // {
+        //   address: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
+        //   name: "TESTx",
+        //   type: "superToken",
+        // },
         {
           address: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
           name: "TEST",

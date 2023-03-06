@@ -16,6 +16,7 @@ import ChainSelect from "./ChainSelect";
 import { apolloClient } from "@/helpers/apollo";
 import { gql } from "@apollo/client";
 import { truncateAddress } from "@/helpers/formatHelper";
+import DashboardRow from "./DashboardRow";
 
 function Dashboard() {
   const { address, isConnected } = useAccount();
@@ -290,10 +291,12 @@ function Dashboard() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Asset</th>
+                      <th>Receipient</th>
+                      <th>End Date</th>
+                      <th>Token</th>
+                      <th>Amount / month</th>
+                      <th>Amount Streamed</th>
                       <th>Balance</th>
-                      <th>Net Flow</th>
-                      <th>Inflow/Outflow</th>
                       <th>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -317,6 +320,8 @@ function Dashboard() {
                       </th>
                     </tr>
                   </thead>
+                  {/* <div className="bg-[#CFCFCF] w-[300px]  flex flex-grow h-[1px]" /> */}
+
                   <tbody>
                     <tr>
                       <td>
@@ -376,9 +381,6 @@ function Dashboard() {
                           </div>
                           <h4 className="fdaix">TEST</h4>
                         </div>
-                      </td>
-                      <td>
-                        <h4 className="token-balance">{balance}</h4>
                       </td>
                       <td>-</td>
                       <td>-</td>
@@ -523,7 +525,11 @@ function Dashboard() {
                         </div>
                       </td>
                     </tr>
+
+
+                    <DashboardRow />
                   </tbody>
+
                 </table>
               </div>
             </div>

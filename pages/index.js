@@ -15,6 +15,9 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import {
   goerli, polygonMumbai
 } from "wagmi/chains";
+
+
+import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -138,97 +141,75 @@ export default function Home() {
 
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider
-          chains={chains}
-          theme={lightTheme({
-            accentColor: "#10bb35",
-            accentColorForeground: "white",
-            borderRadius: "medium",
-            fontStack: "system",
-            overlayBlur: "small",
-          })}
-        >
-          <Head>
-            <title>XStream</title>
-            <meta
-              name="description"
-              content="Cross chain streaming using AutoPay XStream"
+
+      <Head>
+        <title>XStream</title>
+        <meta
+          name="description"
+          content="Cross chain streaming using AutoPay XStream"
+        />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className="main font-poppins">
+        {/* ******************** Navbar ******************** */}
+
+        <div className="navbar flex justify-between p-2 items-center absolute w-full px-4 z-10">
+          <div className="navbar-logo flex-auto w-64  py-4 px-3">
+            {/* //logo  */}
+            <Image src={logowhite} alt="logo" height={40} />
+          </div>
+          <div className="connect-wallet">
+            <ConnectButton
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "full",
+              }}
+              showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+              }}
             />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1"
-            />
-            <link rel="icon" href="/favicon.ico" />
-          </Head>
-          <main className="main font-poppins">
-            {/* ******************** Navbar ******************** */}
+          </div>
+        </div>
 
-            <div className="navbar flex justify-between p-2 items-center absolute w-full px-4 z-10">
-              <div className="navbar-logo flex-auto w-64  py-4 px-3">
-                {/* //logo  */}
-                <Image src={logowhite} alt="logo" height={40} />
-              </div>
-              <div className="connect-wallet">
-                <ConnectButton
-                  accountStatus={{
-                    smallScreen: "avatar",
-                    largeScreen: "full",
-                  }}
-                  showBalance={{
-                    smallScreen: false,
-                    largeScreen: true,
-                  }}
-                />
-              </div>
-            </div>
+        {/* ******************** main ******************** */}
 
-            {/* ******************** main ******************** */}
-
-            <div className="flex  min-h-screen">
-              {/* ****************main left panel************** */}
-              <SideBar
-                setDashboard={setDashboard}
-                setSendStream={setSendStream}
-                setShowNotification={setShowNotification}
-                setShowXStream={setShowXStream}
-                showXStream={showXStream}
-                showDashboard={showDashboard}
-                showSendStream={showSendStream}
-                showNotification={showNotification}
-                setShowStream={setShowStream}
-                showStream={showStream}
-              />
-
-              {/* ****************main right panel************** */}
-              <div className="w-full bg-[#F4F4F4]">
-                <div className="inside-main-right">
-                  {showDashboard ? (
-                    <Dashboard />
-                  ) : showSendStream ? (
-                    <SendStream />
-                  ) : showXStream ? (
-                    <SendXStream />
-                  ) : showNotification ? (
-                    <Notifications notifications={streamNotifications} address = {connectedWallet.address} />
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </main>
-          <ToastContainer
-            position="top-right"
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
+        <div className="flex  min-h-screen">
+          {/* ****************main left panel************** */}
+          <SideBar
+            setDashboard={setDashboard}
+            setSendStream={setSendStream}
+            setShowNotification={setShowNotification}
+            setShowXStream={setShowXStream}
+            showXStream={showXStream}
+            showDashboard={showDashboard}
+            showSendStream={showSendStream}
+            showNotification={showNotification}
+            setShowStream={setShowStream}
+            showStream={showStream}
           />
-        </RainbowKitProvider>
-      </WagmiConfig>
+
+          {/* ****************main right panel************** */}
+          <div className="w-full bg-[#F4F4F4]">
+            <div className="inside-main-right">
+              {showDashboard ? (
+                <Dashboard />
+              ) : showSendStream ? (
+                <SendStream />
+              ) : showXStream ? (
+                <SendXStream />
+              ) : showNotification ? (
+                <Notifications notifications={streamNotifications} address = {connectedWallet.address} />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </main>
+
     </>
   );
 }

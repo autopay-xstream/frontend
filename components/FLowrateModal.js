@@ -12,6 +12,8 @@ const options = [
     name: "/sec",
   },
 ];
+
+
 export default function FlowRateModal({
   isOpen,
   setIsOpen,
@@ -20,6 +22,7 @@ export default function FlowRateModal({
 }) {
   const [selectedDuration, setSelectedDuration] = useState(options[0]);
   const [_amount, _setAmount] = useState(0);
+  
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
