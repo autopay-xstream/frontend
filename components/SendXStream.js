@@ -27,18 +27,13 @@ const options = [
   { name: "Hellen Schmidt" },
 ];
 
-const chains = [
-  { name: "goerli", id: "5", icon: <GoerliIcon /> },
-  { name: "polygon", id: "80001", icon: <PolygonIcon /> },
-];
-
 const coins = [
   // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
   // { id: "0xb809b9B2dc5e93CB863176Ea2D565425B03c0540", name: 'BUSD' },
   // { id: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844", name: 'DAI' },
   // { id: "0xe802376580c10fe23f027e1e19ed9d54d4c9311e", name: 'USDT' }
   {
-    id: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1",
+    address: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1",
     name: "TEST",
     icon: <ConnextIcon />,
   },
@@ -50,8 +45,8 @@ const coins = [
 ];
 
 const chainList = [
-  { name: "goerli", id: 5 },
-  { name: "mumbai", id: 80001 },
+  { name: "goerli", id: "5", icon: <GoerliIcon /> },
+  { name: "polygon mumbai", id: "80001", icon: <PolygonIcon /> },
 ];
 
 const SendXStream = () => {
@@ -175,19 +170,18 @@ const SendXStream = () => {
         );
 
         toast.info("Creating your XStream...");
-        const transaction = await originContract._sendFlowMessage(
-          //_sendFlowMessage
-          "1", //streamActionType
-          receipient, //receiver
-          flowRate, //flowRate
-          "70000000000000000", //relayer fees
-          "300", //slippage
-          parseEther(amount), //amount of tokens to send
-          token?.address,
-          bridgeDataConfig[toChain?.id].xstreamContractAddress,
-          bridgeDataConfig[toChain?.id].connextDomainId,
-          { value: parseEther("0.07") }
-        );
+        const transaction = await originContract._sendFlowMessage(                //_sendFlowMessage
+            "1",                    //streamActionType
+            receipient,             //receiver
+            flowRate,              //flowRate
+            "80000000000000000",    //relayer fees
+            "300",                  //slippage
+            parseEther(amount),     //amount of tokens to send
+            token?.address,
+            bridgeDataConfig[toChain?.id].xstreamContractAddress,
+            bridgeDataConfig[toChain?.id].connextDomainId,
+            { value: parseEther("0.08") }
+        )
         await transaction.wait();
         toast.info("Transaction Submitted...");
       }
@@ -265,13 +259,13 @@ const SendXStream = () => {
             <DropSelect
               selected={fromChain}
               setSelected={setFromChain}
-              options={chains}
+              options={chainList}
               placeholder={"Transfer from chain"}
             />
             <DropSelect
               selected={toChain}
               setSelected={setToChain}
-              options={chains}
+              options={chainList}
               placeholder={"Transfer to chain"}
             />
           </div>
@@ -285,7 +279,7 @@ const SendXStream = () => {
             <DropSelect
               selected={token}
               setSelected={setToken}
-              options={coins}
+              options={bridgeDataConfig[chain.id].acceptedTokens}
               placeholder={"Select a token"}
             />
             <DatePicker selected={endDate} setSelected={setEndDate} />
