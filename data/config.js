@@ -1,3 +1,5 @@
+import { ConnextIcon } from "@/components/icons";
+
 export const bridgeDataConfig = {
   5: {
     // goerli testnet
