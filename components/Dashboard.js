@@ -383,7 +383,7 @@ function Dashboard() {
                             <tbody>
                               {/**************all flow data************/}
                               {dropDownAll &&
-                                userEvents?.map((item, key) => {
+                                hookXStream.userEvents?.map((item, key) => {
                                   return (
                                     <tr key={key}>
                                       <td>
@@ -402,7 +402,7 @@ function Dashboard() {
                                 })}
                               {/**************outgoing flow data************/}
                               {dropDownOutgoing &&
-                                userEvents?.map((item, key) => {
+                                hookXStream.userEvents?.map((item, key) => {
                                   return (
                                     <tr key={key}>
                                       <td>
@@ -421,7 +421,7 @@ function Dashboard() {
                                 })}
                               {/**************incoming flow data************/}
                               {dropDownIncoming &&
-                                userEvents?.map((item, key) => {
+                                hookXStream.userEvents?.map((item, key) => {
                                   return (
                                     <tr key={key}>
                                       <td>
