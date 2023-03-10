@@ -1,19 +1,27 @@
-import { ethers } from "ethers";
-import originAbi from "@/data/originAbi.json";
-import destinationAbi from "@/data/destinationAbi.json";
-import { Framework } from "@superfluid-finance/sdk-core";
-import { toast } from "react-toastify";
 import TestTokenAbi from "@/data/TestTokenAbi.json";
-import { parseEther } from "ethers/lib/utils.js";
+import { bridgeDataConfig } from "@/data/config";
+import destinationAbi from "@/data/destinationAbi.json";
+import originAbi from "@/data/originAbi.json";
 import { fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
+import { Framework } from "@superfluid-finance/sdk-core";
+import { fetchBalance, getNetwork } from "@wagmi/core";
+import { ethers } from "ethers";
+import { parseEther } from "ethers/lib/utils.js";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
-import {useState} from "react";
 
 const useXStream = () => {
   const { address, isConnected } = useAccount();
   const [userEvents, setUserEvents] = useState([]);
+  const [balance, setBalance] = useState(0);
+  const [token, setToken] = useState(null);
+  const [amount, setAmount] = useState(null);
 
-  const getBalance = async () => {
+  const { chain } = getNetwork();
+
+
+  const getBalance = async (token = {}) => {
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -28,6 +36,12 @@ const useXStream = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (token?.address) {
+        getBalance(token);
+    }
+  }, [token?.address, chain?.id]);
 
   const calculateFlowRate = (amountInEther) => {
     const now = new Date();
@@ -165,8 +179,13 @@ const useXStream = () => {
   };
 
   return {
+    balance: balance,
     userEvents: userEvents,
+    token: token,
+    amount: amount,
+    setToken: setToken,
     querySubgraph: querySubgraph,
+    setAmount: setAmount,
     getBalance: getBalance,
     sendStreamDifferentChain: sendStreamDifferentChain,
     sendStreamSameChain: sendStreamSameChain,

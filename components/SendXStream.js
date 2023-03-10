@@ -1,14 +1,14 @@
+import { bridgeDataConfig } from "@/data/config";
+import useXStream from "@/hooks/xStream/useXStream";
+import { getNetwork } from "@wagmi/core";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 import DatePicker from "./DatePicker";
 import DropSelect from "./DropSelect";
-import StreamInfo from "./StreamInfo";
-import { useAccount } from "wagmi";
-import { getNetwork, fetchBalance } from "@wagmi/core";
-import { bridgeDataConfig } from "@/data/config";
-import { ConnextIcon, GoerliIcon, PolygonIcon } from "./icons";
 import FlowRateModal from "./FLowrateModal";
-import useXStream from "@/hooks/xStream/useXStream";
+import StreamInfo from "./StreamInfo";
+import { ConnextIcon, GoerliIcon, PolygonIcon } from "./icons";
 
 const coins = [
   // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
@@ -40,14 +40,11 @@ const SendXStream = () => {
   const [toChain, setToChain] = useState(null);
   const [fromChain, setFromChain] = useState(null);
   const [receipient, setReceipient] = useState(null);
-  const [amount, setAmount] = useState(null);
-  const [token, setToken] = useState(null);
 
   const currentDate = new Date();
   const hoursToAdd = 6;
   currentDate.setTime(currentDate.getTime() + (hoursToAdd * 60 * 60 * 1000));
   const [endDate, setEndDate] = useState(dayjs(currentDate));
-  const [balance, setBalance] = useState(0);
 
   const { chain } = getNetwork();
 
@@ -84,18 +81,12 @@ const SendXStream = () => {
     }
   };
 
-  useEffect(() => {
-    if (token?.address) {
-        hookXStream.getBalance();
-    }
-  }, [token?.address, chain?.id]);
-
   return (
     <div className="main-container w-full h-screen ">
       <FlowRateModal
         isOpen={isOpen}
         selectedType={selectedType}
-        setAmount={setAmount}
+        setAmount={hookXStream.setAmount}
         setIsOpen={() => {
           setIsOpen(!isOpen);
         }}
@@ -124,8 +115,8 @@ const SendXStream = () => {
           />
           <div className="flex items-center justify-between gap-10">
             <DropSelect
-              selected={token}
-              setSelected={setToken}
+              selected={hookXStream.token}
+              setSelected={hookXStream.setToken}
               options={bridgeDataConfig[chain.id].acceptedTokens}
               placeholder={"Select a token"}
             />
@@ -133,8 +124,8 @@ const SendXStream = () => {
             <input
               className="rounded-lg w-full mt-9 px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
               placeholder="Select token value or flow rate"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              value={hookXStream.amount}
+              onChange={(e) => hookXStream.setAmount(e.target.value)}
             />
             {/* <DropSelect
               selected={selectedType}
@@ -156,17 +147,17 @@ const SendXStream = () => {
             /> */}
           </div>
           <div className="w-full h-[2px] bg-gray-300 mt-12" />
-          {toChain && fromChain && receipient && amount && token && endDate && (
+          {toChain && fromChain && receipient && hookXStream.amount && hookXStream.token && endDate && (
             <>
               <div className="flex items-center gap-4 mt-8 text-2xl px-3">
-                <p>Balance:</p> <p className="text-[#96D068]">{balance}</p>
+                <p>Balance:</p> <p className="text-[#96D068]">{hookXStream.balance}</p>
               </div>
               <StreamInfo
                 toChain={toChain}
                 fromChain={fromChain}
                 receipient={receipient}
-                amount={amount}
-                token={token}
+                amount={hookXStream.amount}
+                token={hookXStream.token}
                 endDate={endDate}
               />
 
