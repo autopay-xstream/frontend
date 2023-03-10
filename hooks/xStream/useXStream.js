@@ -10,6 +10,7 @@ import { parseEther } from "ethers/lib/utils.js";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
+import dayjs from "dayjs";
 
 const useXStream = () => {
   const { address, isConnected } = useAccount();
@@ -19,6 +20,11 @@ const useXStream = () => {
   const [amount, setAmount] = useState(null);
 
   const { chain } = getNetwork();
+
+  const currentDate = new Date();
+  const hoursToAdd = 6;
+  currentDate.setTime(currentDate.getTime() + (hoursToAdd * 60 * 60 * 1000));
+  const [endDate, setEndDate] = useState(dayjs(currentDate));
 
 
   const getBalance = async (token = {}) => {
@@ -167,6 +173,35 @@ const useXStream = () => {
     }
   };
 
+  const handleXStreamSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const ss = new Date(endDate.$d);
+      const dd = new Date();
+      console.log(ss < dd);
+      if (new Date(endDate.$d).getTime() < new Date().getTime()) {
+        alert("Invalid date time");
+        return;
+      }
+      if (
+        new Date(endDate.$d).getDate() === new Date().getDate() &&
+        new Date(endDate.$d).getHours() - new Date().getHours() < 6
+      ) {
+        alert("Select atleast 6 hours");
+        return;
+      }
+      // alert(toChain.name, fromChain.name);
+
+      if (toChain.name === fromChain.name) {
+        await sendStreamSameChain();
+      } else if (toChain.name !== fromChain.name) {
+        await sendStreamDifferentChain();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const querySubgraph = async (flowType) => {
     let flowEvents;
     if (flowType == "Incoming") {
@@ -183,12 +218,13 @@ const useXStream = () => {
     userEvents: userEvents,
     token: token,
     amount: amount,
+    endDate: endDate,
     setToken: setToken,
     querySubgraph: querySubgraph,
     setAmount: setAmount,
+    setEndDate: setEndDate,
     getBalance: getBalance,
-    sendStreamDifferentChain: sendStreamDifferentChain,
-    sendStreamSameChain: sendStreamSameChain,
+    handleXStreamSubmit: handleXStreamSubmit
   };
 };
 
