@@ -24,7 +24,6 @@ function Dashboard() {
   const { address, isConnected } = useAccount();
   // const [loading, setLoading] = useState(false);
   const [dropDown, setDropDown] = useState(true);
-  const [userEvents, setUserEvents] = useState([]);
   const [chain, setChain] = useState("goerli");
 
   const [dropDownAll, setDropDownAll] = useState(false);
@@ -188,58 +187,7 @@ function Dashboard() {
     setDropDownOutgoing(false);
   }, []);
 
-  const querySubgraph = async(flowType) => {
-    let xStream_Flow_Trigger;
-    if (flowType == "Incoming") {
-      xStream_Flow_Trigger = `
-      query {
-        xStreamFlowTriggers(
-          where : {selectedToken: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", receiver: "${address}"}
-        ) {
-          sender
-          receiver
-          selectedToken
-          flowRate
-          streamStatus
-          startTime
-          bufferFee
-          networkFee
-          destinationDomain
-          blockNumber
-          blockTimestamp
-          transactionHash
-        }
-      }
-    ` 
-    } else if (flowType == "Outgoing") {
-      xStream_Flow_Trigger = `
-    query {
-      xStreamFlowTriggers(
-        where : {selectedToken: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", sender: "${address}"}
-      ) {
-        sender
-        receiver
-        selectedToken
-        flowRate
-        streamStatus
-        startTime
-        bufferFee
-        networkFee
-        destinationDomain
-        blockNumber
-        blockTimestamp
-        transactionHash
-      }
-    }
-  `
-    }
-    
-  const res = await apolloClient.query({
-    query: gql(xStream_Flow_Trigger),
-  });
-  console.log("The graphql result ", res);
-  setUserEvents(res?.data?.xStreamFlowTriggers);
-  }
+  
 
   useEffect(() => {
     hookXStream.getBalance();
@@ -394,7 +342,7 @@ function Dashboard() {
                                           dropDownIncoming ? "active" : ""
                                         }
                                         onClick={() => {
-                                          querySubgraph("Incoming");
+                                          hookXStream.querySubgraph("Incoming");
                                           setDropDownAll(false);
                                           setDropDownIncoming(true);
                                           setDropDownOutgoing(false);
@@ -409,7 +357,7 @@ function Dashboard() {
                                           dropDownOutgoing ? "active" : ""
                                         }
                                         onClick={() => {
-                                          querySubgraph("Outgoing");
+                                          hookXStream.querySubgraph("Outgoing");
                                           setDropDownAll(false);
                                           setDropDownIncoming(false);
                                           setDropDownOutgoing(true);

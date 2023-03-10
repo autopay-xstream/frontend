@@ -5,16 +5,20 @@ import { Framework } from "@superfluid-finance/sdk-core";
 import { toast } from "react-toastify";
 import TestTokenAbi from "@/data/TestTokenAbi.json";
 import { parseEther } from "ethers/lib/utils.js";
+import { fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
+import { useAccount } from "wagmi";
 
 const useXStream = () => {
+  const { address, isConnected } = useAccount();
+  const [userEvents, setUserEvents] = useState([]);
 
   const getBalance = async () => {
     try {
       const { ethereum } = window;
       if (ethereum) {
         const tokenBalance = await fetchBalance({
-            address: address,
-            token: token?.address
+          address: address,
+          token: token?.address,
         });
         console.log("the current selected tokenbalance is ", tokenBalance);
         setBalance(tokenBalance.formatted);
@@ -23,33 +27,37 @@ const useXStream = () => {
       console.log(error);
     }
   };
-  
+
   const calculateFlowRate = (amountInEther) => {
     const now = new Date();
-  
+
     const endD = new Date(endDate);
     const timeDiff = Math.abs(endD.getTime() - now.getTime());
     console.log(timeDiff);
-  
+
     const amount = ethers.utils.parseEther(amountInEther.toString());
     const calculatedFlowRate = Math.floor(amount / timeDiff);
-  
+
     // alert(calculatedFlowRate);
-  
+
     return calculatedFlowRate;
   };
-  
+
   const sendStreamDifferentChain = async () => {
     try {
       if (typeof window.ethereum !== "undefined") {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
-  
+
         let tokenContract;
-  
+
         // currently on Goerli Testnet
-        tokenContract = new ethers.Contract(token?.address, TestTokenAbi, signer);
-  
+        tokenContract = new ethers.Contract(
+          token?.address,
+          TestTokenAbi,
+          signer
+        );
+
         try {
           let txn = await tokenContract.approve(
             bridgeDataConfig[chain.id].xstreamContractAddress,
@@ -60,7 +68,7 @@ const useXStream = () => {
           console.log("Error in approving tokens ", error);
           return;
         }
-  
+
         const flowRate = calculateFlowRate(amount);
         const contractAbi = chain?.id == 5 ? originAbi : destinationAbi;
         const originContract = new ethers.Contract(
@@ -68,7 +76,7 @@ const useXStream = () => {
           contractAbi,
           signer
         );
-  
+
         toast.info("Creating your XStream...");
         const transaction = await originContract._sendFlowMessage(
           //_sendFlowMessage
@@ -91,29 +99,29 @@ const useXStream = () => {
       toast.error(error.message);
     }
   };
-  
+
   const sendStreamSameChain = async () => {
     const senderAddress = address;
     const receiverAddress = receipient;
     const flowRate = amount;
-  
+
     try {
       const { ethereum } = window;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const account = await signer.getAddress();
-  
+
         const sf = await Framework.create({
           chainId: 5,
           provider: provider,
         });
-  
+
         const TOKENxContract = await sf.loadSuperToken(
           "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0"
         );
         const TOKENx = TOKENxContract.address;
-  
+
         try {
           const createFlowOperation = sf.cfaV1.createFlowByOperator({
             sender: senderAddress,
@@ -121,13 +129,13 @@ const useXStream = () => {
             flowRate: flowRate,
             superToken: TOKENx,
           });
-  
+
           console.log("Creating your stream...");
           toast.info("Creating your stream...");
-  
+
           const result = await createFlowOperation.exec(signer);
           console.log(result);
-  
+
           console.log(`Congrats - you've just created a money stream!`);
         } catch (error) {
           console.log(
@@ -144,11 +152,28 @@ const useXStream = () => {
     }
   };
 
+  const querySubgraph = async (flowType) => {
+    let xStream_Flow_Trigger;
+    if (flowType == "Incoming") {
+      fetchxStreamInflow(address);
+    } else if (flowType == "Outgoing") {
+      fetchxStreamOutflow(address);
+    }
+
+    const res = await apolloClient.query({
+      query: gql(xStream_Flow_Trigger),
+    });
+    console.log("The graphql result ", res);
+    setUserEvents(res?.data?.xStreamFlowTriggers);
+  };
+
   return {
+    userEvents: userEvents,
+    querySubgraph: querySubgraph,
     getBalance: getBalance,
     sendStreamDifferentChain: sendStreamDifferentChain,
-    sendStreamSameChain: sendStreamSameChain
-  }
-}
+    sendStreamSameChain: sendStreamSameChain,
+  };
+};
 
 export default useXStream;
