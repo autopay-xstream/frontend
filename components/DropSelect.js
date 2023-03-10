@@ -42,8 +42,7 @@ export default function DropSelect({
                 <Listbox.Option
                   key={personIdx}
                   className={({ active }) =>
-                    `relative cursor-pointer select-none py-4  px-4 ${
-                      active ? "bg-[#96D068] text-white" : "text-gray-900"
+                    `relative cursor-pointer select-none py-4  px-4 ${active ? "bg-[#96D068] text-white" : "text-gray-900"
                     }`
                   }
                   value={person}
@@ -52,9 +51,8 @@ export default function DropSelect({
                     <div className="flex items-center justify-start">
                       <span className="mr-3">{person.icon}</span>
                       <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal "
-                        } capitalize`}
+                        className={`block truncate ${selected ? "font-medium" : "font-normal "
+                          } capitalize`}
                       >
                         {person.name}
                       </span>

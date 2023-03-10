@@ -1,13 +1,19 @@
 import { ethers } from 'ethers';
 import React from 'react'
 
+const getEclipsed = (address) => {
+    const firstFour = address.slice(0, 10);
+    const lastFour = address.slice(address.length - 10, address.length);
+    return `${firstFour}...${lastFour}`;
+}
+
 const StreamInfo = ({
-  toChain,
-  fromChain,
-  receipient,
-  amount,
-  token,
-  endDate,
+    toChain,
+    fromChain,
+    receipient,
+    amount,
+    token,
+    endDate,
 }) => {
 
     const calculateFlowRate = (amountInEther) => {
@@ -19,6 +25,8 @@ const StreamInfo = ({
         const calculatedFlowRate = Math.floor(amount / timeDiff);
         return calculatedFlowRate / 10 ** 18;
     }
+
+
 
 
     return (
@@ -35,7 +43,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm font-semibold m-0 w-[174px] leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        {receipient}
+                        {getEclipsed(receipient)}
                     </p>
                 </div>
                 <div className="flex justify-between items-center w-full">
@@ -71,7 +79,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm capitalize font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        {calculateFlowRate(amount.toString())} {token.name} / second
+                        {amount} {token.name}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">
@@ -89,7 +97,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        0.066667 USDCx
+                        {calculateFlowRate(amount.toString()) * 21600} {token.name}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">
@@ -105,7 +113,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        0.00420  USDCx
+                        0.07  Ether
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">
@@ -117,19 +125,19 @@ const StreamInfo = ({
                     <p
                         className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        1197.546721  USDCx
+                        {amount - calculateFlowRate(amount.toString()) * 21600}  {token.name}
                     </p>
                 </div>
                 <div className="flex justify-between items-start w-full">
                     <p
-                        className="text-sm font-normal m-0 leading-[normal] text-[rgba(70,70,70,1)]"
+                        className="text-sm font-normal m-0 capitalize leading-[normal] text-[rgba(70,70,70,1)]"
                     >
-                        {"Token streamed per second on {destination} Chain"}
+                        {`Token streamed per second on ${toChain.name} Chain`}
                     </p>
                     <p
                         className="text-sm font-semibold m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        0.000004629629629629 USDCx
+                        {calculateFlowRate(amount.toString())} {token.name} / second
                     </p>
                 </div>
             </div>

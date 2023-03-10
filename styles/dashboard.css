@@ -267,7 +267,8 @@ table tr {
   background: none rgb(255, 255, 255);
 }
 table td {
-  padding: 10px 32px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgb(207, 207, 207);
 }
 td table {
   width: 100%;
