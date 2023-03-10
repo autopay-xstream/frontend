@@ -1,12 +1,12 @@
 import {ApolloClient, createHttpLink, InMemoryCache} from "@apollo/client";
 import {setContext} from "@apollo/client/link/context";
-import { getNetwork } from "@wagmi/core";
-import { bridgeDataConfig } from "@/data/config";
 
-const {chain} = getNetwork();
+
+const TESTNET_URL_GOERLI = "https://api.thegraph.com/subgraphs/name/aditya172926/xstream";
+const TESTNET_URL_MUMBAI = "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai";
 
 const httpLink = createHttpLink({
-    uri: bridgeDataConfig[chain?.id],
+    uri: TESTNET_URL_GOERLI,
 });
 
 const authLink = setContext((_, {headers}) => {

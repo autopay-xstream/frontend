@@ -7,6 +7,7 @@ import TestTokenAbi from "@/data/TestTokenAbi.json";
 import { parseEther } from "ethers/lib/utils.js";
 import { fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
 import { useAccount } from "wagmi";
+import {useState} from "react";
 
 const useXStream = () => {
   const { address, isConnected } = useAccount();
@@ -153,18 +154,14 @@ const useXStream = () => {
   };
 
   const querySubgraph = async (flowType) => {
-    let xStream_Flow_Trigger;
+    let flowEvents;
     if (flowType == "Incoming") {
-      fetchxStreamInflow(address);
+      flowEvents = await fetchxStreamInflow(address);
     } else if (flowType == "Outgoing") {
-      fetchxStreamOutflow(address);
+      flowEvents = await fetchxStreamOutflow(address);
     }
-
-    const res = await apolloClient.query({
-      query: gql(xStream_Flow_Trigger),
-    });
-    console.log("The graphql result ", res);
-    setUserEvents(res?.data?.xStreamFlowTriggers);
+    console.log("Result data ", flowEvents.data);
+    setUserEvents(flowEvents.data.xStreamFlowTriggers);
   };
 
   return {
