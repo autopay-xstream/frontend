@@ -4,7 +4,7 @@ import Blockies from "react-blockies";
 
 function ConnectWalletCustom() {
   return (
-    <div className="font-poppins"> 
+    <div className="font-poppins">
       <ConnectButton.Custom>
         {({
           account,
@@ -90,34 +90,6 @@ function ConnectWalletCustom() {
                     style={{ display: "flex", gap: 12 }}
                     className="parent-custom-connect-button font-poppins"
                   >
-                    {/* <button
-                      onClick={openChainModal}
-                      style={{ display: "flex", alignItems: "center" }}
-                      type="button"
-                    >
-                      {chain.hasIcon && (
-                        <div
-                          style={{
-                            background: chain.iconBackground,
-                            width: 12,
-                            height: 12,
-                            borderRadius: 999,
-                            overflow: "hidden",
-                            marginRight: 4,
-                          }}
-                        >
-                          {chain.iconUrl && (
-                            <img
-                              alt={chain.name ?? "Chain icon"}
-                              src={chain.iconUrl}
-                              style={{ width: 12, height: 12 }}
-                            />
-                          )}
-                        </div>
-                      )}
-                      {chain.name}
-                    </button> */}
-
                     <button
                       onClick={() => openAccountModal()}
                       type="button"
@@ -147,32 +119,6 @@ function ConnectWalletCustom() {
           );
         }}
       </ConnectButton.Custom>
-      {/* {openConnectModal && (
-        <button onClick={openConnectModal} type="button">
-          Open Connect Modal
-        </button>
-      )}
-
-      {openAccountModal && (
-        <button onClick={openAccountModal} type="button">
-          Open Account Modal
-        </button>
-      )} */}
-
-      {/* {openChainModal && (
-        <button onClick={openChainModal} type="button">
-          Open Chain Modal
-        </button>
-      )} */}
-      {/* {openConnectModal ? (
-        <button onClick={openConnectModal} type="button">
-          Open Connect Modal
-        </button>
-      ) : openAccountModal ? (
-        <button onClick={openAccountModal} type="button">
-          Open Account Modal
-        </button>
-      ) : null} */}
     </div>
   );
 }

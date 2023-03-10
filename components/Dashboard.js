@@ -1,20 +1,17 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import React, { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useEffect, useState } from "react";
 import { createClient } from "urql";
-import { getTransactionDescription } from "@superfluid-finance/sdk-core";
-import ConnectWalletCustom from "./ConnectWalletCustom";
-import gif from "../public/stream-loop.gif";
+import { useAccount } from "wagmi";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
 import avatar4 from "../public/avatar4.png";
+import gif from "../public/stream-loop.gif";
+import ConnectWalletCustom from "./ConnectWalletCustom";
 
 import Image from "next/image";
 
-import { sign } from "crypto";
-import { ethers } from "ethers";
 import { Framework } from "@superfluid-finance/sdk-core";
+import { ethers } from "ethers";
 import ChainSelect from "./ChainSelect";
 
 function Dashboard() {
@@ -47,8 +44,6 @@ function Dashboard() {
     "Nov",
     "Dec",
   ];
-
-  console.log(chain);
 
   const loadData = async () => {
     if (!address) {
