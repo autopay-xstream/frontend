@@ -39,7 +39,6 @@ function Dashboard() {
   const [incomingData, setIncomingData] = useState([]);
   const [outgoingData, setOutgoingData] = useState([]);
   const [total, setTotal] = useState([]);
-  const [balance, setBalane] = useState();
   const monthNames = [
     "Jan",
     "Feb",

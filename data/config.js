@@ -19,6 +19,7 @@ export const bridgeDataConfig = {
         type: "erc20",
       },
     ],
+    subGraphURL: "https://api.thegraph.com/subgraphs/name/aditya172926/xstream"
   },
   80001: {
     //mumbai testnet
@@ -27,19 +28,21 @@ export const bridgeDataConfig = {
     xstreamContractAddress: "0x489a8D2A9c5a1f18eBd07E0D27d007550faE9B19", // contract deployed on Mumbai testnet
     connextDomainId: 9991,
     acceptedTokens: [
-        // {
-        //   address: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
-        //   name: "TESTx",
-        //   type: "superToken",
-        // },
-        {
-          address: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
-          name: "TEST",
-          type: "erc20",
-        },
-      ],
+      // {
+      //   address: "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A",
+      //   name: "TESTx",
+      //   type: "superToken",
+      // },
+      {
+        address: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
+        name: "TEST",
+        type: "erc20",
+      },
+    ],
+    subGraphURL: "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai"
   },
-  100: { // Gnosis Mainnet Chain
+  100: {
+    // Gnosis Mainnet Chain
     erc20TokenAddress: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83", // USDC on gnosis
     superTokenAddress: "0x1234756ccf0660E866305289267211823Ae86eEc", // USDCx on gnosis
     xstreamContractAddress: "", // Contract deployed on gnosis
@@ -48,11 +51,13 @@ export const bridgeDataConfig = {
       {
         address: "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
         name: "USDC",
-        type: "erc20"
-      }
-    ]
+        type: "erc20",
+      },
+    ],
+    subGraphURL: ""
   },
-  137: { // Polygon Mainnet
+  137: {
+    // Polygon Mainnet
     erc20TokenAddress: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", // USDC on Polygon
     superTokenAddress: "0xCAa7349CEA390F89641fe306D93591f87595dc1F", // USDCx on Polygon
     xstreamContractAddress: "", // Contract deployed on Polygon
@@ -61,8 +66,9 @@ export const bridgeDataConfig = {
       {
         address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
         name: "USDC",
-        type: "erc20"
-      }
-    ]
-  }
+        type: "erc20",
+      },
+    ],
+    subGraphURL: ""
+  },
 };
