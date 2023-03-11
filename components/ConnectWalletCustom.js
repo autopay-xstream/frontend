@@ -4,7 +4,7 @@ import Blockies from "react-blockies";
 
 function ConnectWalletCustom() {
   return (
-    <div className="font-poppins"> 
+    <div className="font-poppins">
       <ConnectButton.Custom>
         {({
           account,
@@ -90,8 +90,6 @@ function ConnectWalletCustom() {
                     style={{ display: "flex", gap: 12 }}
                     className="parent-custom-connect-button font-poppins"
                   >
-            
-
                     <button
                       onClick={() => openAccountModal()}
                       type="button"
@@ -121,7 +119,6 @@ function ConnectWalletCustom() {
           );
         }}
       </ConnectButton.Custom>
-    
     </div>
   );
 }

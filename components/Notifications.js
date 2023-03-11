@@ -3,44 +3,22 @@ import Image from "next/image";
 import React, { Component, useEffect, useState } from "react";
 import { apolloClient } from "@/helpers/apollo";
 import { gql } from "@apollo/client";
-import { truncateAddress } from "@/helpers/formatHelper";
+import { formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
+import { fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
+import { subgraphURIs } from "@/data/config";
 
 export default function Notifications(props) {
   const [userEvents, setUserEvents] = useState([]);
 
-  const querySubgraph = async() => {
-    const xStream_Flow_Trigger = `
-    query {
-      xStreamFlowTriggers(
-        where : {sender: "${props.address}"}
-      ) {
-        sender
-        receiver
-        selectedToken
-        flowRate
-        streamStatus
-        startTime
-        bufferFee
-        networkFee
-        destinationDomain
-        blockNumber
-        blockTimestamp
-        transactionHash
-      }
-    }
-  `
-
-  const res = await apolloClient.query({
-    query: gql(xStream_Flow_Trigger),
-  });
-  console.log("The graphql result ", res);
-  setUserEvents(res?.data?.xStreamFlowTriggers);
-  }
-
   useEffect(() => {
     if (props.address) {
       console.log("calling the subgraph");
-      querySubgraph();
+      const getEvents = async () => {
+        const result = await fetchxStreamOutflow(props.address.toString(), props.subgraphURI);
+        console.log(result);
+        setUserEvents(result.data?.xStreamFlowTriggers);
+      }
+      getEvents();
     }
   }, [props.address]);
 
@@ -53,7 +31,7 @@ export default function Notifications(props) {
               <TableHead>Status Update</TableHead>
               <TableHead>Receipient</TableHead>
               <TableHead>Token Amount</TableHead>
-              <TableHead>Amount/month</TableHead>
+              <TableHead>Amount/day</TableHead>
               <TableHead></TableHead>
             </tr>
           </thead>
@@ -65,7 +43,7 @@ export default function Notifications(props) {
               <TableData>{item.streamStatus == 1? "Initiated" : "Updated"}</TableData>
               <TableData>{truncateAddress(item.receiver)}</TableData>
               <TableData></TableData>
-              <TableData>{item.flowRate}</TableData>
+              <TableData>{formatFlowrate(item.flowRate)}</TableData>
               <TableData>
                 <Image
                   src={require("../image/link.png")}
