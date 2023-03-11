@@ -1,4 +1,8 @@
-import { formatDate, formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
+import {
+  formatDate,
+  formatFlowrate,
+  truncateAddress,
+} from "@/helpers/formatHelper";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
@@ -21,6 +25,7 @@ function Dashboard(props) {
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
+  const [chain, setChain] = useState("goerli");
 
   // custom hooks
   const hookXStream = useXStream();
@@ -34,17 +39,22 @@ function Dashboard(props) {
     setDropDownOutgoing(false);
   }, []);
 
-
   useEffect(() => {
-    if (address)
-      hookXStream.getBalance(bridgeDataConfig[props.chain.id].erc20TokenAddress);
-    hookXStream.getTokenNetFlowRate(bridgeDataConfig[props.chain.id].superTokenAddress, subgraphURIs["superfluid"][props.chain.id]);
+    if (address) {
+      hookXStream.getBalance(
+        bridgeDataConfig[props.chain?.id].erc20TokenAddress
+      );
+      hookXStream.getTokenNetFlowRate(
+        bridgeDataConfig[props.chain?.id].superTokenAddress,
+        subgraphURIs["superfluid"][props.chain?.id]
+      );
+    }
   }, [address, props.chain]);
 
   if (isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <ChainSelect chain={props.chain.name} />
+        <ChainSelect chain={chain} setChain={setChain} />
         <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
           <div className="db-box-parent">
             <div className="db-box bg-white rounded-lg">
@@ -168,7 +178,7 @@ function Dashboard(props) {
                       </td>
                     </tr>
 
-                    {dropDown &&
+                    {dropDown && (
                       <tr>
                         <td colSpan={5} className="dropdown-table-td">
                           <div>
@@ -183,7 +193,12 @@ function Dashboard(props) {
                                             dropDownIncoming ? "active" : ""
                                           }
                                           onClick={() => {
-                                            hookXStream.querySubgraph("Incoming", subgraphURIs['xstream'][props.chain.id]);
+                                            hookXStream.querySubgraph(
+                                              "Incoming",
+                                              subgraphURIs["xstream"][
+                                                props.chain.id
+                                              ]
+                                            );
                                             setDropDownAll(false);
                                             setDropDownIncoming(true);
                                             setDropDownOutgoing(false);
@@ -198,7 +213,12 @@ function Dashboard(props) {
                                             dropDownOutgoing ? "active" : ""
                                           }
                                           onClick={() => {
-                                            hookXStream.querySubgraph("Outgoing", subgraphURIs['xstream'][props.chain.id]);
+                                            hookXStream.querySubgraph(
+                                              "Outgoing",
+                                              subgraphURIs["xstream"][
+                                                props.chain.id
+                                              ]
+                                            );
                                             setDropDownAll(false);
                                             setDropDownIncoming(false);
                                             setDropDownOutgoing(true);
@@ -229,13 +249,9 @@ function Dashboard(props) {
                                   hookXStream.userEvents?.map((item, key) => {
                                     return (
                                       <tr key={key}>
-                                        <td>
-                                          {truncateAddress(item.address)}
-                                        </td>
+                                        <td>{truncateAddress(item.address)}</td>
                                         <td>{formatFlowrate(item.flowRate)}</td>
-                                        <td>
-                                          -
-                                        </td>
+                                        <td>-</td>
                                         <td>{formatDate(item.startTime)}</td>
                                       </tr>
                                     );
@@ -249,9 +265,7 @@ function Dashboard(props) {
                                           {truncateAddress(item.receiver)}
                                         </td>
                                         <td>{formatFlowrate(item.flowRate)}</td>
-                                        <td>
-                                          -
-                                        </td>
+                                        <td>-</td>
                                         <td>{formatDate(item.startTime)}</td>
                                       </tr>
                                     );
@@ -261,13 +275,9 @@ function Dashboard(props) {
                                   hookXStream.userEvents?.map((item, key) => {
                                     return (
                                       <tr key={key}>
-                                        <td>
-                                          {truncateAddress(item.sender)}
-                                        </td>
+                                        <td>{truncateAddress(item.sender)}</td>
                                         <td>{formatFlowrate(item.flowRate)}</td>
-                                        <td>
-                                          -
-                                        </td>
+                                        <td>-</td>
                                         <td>{formatDate(item.startTime)}</td>
                                       </tr>
                                     );
@@ -276,11 +286,11 @@ function Dashboard(props) {
                             </table>
                           </div>
                         </td>
-                      </tr>}
+                      </tr>
+                    )}
 
                     {/* <DashboardRow /> */}
                   </tbody>
-
                 </table>
               </div>
             </div>

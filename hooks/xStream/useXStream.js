@@ -87,7 +87,7 @@ const useXStream = () => {
 
         try {
           let txn = await tokenContract.approve(
-            bridgeDataConfig[chain.id].xstreamContractAddress,
+            bridgeDataConfig[chain?.id].xstreamContractAddress,
             parseEther(amount)
           );
           await txn.wait();
@@ -99,7 +99,7 @@ const useXStream = () => {
         const flowRate = calculateFlowRate(amount);
         const contractAbi = chain?.id == 5 ? originAbi : destinationAbi;
         const originContract = new ethers.Contract(
-          bridgeDataConfig[chain.id].xstreamContractAddress,
+          bridgeDataConfig[chain?.id].xstreamContractAddress,
           contractAbi,
           signer
         );

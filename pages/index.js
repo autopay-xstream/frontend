@@ -103,7 +103,7 @@ export default function Home() {
                 <SendXStream />
               ) : showNotification ? (
                 <Notifications
-                  subgraphURI = {subgraphURIs['xstream'][chain.id]}
+                  subgraphURI = {subgraphURIs['xstream'][chain?.id]}
                   address={connectedWallet.address}
 
                 />
