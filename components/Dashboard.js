@@ -1,31 +1,23 @@
+import { formatDate, formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { createClient } from "urql";
 import { useAccount } from "wagmi";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
 import avatar4 from "../public/avatar4.png";
 import gif from "../public/stream-loop.gif";
+import ChainSelect from "./ChainSelect";
 import ConnectWalletCustom from "./ConnectWalletCustom";
 
-import Image from "next/image";
-
-import { apolloClient } from "@/helpers/apollo";
-import { truncateAddress } from "@/helpers/formatHelper";
-import { gql } from "@apollo/client";
-import { ethers } from "ethers";
-import ChainSelect from "./ChainSelect";
+// custom hooks
+import { bridgeDataConfig, subgraphURIs } from "@/data/config";
+import useXStream from "@/hooks/xStream/useXStream";
 import DashboardRow from "./DashboardRow";
 
-// custom hooks
-import useXStream from "@/hooks/xStream/useXStream";
-
-function Dashboard() {
+function Dashboard(props) {
   const { address, isConnected } = useAccount();
-  // const [loading, setLoading] = useState(false);
-  const [dropDown, setDropDown] = useState(true);
-  const [chain, setChain] = useState("goerli");
-
+  const [dropDown, setDropDown] = useState(false);
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
@@ -34,152 +26,7 @@ function Dashboard() {
   const hookXStream = useXStream();
 
   //integration
-  const [allData, setAllData] = useState([]);
-  const [incomingData, setIncomingData] = useState([]);
-  const [outgoingData, setOutgoingData] = useState([]);
   const [total, setTotal] = useState([]);
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  const loadData = async () => {
-    if (!address) {
-      console.log("false");
-      return;
-    }
-
-    // const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai`;
-    const APIURL = `https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-${chain}`;
-
-    const tokensQuery_outgoing = `
-    query {
-    flowUpdatedEvents(
-      where: {sender: "${address}"}
-      orderBy: timestamp
-    ) {
-      timestamp
-      sender
-      receiver
-      flowRate
-      totalAmountStreamedUntilTimestamp
-      flowOperator
-      token
-    }
-    }
-  `;
-
-    const tokensQuery_incoming = `
-    query {
-    flowUpdatedEvents(
-      where: {receiver: "${address}"}
-      orderBy: timestamp
-    ) {
-      timestamp
-      sender
-      receiver
-      flowRate
-      totalAmountStreamedUntilTimestamp
-      flowOperator
-      token
-    }
-    }
-  `;
-
-    const client = createClient({
-      url: APIURL,
-    });
-    const loadedData_outgoing = await client
-      .query(tokensQuery_outgoing)
-      .toPromise();
-
-    const loadedData_incoming = await client
-      .query(tokensQuery_incoming)
-      .toPromise();
-
-    const data = loadedData_outgoing.data.flowUpdatedEvents;
-    const data1 = loadedData_incoming.data.flowUpdatedEvents;
-
-    total.push([data.length + data1.length, data.length, data1.length]);
-    setTotal(total);
-
-    console.log("** DEBUG", loadedData_outgoing);
-    console.log("** DEBUG", loadedData_incoming);
-
-    data.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
-    data1.sort((a, b) => parseInt(b.timestamp) - parseInt(a.timestamp));
-
-    for (let i = 0; i < data.length; i++) {
-      if (!outgoingData.find((item) => loadedData_outgoing[0] === item[0])) {
-        const d = new Date(parseInt(data[i].timestamp) * 1000);
-        const date =
-          String(d.getDate()) +
-          " " +
-          String(monthNames[d.getMonth()]) +
-          ". " +
-          String(d.getFullYear());
-        outgoingData.push([
-          data[i].sender,
-          data[i].receiver,
-          data[i].flowOperator,
-          ethers.utils.formatEther(data[i].totalAmountStreamedUntilTimestamp),
-          date,
-        ]);
-        allData.push([
-          data[i].receiver,
-          data[i].flowOperator,
-          ethers.utils.formatEther(data[i].totalAmountStreamedUntilTimestamp),
-          date,
-          true,
-          data[i].timestamp,
-        ]);
-      }
-    }
-
-    for (let i = 0; i < data1.length; i++) {
-      if (!incomingData.find((item) => loadedData_incoming[0] === item[0])) {
-        const d = new Date(parseInt(data1[i].timestamp) * 1000);
-        const date =
-          String(d.getDate()) +
-          " " +
-          String(monthNames[d.getMonth()]) +
-          ". " +
-          String(d.getFullYear());
-        incomingData.push([
-          data1[i].sender,
-          data1[i].receiver,
-          data1[i].flowOperator,
-          ethers.utils.formatEther(data1[i].totalAmountStreamedUntilTimestamp),
-          date,
-        ]);
-        allData.push([
-          data1[i].sender,
-          data1[i].flowOperator,
-          ethers.utils.formatEther(data1[i].totalAmountStreamedUntilTimestamp),
-          date,
-          false,
-          data1[i].timestamp,
-        ]);
-      }
-    }
-    allData.sort((a, b) => parseInt(b[5]) - parseInt(a[5]));
-
-    setOutgoingData(outgoingData);
-    setIncomingData(incomingData);
-    setAllData(allData);
-  };
-
-  
 
   useEffect(() => {
     setDropDownAll(true);
@@ -187,34 +34,28 @@ function Dashboard() {
     setDropDownOutgoing(false);
   }, []);
 
-  
 
   useEffect(() => {
-    hookXStream.getBalance();
-    loadData();
-  }, [address, chain]);
+    if (address)
+      hookXStream.getBalance(bridgeDataConfig[props.chain.id].erc20TokenAddress);
+    hookXStream.getTokenNetFlowRate(bridgeDataConfig[props.chain.id].superTokenAddress, subgraphURIs["superfluid"][props.chain.id]);
+  }, [address, props.chain]);
 
   if (isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <ChainSelect chain={chain} setChain={setChain} />
+        <ChainSelect chain={props.chain.name} />
         <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
-          {/* <button onClick={() => loadData()}>click</button> */}
-          {/* <p>Connect your wallet, view any wallet, or take a look around!</p> */}
           <div className="db-box-parent">
-            {/* <h1 className="super-token">"Super Token"</h1> */}
-
             <div className="db-box bg-white rounded-lg">
               <div className="token-details pt-4">
                 <table>
                   <thead>
                     <tr>
-                      <th>Receipient</th>
-                      <th>End Date</th>
-                      <th>Token</th>
-                      <th>Amount / month</th>
-                      <th>Amount Streamed</th>
+                      <th>Asset</th>
                       <th>Balance</th>
+                      <th>Net Flow/day</th>
+                      <th>Amount Streamed</th>
                       <th>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +79,6 @@ function Dashboard() {
                       </th>
                     </tr>
                   </thead>
-                  {/* <div className="bg-[#CFCFCF] w-[300px]  flex flex-grow h-[1px]" /> */}
 
                   <tbody>
                     <tr>
@@ -300,15 +140,15 @@ function Dashboard() {
                           <h4 className="fdaix">TEST</h4>
                         </div>
                       </td>
-                      <td>-</td>
+                      <td>{hookXStream.balance}</td>
+                      <td>{hookXStream.testFlowRate}</td>
                       <td>-</td>
                       <td>
                         <div
                           className="parent-drop-down"
                           onClick={() => {
-                            // loadData();
-                            // setDropDown(!dropDown);
-                            // setDropDownAll(!dropDownAll);
+                            setDropDown(!dropDown);
+                            setDropDownAll(!dropDownAll);
                           }}
                         >
                           <svg
@@ -328,124 +168,117 @@ function Dashboard() {
                       </td>
                     </tr>
 
-                    <tr>
-                      <td colSpan={5} className="dropdown-table-td">
-                        <div>
-                          <table className="dropdown-table">
-                            <thead>
-                              <tr>
-                                <td colSpan={6} className="dropdown-table-td">
-                                  <div className="dropdown-row">
-                                    <div className="dropdown-btn-parent">
-                                      <button
-                                        className={
-                                          dropDownIncoming ? "active" : ""
-                                        }
-                                        onClick={() => {
-                                          hookXStream.querySubgraph("Incoming");
-                                          setDropDownAll(false);
-                                          setDropDownIncoming(true);
-                                          setDropDownOutgoing(false);
-                                        }}
-                                      >
-                                        {total.length > 0
-                                          ? "Incoming (" + total[0][2] + ")"
-                                          : "Incoming"}
-                                      </button>
-                                      <button
-                                        className={
-                                          dropDownOutgoing ? "active" : ""
-                                        }
-                                        onClick={() => {
-                                          hookXStream.querySubgraph("Outgoing");
-                                          setDropDownAll(false);
-                                          setDropDownIncoming(false);
-                                          setDropDownOutgoing(true);
-                                        }}
-                                      >
-                                        {total.length > 0
-                                          ? "Outgoing (" + total[0][1] + ")"
-                                          : "Outgoing"}
-                                      </button>
+                    {dropDown &&
+                      <tr>
+                        <td colSpan={5} className="dropdown-table-td">
+                          <div>
+                            <table className="dropdown-table">
+                              <thead>
+                                <tr>
+                                  <td colSpan={6} className="dropdown-table-td">
+                                    <div className="dropdown-row">
+                                      <div className="dropdown-btn-parent">
+                                        <button
+                                          className={
+                                            dropDownIncoming ? "active" : ""
+                                          }
+                                          onClick={() => {
+                                            hookXStream.querySubgraph("Incoming", subgraphURIs['xstream'][props.chain.id]);
+                                            setDropDownAll(false);
+                                            setDropDownIncoming(true);
+                                            setDropDownOutgoing(false);
+                                          }}
+                                        >
+                                          {total.length > 0
+                                            ? "Incoming (" + total[0][2] + ")"
+                                            : "Incoming"}
+                                        </button>
+                                        <button
+                                          className={
+                                            dropDownOutgoing ? "active" : ""
+                                          }
+                                          onClick={() => {
+                                            hookXStream.querySubgraph("Outgoing", subgraphURIs['xstream'][props.chain.id]);
+                                            setDropDownAll(false);
+                                            setDropDownIncoming(false);
+                                            setDropDownOutgoing(true);
+                                          }}
+                                        >
+                                          {total.length > 0
+                                            ? "Outgoing (" + total[0][1] + ")"
+                                            : "Outgoing"}
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th>{dropDownIncoming ? "From" : "To"}</th>
-                                <th>All Time Flow</th>
-                                <th>Flow Rate</th>
-                                <th>Flow Operator</th>
-                                <th>Start / End Date</th>
-                                <th></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {/**************all flow data************/}
-                              {dropDownAll &&
-                                hookXStream.userEvents?.map((item, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td>
-                                        {truncateAddress(item.address)}
-                                      </td>
-                                      <td>-</td>
-                                      <td>{item.flowRate}</td>
-                                      <td>
-                                        -
-                                        {/* {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)} */}
-                                      </td>
-                                      <td>{item.startTime}</td>
-                                    </tr>
-                                  );
-                                })}
-                              {/**************outgoing flow data************/}
-                              {dropDownOutgoing &&
-                                hookXStream.userEvents?.map((item, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td>
-                                        {truncateAddress(item.receiver)}
-                                      </td>
-                                      <td>-</td>
-                                      <td>{item.flowRate}</td>
-                                      <td>
-                                        -
-                                        {/* {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)} */}
-                                      </td>
-                                      <td>{item.startTime}</td>
-                                    </tr>
-                                  );
-                                })}
-                              {/**************incoming flow data************/}
-                              {dropDownIncoming &&
-                                hookXStream.userEvents?.map((item, key) => {
-                                  return (
-                                    <tr key={key}>
-                                      <td>
-                                        {truncateAddress(item.sender)}
-                                      </td>
-                                      <td>-</td>
-                                      <td>{item.flowRate}</td>
-                                      <td>
-                                        -
-                                        {/* {item[1].slice(0, 5)}...
-                                        {item[1].slice(38, 42)} */}
-                                      </td>
-                                      <td>{item.startTime}</td>
-                                    </tr>
-                                  );
-                                })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </td>
-                    </tr>
+                                  </td>
+                                </tr>
+                              </thead>
 
+                              <thead>
+                                <tr>
+                                  <th>Receiver</th>
+                                  <th>Net Flow/day</th>
+                                  <th>Amount Streamed</th>
+                                  <th>Start time</th>
+                                </tr>
+                              </thead>
 
-                    <DashboardRow />
+                              <tbody>
+                                {/**************all flow data************/}
+                                {dropDownAll &&
+                                  hookXStream.userEvents?.map((item, key) => {
+                                    return (
+                                      <tr key={key}>
+                                        <td>
+                                          {truncateAddress(item.address)}
+                                        </td>
+                                        <td>{formatFlowrate(item.flowRate)}</td>
+                                        <td>
+                                          -
+                                        </td>
+                                        <td>{formatDate(item.startTime)}</td>
+                                      </tr>
+                                    );
+                                  })}
+                                {/**************outgoing flow data************/}
+                                {dropDownOutgoing &&
+                                  hookXStream.userEvents?.map((item, key) => {
+                                    return (
+                                      <tr key={key}>
+                                        <td>
+                                          {truncateAddress(item.receiver)}
+                                        </td>
+                                        <td>{formatFlowrate(item.flowRate)}</td>
+                                        <td>
+                                          -
+                                        </td>
+                                        <td>{formatDate(item.startTime)}</td>
+                                      </tr>
+                                    );
+                                  })}
+                                {/**************incoming flow data************/}
+                                {dropDownIncoming &&
+                                  hookXStream.userEvents?.map((item, key) => {
+                                    return (
+                                      <tr key={key}>
+                                        <td>
+                                          {truncateAddress(item.sender)}
+                                        </td>
+                                        <td>{formatFlowrate(item.flowRate)}</td>
+                                        <td>
+                                          -
+                                        </td>
+                                        <td>{formatDate(item.startTime)}</td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>}
+
+                    {/* <DashboardRow /> */}
                   </tbody>
 
                 </table>

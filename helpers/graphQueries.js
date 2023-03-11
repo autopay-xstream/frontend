@@ -33,7 +33,14 @@ query outgoingStreamEvents ($sender: Bytes) {
     }
 }
 `
-
+export const TOKEN_STATISTICS = `
+  query tokenStreamInfo ($tokenAddress: Bytes) {
+    tokenStatistics (where: {token: $tokenAddress}){
+      totalOutflowRate
+      totalNumberOfActiveStreams
+    }
+  }
+`
 ////////////////////////////////// xStream ////////////////////////////////////
 export const xSTREAM_INFLOW = `
   query xStreamInflow($receiver: Bytes) {

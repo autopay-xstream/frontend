@@ -1,4 +1,3 @@
-import { ConnextIcon } from "@/components/icons";
 
 export const bridgeDataConfig = {
   5: {
@@ -18,8 +17,7 @@ export const bridgeDataConfig = {
         name: "TEST",
         type: "erc20",
       },
-    ],
-    subGraphURL: "https://api.thegraph.com/subgraphs/name/aditya172926/xstream"
+    ]
   },
   80001: {
     //mumbai testnet
@@ -38,8 +36,7 @@ export const bridgeDataConfig = {
         name: "TEST",
         type: "erc20",
       },
-    ],
-    subGraphURL: "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai"
+    ]
   },
   100: {
     // Gnosis Mainnet Chain
@@ -53,8 +50,7 @@ export const bridgeDataConfig = {
         name: "USDC",
         type: "erc20",
       },
-    ],
-    subGraphURL: ""
+    ]
   },
   137: {
     // Polygon Mainnet
@@ -68,7 +64,18 @@ export const bridgeDataConfig = {
         name: "USDC",
         type: "erc20",
       },
-    ],
-    subGraphURL: ""
+    ]
   },
 };
+
+
+export const subgraphURIs = {
+  "xstream": {
+    5: "https://api.thegraph.com/subgraphs/name/aditya172926/xstream",
+    80001: "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai"
+  },
+  "superfluid": {
+    5: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli",
+    80001: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai"
+  }
+}

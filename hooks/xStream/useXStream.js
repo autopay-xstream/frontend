@@ -2,7 +2,7 @@ import TestTokenAbi from "@/data/TestTokenAbi.json";
 import { bridgeDataConfig } from "@/data/config";
 import destinationAbi from "@/data/destinationAbi.json";
 import originAbi from "@/data/originAbi.json";
-import { fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
+import { fetchTokenStatistic, fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { fetchBalance, getNetwork } from "@wagmi/core";
 import { ethers } from "ethers";
@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
 import dayjs from "dayjs";
+import { formatFlowrate } from "@/helpers/formatHelper";
 
 const useXStream = () => {
   const { address, isConnected } = useAccount();
@@ -18,6 +19,10 @@ const useXStream = () => {
   const [balance, setBalance] = useState(0);
   const [token, setToken] = useState(null);
   const [amount, setAmount] = useState(null);
+  const [toChain, setToChain] = useState(null);
+  const [fromChain, setFromChain] = useState(null);
+  const [receipient, setReceipient] = useState(null);
+  const [testFlowRate, setTestFlowRate] = useState(0);
 
   const { chain } = getNetwork();
 
@@ -27,13 +32,13 @@ const useXStream = () => {
   const [endDate, setEndDate] = useState(dayjs(currentDate));
 
 
-  const getBalance = async (token = {}) => {
+  const getBalance = async (tokenAddress) => {
     try {
       const { ethereum } = window;
       if (ethereum) {
         const tokenBalance = await fetchBalance({
           address: address,
-          token: token?.address,
+          token: tokenAddress,
         });
         console.log("the current selected tokenbalance is ", tokenBalance);
         setBalance(tokenBalance.formatted);
@@ -45,7 +50,8 @@ const useXStream = () => {
 
   useEffect(() => {
     if (token?.address) {
-        getBalance(token);
+      console.log("Getting token balance of ", token.address);
+        getBalance(token?.address);
     }
   }, [token?.address, chain?.id]);
 
@@ -202,16 +208,23 @@ const useXStream = () => {
     }
   };
 
-  const querySubgraph = async (flowType) => {
+  const querySubgraph = async (flowType, uri) => {
     let flowEvents;
     if (flowType == "Incoming") {
-      flowEvents = await fetchxStreamInflow(address);
+      flowEvents = await fetchxStreamInflow(address, uri);
     } else if (flowType == "Outgoing") {
-      flowEvents = await fetchxStreamOutflow(address);
+      flowEvents = await fetchxStreamOutflow(address, uri);
     }
     console.log("Result data ", flowEvents.data);
     setUserEvents(flowEvents.data.xStreamFlowTriggers);
   };
+
+  const getTokenNetFlowRate = async(tokenAddress, uri) => {
+    const flowResult = await fetchTokenStatistic(tokenAddress.toLowerCase(), uri);
+    const flowRate = formatFlowrate(flowResult.data?.tokenStatistics[0]?.totalOutflowRate);
+    console.log(flowRate);
+    setTestFlowRate(flowRate);
+  }
 
   return {
     balance: balance,
@@ -219,12 +232,20 @@ const useXStream = () => {
     token: token,
     amount: amount,
     endDate: endDate,
+    toChain: toChain,
+    fromChain: fromChain,
+    receipient: receipient,
+    testFlowRate: testFlowRate,
+    setFromChain: setFromChain,
+    setToChain: setToChain,
+    setReceipient: setReceipient,
     setToken: setToken,
     querySubgraph: querySubgraph,
     setAmount: setAmount,
     setEndDate: setEndDate,
     getBalance: getBalance,
-    handleXStreamSubmit: handleXStreamSubmit
+    handleXStreamSubmit: handleXStreamSubmit,
+    getTokenNetFlowRate: getTokenNetFlowRate
   };
 };
 

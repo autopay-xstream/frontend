@@ -1,8 +1,9 @@
-import { apolloClient } from "./apollo";
+import { createApolloClient } from "./apollo";
 import { gql } from "@apollo/client";
-import { xSTREAM_INFLOW, xSTREAM_OUTFLOW } from "./graphQueries";
+import { TOKEN_STATISTICS, xSTREAM_INFLOW, xSTREAM_OUTFLOW } from "./graphQueries";
 
-export const fetchxStreamInflow = async(address) => {
+export const fetchxStreamInflow = async (address, uri) => {
+    let apolloClient = createApolloClient(uri);
     const result = await apolloClient.query({
         query: gql(xSTREAM_INFLOW),
         variables: {
@@ -13,13 +14,33 @@ export const fetchxStreamInflow = async(address) => {
     return result;
 }
 
-export const fetchxStreamOutflow = async(address) => {
+export const fetchxStreamOutflow = async (address, uri) => {
+    console.log("The received address", address, uri);
+    try {
+        let apolloClient = createApolloClient(uri);
+        const result = await apolloClient.query({
+            query: gql(xSTREAM_OUTFLOW),
+            variables: {
+                sender: address
+            }
+        });
+        console.log("The outflow graphQL result is ", result);
+        return result;
+    } catch (error) {
+        console.log("Error in querying fetchxStreamOutflow", error);
+        console.log(error?.networkError?.result?.errors);
+    }
+
+}
+
+export const fetchTokenStatistic = async (tokenAddress, uri) => {
+    let apolloClient = createApolloClient(uri);
     const result = await apolloClient.query({
-        query: gql(xSTREAM_OUTFLOW),
+        query: gql(TOKEN_STATISTICS),
         variables: {
-            sender: address
+            tokenAddress: tokenAddress
         }
     });
-    console.log("The outflow graphQL result is ", result);
+    console.log("The token statistics graphQL result is ", result);
     return result;
 }

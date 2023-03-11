@@ -15,23 +15,20 @@ import Notifications from "../components/Notifications";
 import SendStream from "../components/SendStream";
 import SendXStream from "../components/SendXStream";
 import SideBar from "../components/SideBar";
+import { getNetwork } from "@wagmi/core";
+import { subgraphURIs } from "@/data/config";
+
 
 //******************************************* */
 
 const Web3 = require("web3");
-const abiDecoder = require("abi-decoder");
-
-const web3 = new Web3(
-  "wss://polygon-mumbai.g.alchemy.com/v2/qac25z9Oep-F5rDu38yVfQHf5LjdJoGL"
-);
-
-const destinationAbi = require("../data/destinationAbi.json");
-const destinationAddress = ["0xA73Bf7955fAae6Da0561F25bEA45F3d2D2119997"];
 
 export default function Home() {
   //********************** connect wallet imports
 
   const connectedWallet = useAccount();
+  const { chain } = getNetwork();
+
 
   //********************** connect wallet imports
 
@@ -99,15 +96,16 @@ export default function Home() {
           <div className="w-full bg-[#F4F4F4]">
             <div className="inside-main-right">
               {showDashboard ? (
-                <Dashboard />
+                <Dashboard chain = {chain}/>
               ) : showSendStream ? (
                 <SendStream />
               ) : showXStream ? (
                 <SendXStream />
               ) : showNotification ? (
                 <Notifications
-                  notifications={streamNotifications}
+                  subgraphURI = {subgraphURIs['xstream'][chain.id]}
                   address={connectedWallet.address}
+
                 />
               ) : null}
             </div>

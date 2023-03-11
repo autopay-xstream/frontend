@@ -2,12 +2,11 @@ import { bridgeDataConfig } from "@/data/config";
 import useXStream from "@/hooks/xStream/useXStream";
 import { getNetwork } from "@wagmi/core";
 import { useState } from "react";
-import { useAccount } from "wagmi";
 import DatePicker from "./DatePicker";
 import DropSelect from "./DropSelect";
 import FlowRateModal from "./FLowrateModal";
-import StreamInfo from "./StreamInfo";
 import { ConnextIcon, GoerliIcon, PolygonIcon } from "./icons";
+import StreamInfo from "./StreamInfo";
 
 const coins = [
   // { id: "0x07865c6E87B9F70255377e024ace6630C1Eaa37F", name: 'USDC' },
@@ -31,23 +30,13 @@ const chainList = [
   { name: "polygon mumbai", id: "80001", icon: <PolygonIcon /> },
 ];
 
-const SendXStream = () => {
-  const { address, isConnected } = useAccount();
+const SendXStream = (props) => {
   const [selectedType, setSelectedType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
-  const [toChain, setToChain] = useState(null);
-  const [fromChain, setFromChain] = useState(null);
-  const [receipient, setReceipient] = useState(null);
-
-  
-
   const { chain } = getNetwork();
 
   // custom hooks
   const hookXStream = useXStream();
-
-  
 
   return (
     <div className="main-container w-full h-screen ">
@@ -63,21 +52,21 @@ const SendXStream = () => {
         <form className="p-10">
           <div className="flex items-center justify-between w-full gap-10 ">
             <DropSelect
-              selected={fromChain}
-              setSelected={setFromChain}
+              selected={hookXStream.fromChain}
+              setSelected={hookXStream.setFromChain}
               options={chainList}
               placeholder={"Transfer from chain"}
             />
             <DropSelect
-              selected={toChain}
-              setSelected={setToChain}
+              selected={hookXStream.toChain}
+              setSelected={hookXStream.setToChain}
               options={chainList}
               placeholder={"Transfer to chain"}
             />
           </div>
           <input
-            value={receipient}
-            onChange={(e) => setReceipient(e.target.value)}
+            value={hookXStream.receipient}
+            onChange={(e) => hookXStream.setReceipient(e.target.value)}
             className="rounded-lg mt-8 w-full px-8 py-6 border-[1px] mr-0 border-gray-300 text-gray-800 bg-white focus:outline-none"
             placeholder="Enter  receipient address or ENS"
           />
@@ -95,35 +84,17 @@ const SendXStream = () => {
               value={hookXStream.amount}
               onChange={(e) => hookXStream.setAmount(e.target.value)}
             />
-            {/* <DropSelect
-              selected={selectedType}
-              setSelected={(value) => {
-                setSelectedType(value);
-                setIsOpen(!isOpen);
-              }}
-              options={[
-                {
-                  id: 1,
-                  name: "Select token value",
-                },
-                {
-                  id: 2,
-                  name: "Select token flow rate",
-                },
-              ]}
-              placeholder={"Select token value or flow rate"}
-            /> */}
           </div>
           <div className="w-full h-[2px] bg-gray-300 mt-12" />
-          {toChain && fromChain && receipient && hookXStream.amount && hookXStream.token && hookXStream.endDate && (
+          {hookXStream.toChain && hookXStream.fromChain && hookXStream.receipient && hookXStream.amount && hookXStream.token && hookXStream.endDate && (
             <>
               <div className="flex items-center gap-4 mt-8 text-2xl px-3">
                 <p>Balance:</p> <p className="text-[#96D068]">{hookXStream.balance}</p>
               </div>
               <StreamInfo
-                toChain={toChain}
-                fromChain={fromChain}
-                receipient={receipient}
+                toChain={hookXStream.toChain}
+                fromChain={hookXStream.fromChain}
+                receipient={hookXStream.receipient}
                 amount={hookXStream.amount}
                 token={hookXStream.token}
                 endDate={hookXStream.endDate}
