@@ -21,6 +21,7 @@ function Dashboard(props) {
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
+  const [chain, setChain] = useState("goerli");
 
   // custom hooks
   const hookXStream = useXStream();
@@ -44,7 +45,7 @@ function Dashboard(props) {
   if (isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <ChainSelect chain={props.chain.name} />
+        <ChainSelect chain={chain} setChain={setChain} />
         <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
           <div className="db-box-parent">
             <div className="db-box bg-white rounded-lg">
