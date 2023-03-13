@@ -6,9 +6,7 @@ import logowhite from "../image/LogoWhite.png";
 
 //********************** connect wallet imports
 import { AuthContext } from "@/providers/AuthProvider";
-import {
-  ConnectButton
-} from "@rainbow-me/rainbowkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getNetwork } from "@wagmi/core";
 import Image from "next/image";
@@ -16,7 +14,6 @@ import Dashboard from "../components/Dashboard";
 import SendStream from "../components/SendStream";
 import SendXStream from "../components/SendXStream";
 import SideBar from "../components/SideBar";
-
 
 //******************************************* */
 
@@ -29,7 +26,6 @@ export default function Home() {
   const { chain } = getNetwork();
 
   const authContext = useContext(AuthContext);
-
 
   //********************** connect wallet imports
 
@@ -97,7 +93,11 @@ export default function Home() {
           <div className="w-full bg-[#F4F4F4]">
             <div className="inside-main-right">
               {showDashboard ? (
-                <Dashboard chain = {authContext.chain}/>
+                <Dashboard
+                  userAddress={authContext?.userAddress}
+                  chain={authContext.chain}
+                  isConnected={authContext?.isConnected}
+                />
               ) : showSendStream ? (
                 <SendStream />
               ) : null}

@@ -5,7 +5,6 @@ import {
 } from "@/helpers/formatHelper";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
@@ -20,7 +19,6 @@ import useXStream from "@/hooks/xStream/useXStream";
 import DashboardRow from "./DashboardRow";
 
 function Dashboard(props) {
-  const { address, isConnected } = useAccount();
   const [dropDown, setDropDown] = useState(false);
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
@@ -40,7 +38,7 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
-    if (address && props.chain?.id) {
+    if (props.userAddress && props.chain?.id) {
       hookXStream.getBalance(
         bridgeDataConfig[props.chain?.id].erc20TokenAddress
       );
@@ -49,9 +47,9 @@ function Dashboard(props) {
         subgraphURIs["superfluid"][props.chain?.id]
       );
     }
-  }, [address, props.chain]);
+  }, [props.userAddress, props.chain]);
 
-  if (isConnected) {
+  if (props.isConnected) {
     return (
       <div className="main-container w-full h-screen ">
         <ChainSelect chain={chain} setChain={setChain} />

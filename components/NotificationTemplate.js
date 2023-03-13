@@ -7,16 +7,16 @@ const NotificationTemplate = (props) => {
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
-    if (props.address) {
+    if (props.userAddress) {
       console.log("calling the subgraph");
       const getEvents = async () => {
-        const result = await fetchxStreamOutflow(props.address.toString(), props.subgraphURI);
+        const result = await fetchxStreamOutflow(props.userAddress.toString(), props.subgraphURI);
         console.log(result);
         setUserEvents(result.data?.xStreamFlowTriggers);
       }
       getEvents();
     }
-  }, [props.address]);
+  }, [props.userAddress]);
 
   return (
     <div className="main-container w-full h-screen">

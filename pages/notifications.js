@@ -43,7 +43,7 @@ const Notifications = () => {
           {/* ****************main right panel************** */}
           <div className="w-full bg-[#F4F4F4]">
             <div className="inside-main-right">
-                <NotificationTemplate address = {authContext?.address} subgraphURI = {subgraphURIs['xstream'][authContext?.chain?.id]} />
+                <NotificationTemplate userAddress = {authContext?.userAddress} subgraphURI = {subgraphURIs['xstream'][authContext?.chain?.id]} />
             </div>
           </div>
         </div>

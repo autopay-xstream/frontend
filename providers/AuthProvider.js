@@ -3,8 +3,9 @@ import { getNetwork } from "@wagmi/core";
 import { createContext } from "react";
 
 export const AuthContext = createContext({
-    address: "",
-    chain: null
+    userAddress: "",
+    chain: null,
+    isConnected: null
 })
 
 const AuthProvider = ({children}) => {
@@ -14,8 +15,9 @@ const AuthProvider = ({children}) => {
     return (
         <AuthContext.Provider
             value={{
-                address: address,
-                chain: chain
+                userAddress: address,
+                chain: chain,
+                isConnected: isConnected
             }}
         >
             {children}

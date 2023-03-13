@@ -1,11 +1,6 @@
+import { truncateAddress } from '@/helpers/formatHelper';
 import { ethers } from 'ethers';
 import React from 'react'
-
-const getEclipsed = (address) => {
-    const firstFour = address.slice(0, 10);
-    const lastFour = address.slice(address.length - 10, address.length);
-    return `${firstFour}...${lastFour}`;
-}
 
 const StreamInfo = ({
     toChain,
@@ -43,7 +38,7 @@ const StreamInfo = ({
                     <p
                         className="text-sm font-semibold m-0 w-[174px] leading-[normal] text-[rgba(150,208,104,1)]"
                     >
-                        {getEclipsed(receipient)}
+                        {truncateAddress(receipient)}
                     </p>
                 </div>
                 <div className="flex justify-between items-center w-full">
