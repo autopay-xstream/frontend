@@ -1,13 +1,11 @@
-import { subgraphURIs } from "@/data/config";
-import { formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
-import { fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
-import { AuthContext } from "@/providers/AuthProvider";
-import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
-import logowhite from "../image/LogoWhite.png";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import SideBar from "@/components/SideBar";
 import NotificationTemplate from "@/components/NotificationTemplate";
+import SideBar from "@/components/SideBar";
+import { subgraphURIs } from "@/data/config";
+import { AuthContext } from "@/providers/AuthProvider";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Image from "next/image";
+import { useContext } from "react";
+import logowhite from "../image/LogoWhite.png";
 
 const Notifications = () => {
     const authContext = useContext(AuthContext);

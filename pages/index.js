@@ -5,19 +5,17 @@ import { useAccount } from "wagmi";
 import logowhite from "../image/LogoWhite.png";
 
 //********************** connect wallet imports
+import { AuthContext } from "@/providers/AuthProvider";
 import {
   ConnectButton
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import { getNetwork } from "@wagmi/core";
 import Image from "next/image";
 import Dashboard from "../components/Dashboard";
-import Notifications from "../components/NotificationTemplate";
 import SendStream from "../components/SendStream";
 import SendXStream from "../components/SendXStream";
 import SideBar from "../components/SideBar";
-import { getNetwork } from "@wagmi/core";
-import { subgraphURIs } from "@/data/config";
-import { AuthContext } from "@/providers/AuthProvider";
 
 
 //******************************************* */
@@ -102,14 +100,6 @@ export default function Home() {
                 <Dashboard chain = {authContext.chain}/>
               ) : showSendStream ? (
                 <SendStream />
-              ) : showXStream ? (
-                <SendXStream />
-              ) : showNotification ? (
-                // <Notifications
-                //   subgraphURI = {subgraphURIs['xstream'][chain?.id]}
-                //   address={connectedWallet.address}
-                // />
-                <></>
               ) : null}
             </div>
           </div>
