@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
 import logowhite from "../image/LogoWhite.png";
@@ -11,12 +11,13 @@ import {
 import "@rainbow-me/rainbowkit/styles.css";
 import Image from "next/image";
 import Dashboard from "../components/Dashboard";
-import Notifications from "../components/Notifications";
+import Notifications from "../components/NotificationTemplate";
 import SendStream from "../components/SendStream";
 import SendXStream from "../components/SendXStream";
 import SideBar from "../components/SideBar";
 import { getNetwork } from "@wagmi/core";
 import { subgraphURIs } from "@/data/config";
+import { AuthContext } from "@/providers/AuthProvider";
 
 
 //******************************************* */
@@ -28,6 +29,8 @@ export default function Home() {
 
   const connectedWallet = useAccount();
   const { chain } = getNetwork();
+
+  const authContext = useContext(AuthContext);
 
 
   //********************** connect wallet imports
@@ -96,17 +99,17 @@ export default function Home() {
           <div className="w-full bg-[#F4F4F4]">
             <div className="inside-main-right">
               {showDashboard ? (
-                <Dashboard chain = {chain}/>
+                <Dashboard chain = {authContext.chain}/>
               ) : showSendStream ? (
                 <SendStream />
               ) : showXStream ? (
                 <SendXStream />
               ) : showNotification ? (
-                <Notifications
-                  subgraphURI = {subgraphURIs['xstream'][chain?.id]}
-                  address={connectedWallet.address}
-
-                />
+                // <Notifications
+                //   subgraphURI = {subgraphURIs['xstream'][chain?.id]}
+                //   address={connectedWallet.address}
+                // />
+                <></>
               ) : null}
             </div>
           </div>

@@ -40,7 +40,7 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
-    if (address) {
+    if (address && props.chain?.id) {
       hookXStream.getBalance(
         bridgeDataConfig[props.chain?.id].erc20TokenAddress
       );

@@ -1,13 +1,9 @@
-import { ethers } from "ethers";
-import Image from "next/image";
-import React, { Component, useEffect, useState } from "react";
-import { apolloClient } from "@/helpers/apollo";
-import { gql } from "@apollo/client";
 import { formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
 import { fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
-import { subgraphURIs } from "@/data/config";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
-export default function Notifications(props) {
+const NotificationTemplate = (props) => {
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
@@ -81,3 +77,5 @@ const TableHead = ({ children }) => {
 export const TableRow = ({ children }) => {
   return <tr className="border-t-[1px] border-[#e3e2e2]">{children}</tr>;
 };
+
+export default NotificationTemplate;
