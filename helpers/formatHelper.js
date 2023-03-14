@@ -14,6 +14,5 @@ export const formatFlowrate = (flowrate) => {
 export const formatDate = (epoch) => {
     // the epoch is in milli seconds
     let date = new Date(epoch * 1000);
-    console.log("the date is" ,date);
     return date.toString();
 }

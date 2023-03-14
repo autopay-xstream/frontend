@@ -1,6 +1,6 @@
 import { createApolloClient } from "./apollo";
 import { gql } from "@apollo/client";
-import { TOKEN_STATISTICS, xSTREAM_INFLOW, xSTREAM_OUTFLOW } from "./graphQueries";
+import { OUTGOING_STREAMS, TOKEN_STATISTICS, xSTREAM_INFLOW, xSTREAM_OUTFLOW } from "./graphQueries";
 
 export const fetchxStreamInflow = async (address, uri) => {
     let apolloClient = createApolloClient(uri);
@@ -42,5 +42,18 @@ export const fetchTokenStatistic = async (tokenAddress, uri) => {
         }
     });
     console.log("The token statistics graphQL result is ", result);
+    return result;
+}
+
+export const fetchSuperfluidOutflow = async(tokenAddress, userAddress, uri) => {
+    let apolloClient = createApolloClient(uri);
+    const result = await apolloClient.query({
+        query: gql(OUTGOING_STREAMS),
+        variables: {
+            sender: userAddress,
+            token: tokenAddress
+        }
+    });
+    console.log("The token fetchSuperfluidOutflow result is ", result);
     return result;
 }

@@ -1,9 +1,57 @@
 import Image from 'next/image';
-import React from 'react'
-// import gif from "../";
+import React, { useContext, useEffect, useState } from 'react'
 import gif from "../../public/stream-loop.gif";
+import { fetchEnsName, fetchEnsAvatar } from '@wagmi/core';
+import { AuthContext } from '@/providers/AuthProvider';
+import { truncateAddress } from '@/helpers/formatHelper';
+import { useRouter } from 'next/router';
+import { subgraphURIs } from '@/data/config';
+import { fetchSuperfluidOutflow } from '@/helpers/xStreamSubgraph';
 
-const Stream = () => {
+const chainDomains = {
+    9991: {name: "Polygon Mumbai"},
+    1735353714: {name: "Goerli"},
+
+    1886350457: {name: "Polygon"},
+    6778479: {name: "Gnosis"},
+    6648936: {name: "Ethereum Mainnet"},
+}
+
+const Stream = (props) => {
+    const authContext = useContext(AuthContext);
+    const router = useRouter();
+    const [ensName, setEnsName] = useState({
+        name: "",
+        avatar: ""
+    });
+    const [receiverEns, setReceiverEns] = useState({
+        name: "",
+        avatar: "",
+    });
+    const [notifEvent, setNotifEvent] = useState();
+
+    useEffect(() => {
+        const setUpData = async() => {
+            const streamData = JSON.parse(router.query.data);
+            setNotifEvent(streamData);
+            const ens = await fetchEnsName({address: authContext?.userAddress});
+            const ensAvatar = await fetchEnsAvatar({address: authContext?.userAddress});
+            if (ens || ensAvatar)
+                setEnsName({name: ens, avatar: ensAvatar});
+
+            const receiveEns = await fetchEnsName({address: streamData?.receiver});
+            const receiverAvatar = await fetchEnsAvatar({address: streamData?.receiver});
+            
+            if (receiveEns || receiverAvatar) 
+                setReceiverEns({name: receiveEns, avatar: receiverAvatar});
+
+            const destinationDomain = streamData?.destinationDomain;
+            const uri = subgraphURIs['superfluid'][destinationDomain];
+            const subGraphData = await fetchSuperfluidOutflow()
+            
+        }
+        setUpData();
+    }, [authContext?.userAddress])
     return (
         <div className="main-container w-full h-screen ">
             <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full p-10 ">
@@ -43,7 +91,7 @@ const Stream = () => {
                                 <p
                                     className="text-3xl font-semibold inline m-0 leading-[normal] text-[rgba(150,208,104,1)]"
                                 >
-                                    fUSDCx
+                                    TESTx
                                 </p>
                             </div>
                         </div>
@@ -79,7 +127,7 @@ const Stream = () => {
                                         <p
                                             className="font-semibold m-0 text-[10.39px] leading-[17.00772476196289px] text-[rgba(70,70,70,1)]"
                                         >
-                                            Goerli
+                                            {authContext?.chain?.name}
                                         </p>
                                     </div>
                                 </div>
@@ -97,10 +145,10 @@ const Stream = () => {
                                     </div>
                                     <div className="w-64 flex flex-col items-start">
                                         <p className="font-semibold leading-9 m-0 text-[22px]">
-                                            Timbre.eth
+                                            {ensName.name}
                                         </p>
                                         <p className="text-lg font-normal leading-9 m-0">
-                                            0x9872638893y9y87378y78y
+                                            {truncateAddress(authContext?.userAddress)}
                                         </p>
                                     </div>
                                 </div>
@@ -141,7 +189,7 @@ const Stream = () => {
                                         <p
                                             className="font-semibold m-0 text-[10.39px] leading-[17.00772476196289px] text-[rgba(70,70,70,1)]"
                                         >
-                                            Goerli
+                                            {notifEvent?.destinationDomain}
                                         </p>
                                     </div>
                                 </div>
@@ -159,10 +207,10 @@ const Stream = () => {
                                     </div>
                                     <div className="w-64 flex flex-col items-start">
                                         <p className="font-semibold leading-9 m-0 text-[22px]">
-                                            bob.eth
+                                            {receiverEns.name}
                                         </p>
                                         <p className="text-lg font-normal leading-9 m-0">
-                                            0x9872638893y9y87378y78y
+                                            {truncateAddress(notifEvent?.receiver)}
                                         </p>
                                     </div>
                                 </div>

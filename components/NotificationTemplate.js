@@ -1,19 +1,33 @@
 import { formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
 import { fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const NotificationTemplate = (props) => {
   const [userEvents, setUserEvents] = useState([]);
+  const route = useRouter();
+
+  const handleRoute = (index, data) => {
+    console.log("Routing");
+    route.push({
+      pathname: `/stream/${index}`,
+      query: { data: JSON.stringify(data)},
+    });
+  };
 
   useEffect(() => {
     if (props.userAddress) {
       console.log("calling the subgraph");
       const getEvents = async () => {
-        const result = await fetchxStreamOutflow(props.userAddress.toString(), props.subgraphURI);
+        const result = await fetchxStreamOutflow(
+          props.userAddress.toString(),
+          props.subgraphURI
+        );
         console.log(result);
         setUserEvents(result.data?.xStreamFlowTriggers);
-      }
+      };
       getEvents();
     }
   }, [props.userAddress]);
@@ -35,31 +49,35 @@ const NotificationTemplate = (props) => {
             {userEvents.map((item, index) => {
               return (
                 <>
-                <TableRow>
-              <TableData>{item.streamStatus == 1? "Initiated" : "Updated"}</TableData>
-              <TableData>{truncateAddress(item.receiver)}</TableData>
-              <TableData></TableData>
-              <TableData>{formatFlowrate(item.flowRate)}</TableData>
-              <TableData>
-                <Image
-                  src={require("../image/link.png")}
-                  style={{
-                    width: 50,
-                    height: 50,
-                  }}
-                  alt="link"
-                />
-              </TableData>
-            </TableRow>
+                  <TableRow>
+                    <TableData>
+                      {item.streamStatus == 1 ? "Initiated" : "Updated"}
+                    </TableData>
+                    <TableData>{truncateAddress(item.receiver)}</TableData>
+                    <TableData></TableData>
+                    <TableData>{formatFlowrate(item.flowRate)}</TableData>
+                    <a onClick={() => handleRoute(index, item)}>
+                      <TableData>
+                        <Image
+                          src={require("../image/link.png")}
+                          style={{
+                            width: 50,
+                            height: 50,
+                          }}
+                          alt="link"
+                        />
+                      </TableData>
+                    </a>
+                  </TableRow>
                 </>
-              )
+              );
             })}
           </tbody>
         </table>
       </div>
     </div>
   );
-}
+};
 
 const TableData = ({ children }) => {
   return (
