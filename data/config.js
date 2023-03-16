@@ -85,3 +85,12 @@ export const subgraphURIs = {
     9991: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai", // connext domain mumbai 
   }
 }
+
+export const chainDomains = {
+  9991: {name: "Polygon Mumbai", id: 80001},
+  1735353714: {name: "Goerli", id: 5},
+
+  1886350457: {name: "Polygon", id: 137},
+  6778479: {name: "Gnosis", id: 100},
+  6648936: {name: "Ethereum Mainnet", id: 1}
+}

@@ -3,19 +3,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import gif from "../../public/stream-loop.gif";
 import { fetchEnsName, fetchEnsAvatar } from '@wagmi/core';
 import { AuthContext } from '@/providers/AuthProvider';
-import { truncateAddress } from '@/helpers/formatHelper';
+import { formatDate, truncateAddress } from '@/helpers/formatHelper';
 import { useRouter } from 'next/router';
-import { subgraphURIs } from '@/data/config';
-import { fetchSuperfluidOutflow } from '@/helpers/xStreamSubgraph';
-
-const chainDomains = {
-    9991: {name: "Polygon Mumbai"},
-    1735353714: {name: "Goerli"},
-
-    1886350457: {name: "Polygon"},
-    6778479: {name: "Gnosis"},
-    6648936: {name: "Ethereum Mainnet"},
-}
+import { bridgeDataConfig, chainDomains, subgraphURIs } from '@/data/config';
+import { fetchSuperfluidInflow, fetchSuperfluidOutflow } from '@/helpers/xStreamSubgraph';
 
 const Stream = (props) => {
     const authContext = useContext(AuthContext);
@@ -34,20 +25,26 @@ const Stream = (props) => {
         const setUpData = async() => {
             const streamData = JSON.parse(router.query.data);
             setNotifEvent(streamData);
-            const ens = await fetchEnsName({address: authContext?.userAddress});
-            const ensAvatar = await fetchEnsAvatar({address: authContext?.userAddress});
-            if (ens || ensAvatar)
-                setEnsName({name: ens, avatar: ensAvatar});
+            console.log("streamData ", streamData);
+            const receiverChainId = chainDomains[streamData?.destinationDomain]?.id;
+            const receiverSubGraphUri = subgraphURIs['superfluid'][receiverChainId];
+            // const chainUri = subgraphURIs['superfluid'][authContext.chain?.id];
+            const senderStreamData = await fetchSuperfluidInflow(bridgeDataConfig[receiverChainId].superTokenAddress, streamData.receiver, receiverSubGraphUri);
+            console.log("superfluid inflow data ", senderStreamData);
+            // const ens = await fetchEnsName({address: authContext?.userAddress});
+            // const ensAvatar = await fetchEnsAvatar({address: authContext?.userAddress});
+            // if (ens || ensAvatar)
+            //     setEnsName({name: ens, avatar: ensAvatar});
 
-            const receiveEns = await fetchEnsName({address: streamData?.receiver});
-            const receiverAvatar = await fetchEnsAvatar({address: streamData?.receiver});
+            // const receiveEns = await fetchEnsName({address: streamData?.receiver});
+            // const receiverAvatar = await fetchEnsAvatar({address: streamData?.receiver});
             
-            if (receiveEns || receiverAvatar) 
-                setReceiverEns({name: receiveEns, avatar: receiverAvatar});
+            // if (receiveEns || receiverAvatar) 
+            //     setReceiverEns({name: receiveEns, avatar: receiverAvatar});
 
-            const destinationDomain = streamData?.destinationDomain;
-            const uri = subgraphURIs['superfluid'][destinationDomain];
-            const subGraphData = await fetchSuperfluidOutflow()
+            // const destinationDomain = streamData?.destinationDomain;
+            // const uri = subgraphURIs['superfluid'][destinationDomain];
+            // const subGraphData = await fetchSuperfluidOutflow()
             
         }
         setUpData();
@@ -244,7 +241,7 @@ const Stream = (props) => {
                                 <p
                                     className="font-semibold m-0 w-[128.92px] text-[15.17px] leading-[normal] text-[rgba(70,70,70,1)]"
                                 >
-                                    22 Dec, 2022 11:51
+                                    {formatDate(notifEvent?.startTime)}
                                 </p>
                             </div>
                             <div className="flex justify-between items-center w-[453.92px]">

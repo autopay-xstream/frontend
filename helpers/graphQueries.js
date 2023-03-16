@@ -1,38 +1,70 @@
 /////////////////////////////////////// Superfluid /////////////////////////////////
 
 export const INCOMING_STREAMS = `
-    query incomingStreamEvents($receiver: Bytes) {
+    query incomingStreamEvents($receiver: Bytes, $superToken: Bytes) {
         flowUpdatedEvents(
-        where: {receiver: $receiver}
+        where: {receiver: $receiver, token: $superToken}
         orderBy: timestamp
         ) {
-        timestamp
-        sender
-        receiver
-        flowRate
-        totalAmountStreamedUntilTimestamp
-        flowOperator
-        token
+          id
+          timestamp
+          sender
+          receiver
+          flowRate
+          totalReceiverFlowRate
+          totalSenderFlowRate
+          transactionHash
+          totalAmountStreamedUntilTimestamp
+          flowOperator
+          token
+          gasPrice
+          gasUsed
+          deposit
+          blockNumber
+          stream {
+            createdAtBlockNumber
+            createdAtTimestamp
+            updatedAtTimestamp
+            id
+            currentFlowRate
+            deposit
+          }
         }
     }
 `;
 
 export const OUTGOING_STREAMS = `
-query outgoingStreamEvents ($sender: Bytes) {
+query outgoingStreamEvents ($sender: Bytes, $superToken: Bytes) {
     flowUpdatedEvents(
-      where: {sender: $sender}
+      where: {sender: $sender, token: $superToken}
       orderBy: timestamp
     ) {
+      id
       timestamp
       sender
       receiver
       flowRate
+      totalReceiverFlowRate
+      totalSenderFlowRate
+      transactionHash
       totalAmountStreamedUntilTimestamp
       flowOperator
       token
+      gasPrice
+      gasUsed
+      deposit
+      blockNumber
+      stream {
+        createdAtBlockNumber
+        createdAtTimestamp
+        updatedAtTimestamp
+        id
+        currentFlowRate
+        deposit
+      }
     }
 }
-`
+`;
 export const TOKEN_STATISTICS = `
   query tokenStreamInfo ($tokenAddress: Bytes) {
     tokenStatistics (where: {token: $tokenAddress}){
@@ -40,7 +72,7 @@ export const TOKEN_STATISTICS = `
       totalNumberOfActiveStreams
     }
   }
-`
+`;
 ////////////////////////////////// xStream ////////////////////////////////////
 export const xSTREAM_INFLOW = `
   query xStreamInflow($receiver: Bytes) {
@@ -61,7 +93,7 @@ export const xSTREAM_INFLOW = `
       transactionHash
     }
   }
-`
+`;
 
 export const xSTREAM_OUTFLOW = `
 query xStreamOutflow($sender: Bytes) {
@@ -82,4 +114,4 @@ query xStreamOutflow($sender: Bytes) {
     transactionHash
   }
 }
-`
+`;
