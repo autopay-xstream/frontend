@@ -115,3 +115,18 @@ query xStreamOutflow($sender: Bytes) {
   }
 }
 `;
+
+/////// Target subgraph
+// query MyQuery {
+//   streams(
+//     where: {receiver:"0xbfd232cebe066d048bdd042d285cc7924171323f", token: "0xfb5fbd3b9c471c1109a3e0ad67bfd00ee007f70a"}
+//   ) {
+//     createdAtBlockNumber
+//     createdAtTimestamp
+//     currentFlowRate
+//     id
+//     receiver {
+//       id
+//     }
+//   }
+// }

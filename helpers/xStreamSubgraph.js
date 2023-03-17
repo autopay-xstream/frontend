@@ -48,7 +48,38 @@ export const fetchTokenStatistic = async (tokenAddress, uri) => {
 export const fetchSuperfluidOutflow = async(tokenAddress, userAddress, uri) => {
     let apolloClient = createApolloClient(uri);
     const result = await apolloClient.query({
-        query: gql(OUTGOING_STREAMS),
+        query: gql(
+            `
+            query flowUpdatedEvents(
+                where: {receiver: ${userAddress}, token: ${tokenAddress}}
+                orderBy: timestamp
+                ) {
+                  id
+                  timestamp
+                  sender
+                  receiver
+                  flowRate
+                  totalReceiverFlowRate
+                  totalSenderFlowRate
+                  transactionHash
+                  totalAmountStreamedUntilTimestamp
+                  flowOperator
+                  token
+                  gasPrice
+                  gasUsed
+                  deposit
+                  blockNumber
+                  stream {
+                    createdAtBlockNumber
+                    createdAtTimestamp
+                    updatedAtTimestamp
+                    id
+                    currentFlowRate
+                    deposit
+                  }
+                }
+            `
+        ),
         variables: {
             sender: userAddress,
             token: tokenAddress
