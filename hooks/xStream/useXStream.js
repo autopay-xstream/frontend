@@ -210,13 +210,20 @@ const useXStream = () => {
 
   const querySubgraph = async (flowType, selectedToken, uri) => {
     let flowEventArray;
-    if (flowType == "Incoming") {
-      flowEventArray = await fetchxStreamInflow(address, uri);
-    } else if (flowType == "Outgoing") {
-      flowEventArray = await fetchxStreamOutflow(address, selectedToken, uri);
+    try {
+      if (flowType == "Incoming") {
+        flowEventArray = await fetchxStreamInflow(address, uri);
+      } else if (flowType == "Outgoing") {
+        flowEventArray = await fetchxStreamOutflow(address, selectedToken, uri);
+      }
+      console.log("Result data ", flowEventArray?.data);
+    } catch (error) {
+      console.log("Error in fetching data from xstream subgraph ", error);
+      return;
     }
-    console.log("Result data ", flowEventArray?.data);
-    // setUserEvents(flowEventArray.data.xStreamFlowTriggers);
+
+    try {
+// setUserEvents(flowEventArray.data.xStreamFlowTriggers);
     // pass this flowEventArray into superfluid subgraph to get the real outflow data
     flowEventArray?.data?.xStreamFlowTriggers.forEach(async element => {
       const result = await superfluidInflowStreamData(
@@ -225,6 +232,10 @@ const useXStream = () => {
         subgraphURIs['superfluid'][element.destinationDomain])
       console.log("Result from superfluid subgraph ", result);
     });
+    } catch (error) {
+      console.log("Error in fetching data from xstream subgraph ", error);
+      return;
+    }
   };
 
   const getTokenNetFlowRate = async(tokenAddress, uri) => {
