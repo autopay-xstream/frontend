@@ -1,8 +1,8 @@
 import TestTokenAbi from "@/data/TestTokenAbi.json";
-import { bridgeDataConfig } from "@/data/config";
+import { bridgeDataConfig, subgraphURIs, superTokensMapping } from "@/data/config";
 import destinationAbi from "@/data/destinationAbi.json";
 import originAbi from "@/data/originAbi.json";
-import { fetchTokenStatistic, fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
+import { fetchTokenStatistic, fetchxStreamInflow, fetchxStreamOutflow, superfluidInflowStreamData } from "@/helpers/xStreamSubgraph";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { fetchBalance, getNetwork } from "@wagmi/core";
 import { ethers } from "ethers";
@@ -208,15 +208,23 @@ const useXStream = () => {
     }
   };
 
-  const querySubgraph = async (flowType, uri) => {
-    let flowEvents;
+  const querySubgraph = async (flowType, selectedToken, uri) => {
+    let flowEventArray;
     if (flowType == "Incoming") {
-      flowEvents = await fetchxStreamInflow(address, uri);
+      flowEventArray = await fetchxStreamInflow(address, uri);
     } else if (flowType == "Outgoing") {
-      flowEvents = await fetchxStreamOutflow(address, uri);
+      flowEventArray = await fetchxStreamOutflow(address, selectedToken, uri);
     }
-    console.log("Result data ", flowEvents.data);
-    setUserEvents(flowEvents.data.xStreamFlowTriggers);
+    console.log("Result data ", flowEventArray?.data);
+    // setUserEvents(flowEventArray.data.xStreamFlowTriggers);
+    // pass this flowEventArray into superfluid subgraph to get the real outflow data
+    flowEventArray?.data?.xStreamFlowTriggers.forEach(async element => {
+      const result = await superfluidInflowStreamData(
+        element.receiver, 
+        superTokensMapping[element.destinationDomain][selectedToken], 
+        subgraphURIs['superfluid'][element.destinationDomain])
+      console.log("Result from superfluid subgraph ", result);
+    });
   };
 
   const getTokenNetFlowRate = async(tokenAddress, uri) => {

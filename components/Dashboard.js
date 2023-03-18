@@ -25,6 +25,8 @@ function Dashboard(props) {
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
   const [chain, setChain] = useState("goerli");
 
+  const selectedToken = bridgeDataConfig[props.chain?.id].erc20TokenAddress;
+
   // custom hooks
   const hookXStream = useXStream();
 
@@ -193,6 +195,7 @@ function Dashboard(props) {
                                           onClick={() => {
                                             hookXStream.querySubgraph(
                                               "Incoming",
+                                              selectedToken,
                                               subgraphURIs["xstream"][
                                                 props.chain.id
                                               ]
@@ -213,6 +216,7 @@ function Dashboard(props) {
                                           onClick={() => {
                                             hookXStream.querySubgraph(
                                               "Outgoing",
+                                              selectedToken,
                                               subgraphURIs["xstream"][
                                                 props.chain.id
                                               ]

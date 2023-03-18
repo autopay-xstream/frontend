@@ -96,9 +96,9 @@ export const xSTREAM_INFLOW = `
 `;
 
 export const xSTREAM_OUTFLOW = `
-query xStreamOutflow($sender: Bytes) {
+query xStreamOutflow($sender: Bytes, $selectedToken: Bytes) {
   xStreamFlowTriggers(
-    where : {sender: $sender}
+    where : {sender: $sender, selectedToken: $selectedToken}
   ) {
     sender
     receiver
@@ -115,18 +115,3 @@ query xStreamOutflow($sender: Bytes) {
   }
 }
 `;
-
-/////// Target subgraph
-// query MyQuery {
-//   streams(
-//     where: {receiver:"0xbfd232cebe066d048bdd042d285cc7924171323f", token: "0xfb5fbd3b9c471c1109a3e0ad67bfd00ee007f70a"}
-//   ) {
-//     createdAtBlockNumber
-//     createdAtTimestamp
-//     currentFlowRate
-//     id
-//     receiver {
-//       id
-//     }
-//   }
-// }

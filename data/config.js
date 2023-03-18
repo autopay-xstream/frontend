@@ -94,3 +94,21 @@ export const chainDomains = {
   6778479: {name: "Gnosis", id: 100},
   6648936: {name: "Ethereum Mainnet", id: 1}
 }
+
+export const superTokensMapping = {
+  // Goerli
+  5: {
+    "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1": "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TEST -> TESTx 
+  },
+  1735353714: {
+    "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1": "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TEST -> TESTx 
+  },
+
+  // Mumbai
+  80001: {
+    "0xeDb95D8037f769B72AAab41deeC92903A98C9E16": "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A", // TEST -> TESTx
+  },
+  9991: {
+    "0xeDb95D8037f769B72AAab41deeC92903A98C9E16": "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A", // TEST -> TESTx
+  }
+}
