@@ -109,11 +109,12 @@ export const fetchSuperfluidInflow = async(tokenAddress, userAddress, uri) => {
 
 export const superfluidInflowStreamData = async(userAddress, tokenAddress, uri) => {
     let apolloClient = createApolloClient(uri);
+    console.log("Input params ", userAddress, tokenAddress, uri);
     const result = await apolloClient.query({
         query: gql(
             `
             query { streams(
-                  where: {receiver: "${userAddress.toLowerCase()}", token: "${tokenAddress}"}
+                  where: {receiver: "${userAddress.toLowerCase()}", token: "${tokenAddress.toLowerCase()}"}
                 ) {
                   createdAtBlockNumber
                   createdAtTimestamp
