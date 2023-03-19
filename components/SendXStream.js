@@ -74,7 +74,7 @@ const SendXStream = (props) => {
             <DropSelect
               selected={hookXStream.token}
               setSelected={hookXStream.setToken}
-              options={bridgeDataConfig[chain.id].acceptedTokens}
+              options={bridgeDataConfig[chain?.id]?.acceptedTokens? bridgeDataConfig[chain?.id]?.acceptedTokens : []}
               placeholder={"Select a token"}
             />
             <DatePicker selected={hookXStream.endDate} setSelected={hookXStream.setEndDate} />

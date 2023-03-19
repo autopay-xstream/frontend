@@ -1,21 +1,16 @@
-import Image from "next/image";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import gif from "../../public/stream-loop.gif";
-import { fetchEnsName, fetchEnsAvatar } from "@wagmi/core";
-import { AuthContext } from "@/providers/AuthProvider";
+import { bridgeDataConfig } from "@/data/config";
 import {
-  calculateFormatAmountStreamed,
-  formatDate,
-  formatFlowrate,
-  truncateAddress,
+    calculateFormatAmountStreamed,
+    formatDate,
+    formatFlowrate,
+    truncateAddress,
 } from "@/helpers/formatHelper";
-import { useRouter } from "next/router";
-import { bridgeDataConfig, chainDomains, subgraphURIs } from "@/data/config";
-import {
-  fetchSuperfluidInflow,
-  fetchSuperfluidOutflow,
-} from "@/helpers/xStreamSubgraph";
 import useXStream from "@/hooks/xStream/useXStream";
+import { AuthContext } from "@/providers/AuthProvider";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useRef, useState } from "react";
+import gif from "../../public/stream-loop.gif";
 
 const Stream = (props) => {
   const authContext = useContext(AuthContext);
@@ -30,7 +25,6 @@ const Stream = (props) => {
   });
   const [notifEvent, setNotifEvent] = useState();
   const hookXStream = useXStream();
-  // const [streamedAmt, setStreamedAmt] = useState();
   const streamedAmt = useRef({ current: { innerHTML: "" } });
 
   useEffect(() => {
@@ -53,17 +47,6 @@ const Stream = (props) => {
     return () => clearInterval(interval);
   }, [authContext?.userAddress]);
 
-  useEffect(() => {
-    if (streamedAmt) {
-      // const incrementBy = notifEvent.currentFlowRate / (10**18);
-      // const interval = setInterval(function () {
-      //     setStreamedAmt(streamedAmt + incrementBy)
-      // }, 1000);
-      // return () => clearInterval(interval);
-      console.log("streamedAmt value ", streamedAmt);
-    }
-  }, [notifEvent]);
-
   return (
     <div className="main-container w-full h-screen ">
       <div className="max-w-6xl mx-auto mt-16 rounded-2xl bg-white w-full p-10 ">
@@ -82,7 +65,6 @@ const Stream = (props) => {
               <div className="leading-none relative">
                 <p className="font-medium inline m-0 text-[45px] leading-[normal] text-[rgba(70,70,70,1)]">
                   <span ref={streamedAmt}></span>
-                  {/* {streamedAmt} */}
                 </p>
                 <p className="font-normal inline m-0 text-[45px] leading-[normal] text-[rgba(70,70,70,1)]">
                   {" "}

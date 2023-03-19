@@ -27,11 +27,11 @@ const useXStream = () => {
   const { address, isConnected } = useAccount();
   const [userEvents, setUserEvents] = useState([]);
   const [balance, setBalance] = useState(0);
-  const [token, setToken] = useState(null);
-  const [amount, setAmount] = useState(null);
-  const [toChain, setToChain] = useState(null);
-  const [fromChain, setFromChain] = useState(null);
-  const [receipient, setReceipient] = useState(null);
+  const [token, setToken] = useState();
+  const [amount, setAmount] = useState(0);
+  const [toChain, setToChain] = useState();
+  const [fromChain, setFromChain] = useState();
+  const [receipient, setReceipient] = useState();
   const [testFlowRate, setTestFlowRate] = useState(0);
 
   const { chain } = getNetwork();

@@ -122,7 +122,7 @@ function Dashboard(props) {
                                 cx="18"
                                 cy="18"
                                 stroke="#10BB35FF"
-                                stroke-width="1"
+                                strokeWidth="1"
                                 fill="transparent"
                               ></circle>
                               <circle
@@ -132,12 +132,12 @@ function Dashboard(props) {
                                 cy="18"
                                 strokeDasharray="2"
                                 stroke="#10BB35FF"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 fill="transparent"
                               ></circle>
                             </svg>
                             <div
-                              class="MuiAvatar-root MuiAvatar-circular token-avatar-parent"
+                              className="MuiAvatar-root MuiAvatar-circular token-avatar-parent"
                               data-cy="token-icon"
                             >
                               <img
@@ -162,7 +162,7 @@ function Dashboard(props) {
                           }}
                         >
                           <svg
-                            class={
+                            className={
                               dropDown
                                 ? "drop-down-svg active"
                                 : "drop-down-svg"
