@@ -236,19 +236,19 @@ const useXStream = () => {
       // setUserEvents(flowEventArray.data.xStreamFlowTriggers);
       // pass this flowEventArray into superfluid subgraph to get the real outflow data
       let streamEvents = [];
-      flowEventArray?.data?.xStreamFlowTriggers.forEach(async (element) => {
-        // console.log("Elements inputs ", element.receiver, bridgeDataConfig[chainDomains[element.destinationDomain].id].superTokenAddress, subgraphURIs["superfluid"][element.destinationDomain])
+      for (const element of flowEventArray?.data?.xStreamFlowTriggers) {
         const result = await superfluidInflowStreamData(
           element.receiver,
           bridgeDataConfig[chainDomains[element.destinationDomain].id].superTokenAddress,
           subgraphURIs["superfluid"][element.destinationDomain]
         );
         console.log("Result from superfluid subgraph", result);
-        streamEvents.push(result);
-      });
-      // console.log("Result from superfluid subgraph", streamEvents);
+        streamEvents.push(...result.data.streams);
+      }
+
+      console.log("Result from superfluid subgraph", streamEvents);
     } catch (error) {
-      console.log("Error in fetching data from xstream subgraph ", error);
+      console.log("Error in fetching data from superfluid subgraph ", error);
       return;
     }
   };
