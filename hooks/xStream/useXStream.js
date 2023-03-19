@@ -57,6 +57,7 @@ const useXStream = () => {
     }
   };
 
+
   useEffect(() => {
     if (token?.address) {
       console.log("Getting token balance of ", token.address);
@@ -217,7 +218,11 @@ const useXStream = () => {
     }
   };
 
-  const querySubgraph = async (flowType, selectedToken, uri) => {
+  const querySubgraph = async (flowType, queryToken="", uri) => {
+    let selectedToken = queryToken;
+    if (selectedToken == "") {
+      selectedToken = bridgeDataConfig[chain?.id].erc20TokenAddress;
+    }
     let flowEventArray;
     // console.log("elements inputs selectedToken ", selectedToken);
     try {
@@ -226,7 +231,7 @@ const useXStream = () => {
       } else if (flowType == "Outgoing") {
         flowEventArray = await fetchxStreamOutflow(address, selectedToken, uri);
       }
-      // console.log("Result data ", flowEventArray?.data);
+      // console.log("Result data ", flowEventArray?.data);      
     } catch (error) {
       console.log("Error in fetching data from xstream subgraph ", error);
       return;
@@ -245,7 +250,7 @@ const useXStream = () => {
         console.log("Result from superfluid subgraph", result);
         streamEvents.push(...result.data.streams);
       }
-
+      setUserEvents(streamEvents);
       console.log("Result from superfluid subgraph", streamEvents);
     } catch (error) {
       console.log("Error in fetching data from superfluid subgraph ", error);

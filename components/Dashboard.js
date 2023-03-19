@@ -25,7 +25,7 @@ function Dashboard(props) {
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
   const [chain, setChain] = useState("goerli");
 
-  const selectedToken = bridgeDataConfig[props.chain?.id].erc20TokenAddress;
+  const selectedToken = bridgeDataConfig[props.chain?.id]?.erc20TokenAddress;
 
   // custom hooks
   const hookXStream = useXStream();
@@ -264,11 +264,11 @@ function Dashboard(props) {
                                     return (
                                       <tr key={key}>
                                         <td>
-                                          {truncateAddress(item.receiver)}
+                                          {truncateAddress(item.receiver?.id)}
                                         </td>
-                                        <td>{formatFlowrate(item.flowRate)}</td>
+                                        <td>{formatFlowrate(item?.currentFlowRate)}</td>
                                         <td>-</td>
-                                        <td>{formatDate(item.startTime)}</td>
+                                        <td>{formatDate(item?.createdAtTimestamp)}</td>
                                       </tr>
                                     );
                                   })}

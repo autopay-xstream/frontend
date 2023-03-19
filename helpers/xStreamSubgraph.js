@@ -1,58 +1,67 @@
 import { createApolloClient } from "./apollo";
 import { gql } from "@apollo/client";
-import { INCOMING_STREAMS, OUTGOING_STREAMS, TOKEN_STATISTICS, xSTREAM_INFLOW, xSTREAM_OUTFLOW } from "./graphQueries";
+import {
+  INCOMING_STREAMS,
+  OUTGOING_STREAMS,
+  TOKEN_STATISTICS,
+  xSTREAM_INFLOW,
+  xSTREAM_OUTFLOW,
+} from "./graphQueries";
 
 export const fetchxStreamInflow = async (address, selectedToken, uri) => {
-    let apolloClient = createApolloClient(uri);
-    const result = await apolloClient.query({
-        query: gql(xSTREAM_INFLOW),
-        variables: {
-            receiver: address
-        }
-    });
-    console.log("The inflow graphQL result ", result);
-    return result;
-}
+  let apolloClient = createApolloClient(uri);
+  const result = await apolloClient.query({
+    query: gql(xSTREAM_INFLOW),
+    variables: {
+      receiver: address,
+    },
+  });
+  console.log("The inflow graphQL result ", result);
+  return result;
+};
 
 export const fetchxStreamOutflow = async (address, selectedToken, uri) => {
-    console.log("The received address", address, uri);
-    try {
-        let apolloClient = createApolloClient(uri);
-        const result = await apolloClient.query({
-            query: gql(xSTREAM_OUTFLOW),
-            variables: {
-                sender: address,
-                selectedToken: selectedToken
-            }
-        });
-        console.log("The outflow graphQL result is ", result);
-        // here we get the array of events triggered by xstream of {receiverAddress, destinationDomain, selectedToken}
-        // pass this result array iteratively into superfluid subgraph
-        return result;
-    } catch (error) {
-        console.log("Error in querying fetchxStreamOutflow", error);
-        console.log(error?.networkError?.result?.errors);
-    }
-
-}
+  console.log("The received address", address, uri);
+  try {
+    let apolloClient = createApolloClient(uri);
+    const result = await apolloClient.query({
+      query: gql(xSTREAM_OUTFLOW),
+      variables: {
+        sender: address,
+        selectedToken: selectedToken,
+      },
+    });
+    console.log("The outflow graphQL result is ", result);
+    // here we get the array of events triggered by xstream of {receiverAddress, destinationDomain, selectedToken}
+    // pass this result array iteratively into superfluid subgraph
+    return result;
+  } catch (error) {
+    console.log("Error in querying fetchxStreamOutflow", error);
+    console.log(error?.networkError?.result?.errors);
+  }
+};
 
 export const fetchTokenStatistic = async (tokenAddress, uri) => {
-    let apolloClient = createApolloClient(uri);
-    const result = await apolloClient.query({
-        query: gql(TOKEN_STATISTICS),
-        variables: {
-            tokenAddress: tokenAddress
-        }
-    });
-    console.log("The token statistics graphQL result is ", result);
-    return result;
-}
+  let apolloClient = createApolloClient(uri);
+  const result = await apolloClient.query({
+    query: gql(TOKEN_STATISTICS),
+    variables: {
+      tokenAddress: tokenAddress,
+    },
+  });
+  console.log("The token statistics graphQL result is ", result);
+  return result;
+};
 
-export const fetchSuperfluidOutflow = async(tokenAddress, userAddress, uri) => {
-    let apolloClient = createApolloClient(uri);
-    const result = await apolloClient.query({
-        query: gql(
-            `
+export const fetchSuperfluidOutflow = async (
+  tokenAddress,
+  userAddress,
+  uri
+) => {
+  let apolloClient = createApolloClient(uri);
+  const result = await apolloClient.query({
+    query: gql(
+      `
             query flowUpdatedEvents(
                 where: {receiver: ${userAddress}, token: ${tokenAddress}}
                 orderBy: timestamp
@@ -82,36 +91,46 @@ export const fetchSuperfluidOutflow = async(tokenAddress, userAddress, uri) => {
                   }
                 }
             `
-        ),
-        variables: {
-            sender: userAddress,
-            token: tokenAddress
-        }
-    });
-    console.log("The token fetchSuperfluidOutflow result is ", result);
-    return result;
-}
+    ),
+    variables: {
+      sender: userAddress,
+      token: tokenAddress,
+    },
+  });
+  console.log("The token fetchSuperfluidOutflow result is ", result);
+  return result;
+};
 
-export const fetchSuperfluidInflow = async(tokenAddress, userAddress, uri) => {
-    let apolloClient = createApolloClient(uri);
+export const fetchSuperfluidInflow = async (tokenAddress, userAddress, uri) => {
+  let apolloClient = createApolloClient(uri);
 
-    console.log("subgraph params ", apolloClient, `${tokenAddress.toLowerCase()}`, userAddress.toLowerCase(), uri);
-    const result = await apolloClient.query({
-        query: gql(INCOMING_STREAMS),
-        variables: {
-            receiver: `${userAddress.toLowerCase()}`,
-            token: `${tokenAddress.toLowerCase()}`
-        }
-    });
-    console.log("The token fetchSuperfluidInflow result is ", result);
-    return result;
-}
+  console.log(
+    "subgraph params ",
+    apolloClient,
+    `${tokenAddress.toLowerCase()}`,
+    userAddress.toLowerCase(),
+    uri
+  );
+  const result = await apolloClient.query({
+    query: gql(INCOMING_STREAMS),
+    variables: {
+      receiver: `${userAddress.toLowerCase()}`,
+      token: `${tokenAddress.toLowerCase()}`,
+    },
+  });
+  console.log("The token fetchSuperfluidInflow result is ", result);
+  return result;
+};
 
-export const superfluidInflowStreamData = async(userAddress, tokenAddress, uri) => {
-    let apolloClient = createApolloClient(uri);
-    const result = await apolloClient.query({
-        query: gql(
-            `
+export const superfluidInflowStreamData = async (
+  userAddress,
+  tokenAddress,
+  uri
+) => {
+  let apolloClient = createApolloClient(uri);
+  const result = await apolloClient.query({
+    query: gql(
+      `
             query { streams(
                   where: {receiver: "${userAddress.toLowerCase()}", token: "${tokenAddress.toLowerCase()}"}
                 ) {
@@ -119,6 +138,10 @@ export const superfluidInflowStreamData = async(userAddress, tokenAddress, uri) 
                   createdAtTimestamp
                   currentFlowRate
                   id
+                  deposit
+                  streamedUntilUpdatedAt
+                updatedAtBlockNumber
+                    updatedAtTimestamp
                   receiver {
                     id
                   }
@@ -133,10 +156,15 @@ export const superfluidInflowStreamData = async(userAddress, tokenAddress, uri) 
                     isSuperToken
                     decimals
                   }
+                  flowUpdatedEvents(where: {receiver: "${userAddress.toLowerCase()}"}) {
+                    transactionHash
+                    gasPrice
+                    gasUsed
+                  }
                 }
             }
             `
-        )
-    });
-    return result;
-}
+    ),
+  });
+  return result;
+};
