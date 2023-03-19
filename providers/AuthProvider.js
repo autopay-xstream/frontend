@@ -1,23 +1,31 @@
 import { useAccount } from "wagmi";
 import { getNetwork } from "@wagmi/core";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 export const AuthContext = createContext({
     userAddress: "",
     chain: null,
-    isConnected: null
+    isConnected: null,
+    viewChain: null,
+    setViewChain: () => {}
 })
 
 const AuthProvider = ({children}) => {
     const {address, isConnected} = useAccount();
     const {chain} = getNetwork();
+    const [viewChain, setViewChain] = useState({
+        name: "goerli",
+        id: 5
+    });
 
     return (
         <AuthContext.Provider
             value={{
                 userAddress: address,
                 chain: chain,
-                isConnected: isConnected
+                isConnected: isConnected,
+                viewChain: viewChain,
+                setViewChain: setViewChain
             }}
         >
             {children}

@@ -33,7 +33,7 @@ const NotificationTemplate = (props) => {
       };
       getEvents();
     }
-  }, [props.userAddress]);
+  }, [props.userAddress, props.chain?.id]);
 
   return (
     <div className="main-container w-full h-screen">

@@ -4,7 +4,7 @@ import {
   truncateAddress,
 } from "@/helpers/formatHelper";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
@@ -17,13 +17,15 @@ import ConnectWalletCustom from "./ConnectWalletCustom";
 import { bridgeDataConfig, subgraphURIs } from "@/data/config";
 import useXStream from "@/hooks/xStream/useXStream";
 import DashboardRow from "./DashboardRow";
+import { AuthContext } from "@/providers/AuthProvider";
 
 function Dashboard(props) {
   const [dropDown, setDropDown] = useState(false);
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
-  const [chain, setChain] = useState("goerli");
+
+  const authContext = useContext(AuthContext);
 
   const selectedToken = bridgeDataConfig[props.chain?.id]?.erc20TokenAddress;
 
@@ -40,21 +42,23 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
+    console.log("Calling1")
     if (props.userAddress && props.chain?.id) {
+      console.log("Calling2")
       hookXStream.getBalance(
-        bridgeDataConfig[props.chain?.id].erc20TokenAddress
+        bridgeDataConfig[authContext.viewChain?.id].erc20TokenAddress
       );
       hookXStream.getTokenNetFlowRate(
-        bridgeDataConfig[props.chain?.id].superTokenAddress,
-        subgraphURIs["superfluid"][props.chain?.id]
+        bridgeDataConfig[authContext.viewChain?.id].superTokenAddress,
+        subgraphURIs["superfluid"][authContext.viewChain?.id]
       );
     }
-  }, [props.userAddress, props.chain]);
+  }, [props.userAddress, authContext.viewChain?.id]);
 
   if (props.isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <ChainSelect chain={chain} setChain={setChain} />
+        <ChainSelect />
         <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
           <div className="db-box-parent">
             <div className="db-box bg-white rounded-lg">
