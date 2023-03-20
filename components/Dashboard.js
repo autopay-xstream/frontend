@@ -18,7 +18,6 @@ import { bridgeDataConfig, subgraphURIs } from "@/data/config";
 import useXStream from "@/hooks/xStream/useXStream";
 import DashboardRow from "./DashboardRow";
 import { AuthContext } from "@/providers/AuthProvider";
-import { Oval } from "react-loader-spinner";
 
 function Dashboard(props) {
   const [dropDown, setDropDown] = useState(false);
@@ -43,9 +42,9 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
-    console.log("Calling1");
+    console.log("Calling1")
     if (props.userAddress && props.chain?.id) {
-      console.log("Calling2");
+      console.log("Calling2")
       hookXStream.getBalance(
         bridgeDataConfig[authContext.viewChain?.id].erc20TokenAddress
       );
@@ -264,45 +263,19 @@ function Dashboard(props) {
                                     );
                                   })}
                                 {/**************outgoing flow data************/}
-
                                 {dropDownOutgoing &&
-                                hookXStream.userEvents?.length > 0 ? (
-                                    hookXStream.userEvents?.map((item, key) => 
-                                    { return (<tr key={key}>
+                                  hookXStream.userEvents?.map((item, key) => {
+                                    return (
+                                      <tr key={key}>
                                         <td>
                                           {truncateAddress(item.receiver?.id)}
                                         </td>
-                                        <td>
-                                          {formatFlowrate(
-                                            item?.currentFlowRate
-                                          )}
-                                        </td>
+                                        <td>{formatFlowrate(item?.currentFlowRate)}</td>
                                         <td>-</td>
-                                        <td>
-                                          {formatDate(item?.createdAtTimestamp)}
-                                        </td>
-                                      </tr>)
-                                      
-                                    }
-                                    )
-                                ) : (
-                                  <></>
-                                //   <>
-                                //   <Oval
-                                //   height={80}
-                                //   width={80}
-                                //   color="#4fa94d"
-                                //   wrapperStyle={{}}
-                                //   wrapperClass=""
-                                //   visible={true}
-                                //   ariaLabel='oval-loading'
-                                //   secondaryColor="#4fa94d"
-                                //   strokeWidth={2}
-                                //   strokeWidthSecondary={2}
-                                
-                                // /></>
-                                )}
-
+                                        <td>{formatDate(item?.createdAtTimestamp)}</td>
+                                      </tr>
+                                    );
+                                  })}
                                 {/**************incoming flow data************/}
                                 {dropDownIncoming &&
                                   hookXStream.userEvents?.map((item, key) => {
