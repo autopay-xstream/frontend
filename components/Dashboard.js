@@ -42,9 +42,7 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
-    console.log("Calling1")
     if (props.userAddress && props.chain?.id) {
-      console.log("Calling2")
       hookXStream.getBalance(
         bridgeDataConfig[authContext.viewChain?.id].erc20TokenAddress
       );
