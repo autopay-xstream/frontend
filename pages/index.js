@@ -1,23 +1,19 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
 import logowhite from "../image/LogoWhite.png";
 
 //********************** connect wallet imports
-import {
-  ConnectButton
-} from "@rainbow-me/rainbowkit";
+import { AuthContext } from "@/providers/AuthProvider";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import { getNetwork } from "@wagmi/core";
 import Image from "next/image";
 import Dashboard from "../components/Dashboard";
-import Notifications from "../components/Notifications";
 import SendStream from "../components/SendStream";
 import SendXStream from "../components/SendXStream";
 import SideBar from "../components/SideBar";
-import { getNetwork } from "@wagmi/core";
-import { subgraphURIs } from "@/data/config";
-
 
 //******************************************* */
 
@@ -29,6 +25,7 @@ export default function Home() {
   const connectedWallet = useAccount();
   const { chain } = getNetwork();
 
+  const authContext = useContext(AuthContext);
 
   //********************** connect wallet imports
 
@@ -96,17 +93,13 @@ export default function Home() {
           <div className="w-full bg-[#F4F4F4]">
             <div className="inside-main-right">
               {showDashboard ? (
-                <Dashboard chain = {chain}/>
+                <Dashboard
+                  userAddress={authContext?.userAddress}
+                  chain={authContext.chain}
+                  isConnected={authContext?.isConnected}
+                />
               ) : showSendStream ? (
                 <SendStream />
-              ) : showXStream ? (
-                <SendXStream />
-              ) : showNotification ? (
-                <Notifications
-                  subgraphURI = {subgraphURIs['xstream'][chain?.id]}
-                  address={connectedWallet.address}
-
-                />
               ) : null}
             </div>
           </div>

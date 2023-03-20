@@ -4,8 +4,7 @@ import {
   truncateAddress,
 } from "@/helpers/formatHelper";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useContext, useEffect, useState } from "react";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
@@ -18,14 +17,17 @@ import ConnectWalletCustom from "./ConnectWalletCustom";
 import { bridgeDataConfig, subgraphURIs } from "@/data/config";
 import useXStream from "@/hooks/xStream/useXStream";
 import DashboardRow from "./DashboardRow";
+import { AuthContext } from "@/providers/AuthProvider";
 
 function Dashboard(props) {
-  const { address, isConnected } = useAccount();
   const [dropDown, setDropDown] = useState(false);
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
-  const [chain, setChain] = useState("goerli");
+
+  const authContext = useContext(AuthContext);
+
+  const selectedToken = bridgeDataConfig[props.chain?.id]?.erc20TokenAddress;
 
   // custom hooks
   const hookXStream = useXStream();
@@ -40,21 +42,21 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
-    if (address) {
+    if (props.userAddress && props.chain?.id) {
       hookXStream.getBalance(
-        bridgeDataConfig[props.chain?.id].erc20TokenAddress
+        bridgeDataConfig[authContext.viewChain?.id].erc20TokenAddress
       );
       hookXStream.getTokenNetFlowRate(
-        bridgeDataConfig[props.chain?.id].superTokenAddress,
-        subgraphURIs["superfluid"][props.chain?.id]
+        bridgeDataConfig[authContext.viewChain?.id].superTokenAddress,
+        subgraphURIs["superfluid"][authContext.viewChain?.id]
       );
     }
-  }, [address, props.chain]);
+  }, [props.userAddress, authContext.viewChain?.id]);
 
-  if (isConnected) {
+  if (props.isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <ChainSelect chain={chain} setChain={setChain} />
+        <ChainSelect />
         <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
           <div className="db-box-parent">
             <div className="db-box bg-white rounded-lg">
@@ -122,7 +124,7 @@ function Dashboard(props) {
                                 cx="18"
                                 cy="18"
                                 stroke="#10BB35FF"
-                                stroke-width="1"
+                                strokeWidth="1"
                                 fill="transparent"
                               ></circle>
                               <circle
@@ -132,12 +134,12 @@ function Dashboard(props) {
                                 cy="18"
                                 strokeDasharray="2"
                                 stroke="#10BB35FF"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 fill="transparent"
                               ></circle>
                             </svg>
                             <div
-                              class="MuiAvatar-root MuiAvatar-circular token-avatar-parent"
+                              className="MuiAvatar-root MuiAvatar-circular token-avatar-parent"
                               data-cy="token-icon"
                             >
                               <img
@@ -162,7 +164,7 @@ function Dashboard(props) {
                           }}
                         >
                           <svg
-                            class={
+                            className={
                               dropDown
                                 ? "drop-down-svg active"
                                 : "drop-down-svg"
@@ -195,6 +197,7 @@ function Dashboard(props) {
                                           onClick={() => {
                                             hookXStream.querySubgraph(
                                               "Incoming",
+                                              selectedToken,
                                               subgraphURIs["xstream"][
                                                 props.chain.id
                                               ]
@@ -215,6 +218,7 @@ function Dashboard(props) {
                                           onClick={() => {
                                             hookXStream.querySubgraph(
                                               "Outgoing",
+                                              selectedToken,
                                               subgraphURIs["xstream"][
                                                 props.chain.id
                                               ]
@@ -262,11 +266,11 @@ function Dashboard(props) {
                                     return (
                                       <tr key={key}>
                                         <td>
-                                          {truncateAddress(item.receiver)}
+                                          {truncateAddress(item.receiver?.id)}
                                         </td>
-                                        <td>{formatFlowrate(item.flowRate)}</td>
+                                        <td>{formatFlowrate(item?.currentFlowRate)}</td>
                                         <td>-</td>
-                                        <td>{formatDate(item.startTime)}</td>
+                                        <td>{formatDate(item?.createdAtTimestamp)}</td>
                                       </tr>
                                     );
                                   })}

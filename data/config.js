@@ -72,10 +72,43 @@ export const bridgeDataConfig = {
 export const subgraphURIs = {
   "xstream": {
     5: "https://api.thegraph.com/subgraphs/name/aditya172926/xstream",
-    80001: "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai"
+    1735353714: "https://api.thegraph.com/subgraphs/name/aditya172926/xstream", // connext domain goerli
+
+    80001: "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai",
+    9991: "https://api.thegraph.com/subgraphs/name/aditya172926/xstreammumbai", // connext domain mumbai
   },
   "superfluid": {
     5: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli",
-    80001: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai"
+    1735353714: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-goerli", // connext domain goerli
+
+    80001: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai",
+    9991: "https://api.thegraph.com/subgraphs/name/superfluid-finance/protocol-v1-mumbai", // connext domain mumbai 
+  }
+}
+
+export const chainDomains = {
+  9991: {name: "Polygon Mumbai", id: 80001},
+  1735353714: {name: "Goerli", id: 5},
+
+  1886350457: {name: "Polygon", id: 137},
+  6778479: {name: "Gnosis", id: 100},
+  6648936: {name: "Ethereum Mainnet", id: 1}
+}
+
+export const superTokensMapping = {
+  // Goerli
+  5: {
+    "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1": "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TEST -> TESTx 
+  },
+  1735353714: {
+    "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1": "0x3427910EBBdABAD8e02823DFe05D34a65564b1a0", // TEST -> TESTx 
+  },
+
+  // Mumbai
+  80001: {
+    "0xeDb95D8037f769B72AAab41deeC92903A98C9E16": "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A", // TEST -> TESTx
+  },
+  9991: {
+    "0xeDb95D8037f769B72AAab41deeC92903A98C9E16": "0xFB5fbd3B9c471c1109A3e0AD67BfD00eE007f70A", // TEST -> TESTx
   }
 }

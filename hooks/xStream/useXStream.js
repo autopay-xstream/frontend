@@ -1,8 +1,18 @@
 import TestTokenAbi from "@/data/TestTokenAbi.json";
-import { bridgeDataConfig } from "@/data/config";
+import {
+  bridgeDataConfig,
+  chainDomains,
+  subgraphURIs,
+  superTokensMapping,
+} from "@/data/config";
 import destinationAbi from "@/data/destinationAbi.json";
 import originAbi from "@/data/originAbi.json";
-import { fetchTokenStatistic, fetchxStreamInflow, fetchxStreamOutflow } from "@/helpers/xStreamSubgraph";
+import {
+  fetchTokenStatistic,
+  fetchxStreamInflow,
+  fetchxStreamOutflow,
+  superfluidInflowStreamData,
+} from "@/helpers/xStreamSubgraph";
 import { Framework } from "@superfluid-finance/sdk-core";
 import { fetchBalance, getNetwork } from "@wagmi/core";
 import { ethers } from "ethers";
@@ -17,20 +27,19 @@ const useXStream = () => {
   const { address, isConnected } = useAccount();
   const [userEvents, setUserEvents] = useState([]);
   const [balance, setBalance] = useState(0);
-  const [token, setToken] = useState(null);
-  const [amount, setAmount] = useState(null);
-  const [toChain, setToChain] = useState(null);
-  const [fromChain, setFromChain] = useState(null);
-  const [receipient, setReceipient] = useState(null);
+  const [token, setToken] = useState();
+  const [amount, setAmount] = useState(0);
+  const [toChain, setToChain] = useState();
+  const [fromChain, setFromChain] = useState();
+  const [receipient, setReceipient] = useState();
   const [testFlowRate, setTestFlowRate] = useState(0);
 
   const { chain } = getNetwork();
 
   const currentDate = new Date();
   const hoursToAdd = 6;
-  currentDate.setTime(currentDate.getTime() + (hoursToAdd * 60 * 60 * 1000));
+  currentDate.setTime(currentDate.getTime() + hoursToAdd * 60 * 60 * 1000);
   const [endDate, setEndDate] = useState(dayjs(currentDate));
-
 
   const getBalance = async (tokenAddress) => {
     try {
@@ -48,10 +57,11 @@ const useXStream = () => {
     }
   };
 
+
   useEffect(() => {
     if (token?.address) {
       console.log("Getting token balance of ", token.address);
-        getBalance(token?.address);
+      getBalance(token?.address);
     }
   }, [token?.address, chain?.id]);
 
@@ -208,23 +218,57 @@ const useXStream = () => {
     }
   };
 
-  const querySubgraph = async (flowType, uri) => {
-    let flowEvents;
-    if (flowType == "Incoming") {
-      flowEvents = await fetchxStreamInflow(address, uri);
-    } else if (flowType == "Outgoing") {
-      flowEvents = await fetchxStreamOutflow(address, uri);
+  const querySubgraph = async (flowType, queryToken="", uri) => {
+    let selectedToken = queryToken;
+    if (selectedToken == "") {
+      selectedToken = bridgeDataConfig[chain?.id].erc20TokenAddress;
     }
-    console.log("Result data ", flowEvents.data);
-    setUserEvents(flowEvents.data.xStreamFlowTriggers);
+    let flowEventArray;
+    // console.log("elements inputs selectedToken ", selectedToken);
+    try {
+      if (flowType == "Incoming") {
+        flowEventArray = await fetchxStreamInflow(address, uri);
+      } else if (flowType == "Outgoing") {
+        flowEventArray = await fetchxStreamOutflow(address, selectedToken, uri);
+      }
+      // console.log("Result data ", flowEventArray?.data);      
+    } catch (error) {
+      console.log("Error in fetching data from xstream subgraph ", error);
+      return;
+    }
+
+    try {
+      // setUserEvents(flowEventArray.data.xStreamFlowTriggers);
+      // pass this flowEventArray into superfluid subgraph to get the real outflow data
+      let streamEvents = [];
+      for (const element of flowEventArray?.data?.xStreamFlowTriggers) {
+        const result = await superfluidInflowStreamData(
+          element.receiver,
+          bridgeDataConfig[chainDomains[element.destinationDomain].id].superTokenAddress,
+          subgraphURIs["superfluid"][element.destinationDomain]
+        );
+        console.log("Result from superfluid subgraph", result);
+        streamEvents.push(...result.data.streams);
+      }
+      setUserEvents(streamEvents);
+      console.log("Result from superfluid subgraph", streamEvents);
+    } catch (error) {
+      console.log("Error in fetching data from superfluid subgraph ", error);
+      return;
+    }
   };
 
-  const getTokenNetFlowRate = async(tokenAddress, uri) => {
-    const flowResult = await fetchTokenStatistic(tokenAddress.toLowerCase(), uri);
-    const flowRate = formatFlowrate(flowResult.data?.tokenStatistics[0]?.totalOutflowRate);
+  const getTokenNetFlowRate = async (tokenAddress, uri) => {
+    const flowResult = await fetchTokenStatistic(
+      tokenAddress.toLowerCase(),
+      uri
+    );
+    const flowRate = formatFlowrate(
+      flowResult.data?.tokenStatistics[0]?.totalOutflowRate
+    );
     console.log(flowRate);
     setTestFlowRate(flowRate);
-  }
+  };
 
   return {
     balance: balance,
@@ -245,7 +289,7 @@ const useXStream = () => {
     setEndDate: setEndDate,
     getBalance: getBalance,
     handleXStreamSubmit: handleXStreamSubmit,
-    getTokenNetFlowRate: getTokenNetFlowRate
+    getTokenNetFlowRate: getTokenNetFlowRate,
   };
 };
 
