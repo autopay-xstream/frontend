@@ -8,16 +8,21 @@ import {
   xSTREAM_OUTFLOW,
 } from "./graphQueries";
 
-export const fetchxStreamInflow = async (address, selectedToken, uri) => {
+export const fetchxStreamInflow = async (address, uri) => {
   let apolloClient = createApolloClient(uri);
-  const result = await apolloClient.query({
-    query: gql(xSTREAM_INFLOW),
-    variables: {
-      receiver: address,
-    },
-  });
-  console.log("The inflow graphQL result ", result);
-  return result;
+  try {
+    const result = await apolloClient.query({
+      query: gql(xSTREAM_INFLOW),
+      variables: {
+        receiver: address,
+      },
+    });
+    console.log("The inflow graphQL result ", result);
+    return result;
+  } catch (error) {
+    console.log("Error in calling fetchxStreamInflow", error);
+    return;
+  }
 };
 
 export const fetchxStreamOutflow = async (address, selectedToken, uri) => {

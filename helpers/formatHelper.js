@@ -1,5 +1,6 @@
 export const truncateAddress = (address) => {
-    if (address) {
+    if (address && typeof(address) == "string") {
+        console.log("This is the input address ", address);
         return address.slice(0, 6) + "..." + address.slice(-4);
     }
     return '';

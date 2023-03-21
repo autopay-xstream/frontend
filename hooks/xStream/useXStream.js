@@ -227,9 +227,33 @@ const useXStream = () => {
     // console.log("elements inputs selectedToken ", selectedToken);
     try {
       if (flowType == "Incoming") {
-        flowEventArray = await fetchxStreamInflow(address, uri);
+        try {
+          flowEventArray = await fetchxStreamInflow(address, uri);
+          setUserEvents(flowEventArray?.data?.xStreamFlowTriggers);
+        } catch (error) {
+          console.log("Error in fetching inflow data from xstream subgraph");
+        }
       } else if (flowType == "Outgoing") {
         flowEventArray = await fetchxStreamOutflow(address, selectedToken, uri);
+        try {
+          // setUserEvents(flowEventArray.data.xStreamFlowTriggers);
+          // pass this flowEventArray into superfluid subgraph to get the real outflow data
+          let streamEvents = [];
+          for (const element of flowEventArray?.data?.xStreamFlowTriggers) {
+            const result = await superfluidInflowStreamData(
+              element.receiver,
+              bridgeDataConfig[chainDomains[element.destinationDomain].id].superTokenAddress,
+              subgraphURIs["superfluid"][element.destinationDomain]
+            );
+            console.log("Result from superfluid subgraph", result);
+            streamEvents.push(...result.data.streams);
+          }
+          setUserEvents(streamEvents);
+          console.log("Result from superfluid subgraph", streamEvents);
+        } catch (error) {
+          console.log("Error in fetching data from superfluid subgraph ", error);
+          return;
+        }
       }
       // console.log("Result data ", flowEventArray?.data);      
     } catch (error) {
@@ -237,25 +261,7 @@ const useXStream = () => {
       return;
     }
 
-    try {
-      // setUserEvents(flowEventArray.data.xStreamFlowTriggers);
-      // pass this flowEventArray into superfluid subgraph to get the real outflow data
-      let streamEvents = [];
-      for (const element of flowEventArray?.data?.xStreamFlowTriggers) {
-        const result = await superfluidInflowStreamData(
-          element.receiver,
-          bridgeDataConfig[chainDomains[element.destinationDomain].id].superTokenAddress,
-          subgraphURIs["superfluid"][element.destinationDomain]
-        );
-        console.log("Result from superfluid subgraph", result);
-        streamEvents.push(...result.data.streams);
-      }
-      setUserEvents(streamEvents);
-      console.log("Result from superfluid subgraph", streamEvents);
-    } catch (error) {
-      console.log("Error in fetching data from superfluid subgraph ", error);
-      return;
-    }
+    
   };
 
   const getTokenNetFlowRate = async (tokenAddress, uri) => {
