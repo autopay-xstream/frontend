@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
 import dayjs from "dayjs";
 import { formatFlowrate } from "@/helpers/formatHelper";
+import { create } from "@connext/sdk";
+import { sdkConfig } from "@/helpers/connextSDK";
 
 const useXStream = () => {
   const { address, isConnected } = useAccount();
@@ -104,13 +106,22 @@ const useXStream = () => {
           signer
         );
 
+        const {sdkBase} = await create(sdkConfig);
+
+        const params = {
+          originDomain: "1735353714",
+          destinationDomain: "9991"
+        }
+
+        const relayerFee = await sdkBase.estimateRelayerFee(params);
+
         toast.info("Creating your XStream...");
         const transaction = await originContract._sendFlowMessage(
           //_sendFlowMessage
           "1", //streamActionType
           receipient, //receiver
           flowRate, //flowRate
-          "80000000000000000", //relayer fees
+          relayerFee, //relayer fees
           "300", //slippage
           parseEther(amount), //amount of tokens to send
           token?.address,
