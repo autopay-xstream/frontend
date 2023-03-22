@@ -1,7 +1,10 @@
-import { formatDate, formatFlowrate, truncateAddress } from "@/helpers/formatHelper";
+import {
+  formatDate,
+  formatFlowrate,
+  truncateAddress,
+} from "@/helpers/formatHelper";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useContext, useEffect, useState } from "react";
 import avatar1 from "../public/avatar-image.gif";
 import avatar2 from "../public/avatar2.png";
 import avatar3 from "../public/avatar3.png";
@@ -14,14 +17,17 @@ import ConnectWalletCustom from "./ConnectWalletCustom";
 import { bridgeDataConfig, subgraphURIs } from "@/data/config";
 import useXStream from "@/hooks/xStream/useXStream";
 import DashboardRow from "./DashboardRow";
+import { AuthContext } from "@/providers/AuthProvider";
 
 function Dashboard(props) {
-  const { address, isConnected } = useAccount();
   const [dropDown, setDropDown] = useState(false);
   const [dropDownAll, setDropDownAll] = useState(false);
   const [dropDownIncoming, setDropDownIncoming] = useState(true);
   const [dropDownOutgoing, setDropDownOutgoing] = useState(true);
-  const [chain, setChain] = useState("goerli");
+
+  const authContext = useContext(AuthContext);
+
+  const selectedToken = bridgeDataConfig[props.chain?.id]?.erc20TokenAddress;
 
   // custom hooks
   const hookXStream = useXStream();
@@ -35,17 +41,22 @@ function Dashboard(props) {
     setDropDownOutgoing(false);
   }, []);
 
-
   useEffect(() => {
-    if (address)
-      hookXStream.getBalance(bridgeDataConfig[props.chain.id].erc20TokenAddress);
-    hookXStream.getTokenNetFlowRate(bridgeDataConfig[props.chain.id].superTokenAddress, subgraphURIs["superfluid"][props.chain.id]);
-  }, [address, props.chain]);
+    if (props.userAddress && props.chain?.id) {
+      hookXStream.getBalance(
+        bridgeDataConfig[authContext.viewChain?.id].erc20TokenAddress
+      );
+      hookXStream.getTokenNetFlowRate(
+        bridgeDataConfig[authContext.viewChain?.id].superTokenAddress,
+        subgraphURIs["superfluid"][authContext.viewChain?.id]
+      );
+    }
+  }, [props.userAddress, authContext.viewChain?.id]);
 
-  if (isConnected) {
+  if (props.isConnected) {
     return (
       <div className="main-container w-full h-screen ">
-        <ChainSelect chain={chain} setChain={setChain} />
+        <ChainSelect />
         <div className="max-w-6xl mx-auto mt-10 rounded-2xl bg-white w-full ">
           <div className="db-box-parent">
             <div className="db-box bg-white rounded-lg">
@@ -113,7 +124,7 @@ function Dashboard(props) {
                                 cx="18"
                                 cy="18"
                                 stroke="#10BB35FF"
-                                stroke-width="1"
+                                strokeWidth="1"
                                 fill="transparent"
                               ></circle>
                               <circle
@@ -123,12 +134,12 @@ function Dashboard(props) {
                                 cy="18"
                                 strokeDasharray="2"
                                 stroke="#10BB35FF"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 fill="transparent"
                               ></circle>
                             </svg>
                             <div
-                              class="MuiAvatar-root MuiAvatar-circular token-avatar-parent"
+                              className="MuiAvatar-root MuiAvatar-circular token-avatar-parent"
                               data-cy="token-icon"
                             >
                               <img
@@ -153,7 +164,7 @@ function Dashboard(props) {
                           }}
                         >
                           <svg
-                            class={
+                            className={
                               dropDown
                                 ? "drop-down-svg active"
                                 : "drop-down-svg"
@@ -169,7 +180,7 @@ function Dashboard(props) {
                       </td>
                     </tr>
 
-                    {dropDown &&
+                    {dropDown && (
                       <tr>
                         <td colSpan={5} className="dropdown-table-td">
                           <div>
@@ -184,7 +195,13 @@ function Dashboard(props) {
                                             dropDownIncoming ? "active" : ""
                                           }
                                           onClick={() => {
-                                            hookXStream.querySubgraph("Incoming", subgraphURIs['xstream'][props.chain.id]);
+                                            hookXStream.querySubgraph(
+                                              "Incoming",
+                                              selectedToken,
+                                              subgraphURIs["xstream"][
+                                                props.chain.id
+                                              ]
+                                            );
                                             setDropDownAll(false);
                                             setDropDownIncoming(true);
                                             setDropDownOutgoing(false);
@@ -199,7 +216,13 @@ function Dashboard(props) {
                                             dropDownOutgoing ? "active" : ""
                                           }
                                           onClick={() => {
-                                            hookXStream.querySubgraph("Outgoing", subgraphURIs['xstream'][props.chain.id]);
+                                            hookXStream.querySubgraph(
+                                              "Outgoing",
+                                              selectedToken,
+                                              subgraphURIs["xstream"][
+                                                props.chain.id
+                                              ]
+                                            );
                                             setDropDownAll(false);
                                             setDropDownIncoming(false);
                                             setDropDownOutgoing(true);
@@ -230,13 +253,9 @@ function Dashboard(props) {
                                   hookXStream.userEvents?.map((item, key) => {
                                     return (
                                       <tr key={key}>
-                                        <td>
-                                          {truncateAddress(item.address)}
-                                        </td>
+                                        <td>{truncateAddress(item.address)}</td>
                                         <td>{formatFlowrate(item.flowRate)}</td>
-                                        <td>
-                                          -
-                                        </td>
+                                        <td>-</td>
                                         <td>{formatDate(item.startTime)}</td>
                                       </tr>
                                     );
@@ -247,13 +266,11 @@ function Dashboard(props) {
                                     return (
                                       <tr key={key}>
                                         <td>
-                                          {truncateAddress(item.receiver)}
+                                          {truncateAddress(item.receiver?.id)}
                                         </td>
-                                        <td>{formatFlowrate(item.flowRate)}</td>
-                                        <td>
-                                          -
-                                        </td>
-                                        <td>{formatDate(item.startTime)}</td>
+                                        <td>{formatFlowrate(item?.currentFlowRate)}</td>
+                                        <td>-</td>
+                                        <td>{formatDate(item?.createdAtTimestamp)}</td>
                                       </tr>
                                     );
                                   })}
@@ -262,13 +279,9 @@ function Dashboard(props) {
                                   hookXStream.userEvents?.map((item, key) => {
                                     return (
                                       <tr key={key}>
-                                        <td>
-                                          {truncateAddress(item.sender)}
-                                        </td>
+                                        <td>{truncateAddress(item.sender)}</td>
                                         <td>{formatFlowrate(item.flowRate)}</td>
-                                        <td>
-                                          -
-                                        </td>
+                                        <td>-</td>
                                         <td>{formatDate(item.startTime)}</td>
                                       </tr>
                                     );
@@ -277,11 +290,11 @@ function Dashboard(props) {
                             </table>
                           </div>
                         </td>
-                      </tr>}
+                      </tr>
+                    )}
 
                     {/* <DashboardRow /> */}
                   </tbody>
-
                 </table>
               </div>
             </div>

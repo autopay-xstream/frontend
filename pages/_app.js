@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import {
   getDefaultWallets,
   lightTheme,
-  RainbowKitProvider
+  RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
@@ -12,6 +12,7 @@ import "../styles/container.css";
 import "../styles/dashboard.css";
 import "../styles/globals.css";
 import "../styles/setpermission.css";
+import AuthProvider from "@/providers/AuthProvider";
 
 export default function App({ Component, pageProps }) {
   const { chains, provider } = configureChains(
@@ -43,9 +44,11 @@ export default function App({ Component, pageProps }) {
             overlayBlur: "small",
           })}
         >
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <AuthProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AuthProvider>
         </RainbowKitProvider>
       </WagmiConfig>
     </>
